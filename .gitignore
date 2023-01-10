@@ -1,0 +1,5 @@
+a.out
+minishell
+.build/
+cmake-build-debug/
+.idea/
