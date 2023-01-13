@@ -17,7 +17,7 @@
 # include <errno.h>
 # include "libft.h"
 
-# define SIZE_HASHMAP	150
+# define SIZE_HASHTABLE	41
 
 typedef struct s_dict
 {
@@ -26,25 +26,27 @@ typedef struct s_dict
 	struct s_dict	*next;
 }				t_dict;
 
-/* ----------	HASHMAP FUNCTIONS	---------- */
+typedef struct s_hashtable
+{
+	size_t	size;
+	t_dict	**dict;
+}				t_hashtable;
 
-size_t	get_key(char *name);
-t_dict	**init_hashmap(void);
-void	display_hashmap(t_dict **hashmap);
-void	hash_elem(t_dict **list, t_dict *new);
+/* ----------	HASHTABLE FUNCTIONS	---------- */
+
+t_hashtable		*hashtable_init(size_t size);
+void			hashtable_clean(t_hashtable *hashtable);
+void			hashtable_display(t_hashtable *hashtable);
+size_t			hashtable_get_key(const char *name, size_t size);
+void			hashtable_push(t_hashtable *hashtable, t_dict *elem);
 
 /* ----------	DICT_UTILS FUNCTIONS	---------- */
 
-t_dict	*dict_new(char *name, char *value);
-void	dict_add_back(t_dict **start, t_dict *new);
-t_dict	*remove_one(t_dict **node);
-void	clear_dict(t_dict **start);
+void			dict_free(t_dict **head);
+t_dict			*dict_free_elem(t_dict **elem);
 
 /* ----------	DICT FUNCTIONS	---------- */
 
-t_dict	**parse_envp(char **envp);
-void	free_dict(t_dict **dict);
-
-t_dict	*conv_envp_to_dict(char **envp);
+t_hashtable		*envp_to_dict(char **envp);
 
 #endif

@@ -79,6 +79,7 @@ MEMORY =			ft_bzero.c \
 STRING =			ft_split.c \
 					ft_strlen.c \
 					ft_strchr.c \
+					ft_strcmp.c \
 					ft_strdup.c \
 					ft_substr.c \
 					ft_strlcpy.c \

@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/10 11:18:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/10 11:18:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/13 16:47:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/13 16:47:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdio.h>
-#include "envp.h"
+#include "libft.h"
 
-int	main(int argc, char **argv, char **envp)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	t_hashtable	*envp_dict;
+	size_t	index;
 
-	(void) argc;
-	(void) argv;
-	envp_dict = envp_to_dict(envp);
-	if (envp_dict == NULL)
-		return (errno);
-	hashtable_display(envp_dict);
-	return (0);
+	index = 0;
+	while (s1[index] && s2[index]
+		&& (unsigned char)s1[index] == (unsigned char)s2[index])
+		index++;
+	return ((unsigned char) s1[index] - (unsigned char)s2[index]);
 }

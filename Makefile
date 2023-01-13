@@ -19,9 +19,10 @@ LIBFT_DIR	=		libft/
 LIBFT		=		$(LIBFT_DIR)libft.a
 
 SRCS		=		main.c \
+					envp/hashtable.c \
+					envp/hashtable_utils.c \
 					envp/dict.c \
-					envp/hashmap.c \
-					envp/dict_utils.c
+					envp/dict_utils.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
@@ -31,7 +32,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra
+CFLAGS		=		-Wall -Werror -Wextra -g3
 
 DFLAGS		=		-MMD -MP
 

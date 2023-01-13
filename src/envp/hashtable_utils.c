@@ -1,26 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   hashtable_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/10 11:18:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/10 11:18:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/13 18:58:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/13 18:58:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdio.h>
 #include "envp.h"
 
-int	main(int argc, char **argv, char **envp)
+static void	hashtable_display_dict(t_dict *dict)
 {
-	t_hashtable	*envp_dict;
+	while (dict != NULL)
+	{
+		printf("\tName:\t%s\n", dict->name);
+		printf("\tValue:\t%s\n\n", dict->value);
+		dict = dict->next;
+	}
+}
 
-	(void) argc;
-	(void) argv;
-	envp_dict = envp_to_dict(envp);
-	if (envp_dict == NULL)
-		return (errno);
-	hashtable_display(envp_dict);
-	return (0);
+void	hashtable_display(t_hashtable *hashtable)
+{
+	size_t	index;
+
+	index = 0;
+	while (index < hashtable->size)
+	{
+		printf("Index: %zu\n", index);
+		hashtable_display_dict(hashtable->dict[index]);
+		printf("\n");
+		index++;
+	}
 }

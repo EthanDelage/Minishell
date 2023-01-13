@@ -47,6 +47,7 @@ int		ft_issign(int c);
 
 /* --------------- STRING FUNCTIONS --------------- */
 
+int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strncpy(char *dest, const char *src, size_t n);
 char	*ft_strdup(const char *s);
