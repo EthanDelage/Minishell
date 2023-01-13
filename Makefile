@@ -21,7 +21,9 @@ LIBFT		=		$(LIBFT_DIR)libft.a
 SRCS		=		main.c \
 					envp/dict.c \
 					envp/hashmap.c \
-					envp/dict_utils.c
+					envp/dict_utils.c \
+					parsing/line_lexer/line_lexer.c \
+					parsing/line_lexer/add_line_token.c
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
