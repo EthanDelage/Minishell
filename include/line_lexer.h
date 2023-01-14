@@ -32,6 +32,10 @@ typedef struct s_line_token
 }						t_line_token;
 
 t_line_token	*line_lexer(char *line);
-void			add_line_token(t_line_token **stack, int type, void *value);
+int				token_get_type(const char *c);
+void			token_add_command(t_line_token **token_stack, char *line, size_t *i);
+void			token_add_parenthesis(t_line_token **token_stack, int type, size_t *i);
+void			token_add_operator(t_line_token **token_stack, const char *line, size_t *i);
+void			token_clear(t_line_token **token_stack);
 
 #endif

@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_line_token.c                                   :+:      :+:    :+:   */
+/*   token_clear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/13 17:50:00 by hferraud          #+#    #+#             */
-/*   Updated: 2023/01/13 17:50:00 by hferraud         ###   ########lyon.fr   */
+/*   Created: 2023/01/14 17:10:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/01/14 17:10:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "line_lexer.h"
 
-t_line_token	*new_line_token(int type, void *value)
+static void	token_free_elem(t_line_token *elem)
 {
-	t_line_token *token;
-
-	token = malloc(sizeof(t_line_token));
-	if (token == NULL)
-		return (NULL);
-	token->type = type;
-	token->value = value;
-	token->next = NULL;
-	return (token);
+	if (elem->type == COMMAND)
+		free(elem->value);
+	free(elem);
 }
 
-void	add_line_token(t_line_token **stack, int type, void *value)
+void	token_clear(t_line_token **token_stack)
 {
-	t_line_token *new;
+	t_line_token	*next;
 
-	new = new_line_token(type, value);
-	if (new == NULL)
-		return ;
-	new->next = *stack;
-	*stack = new;
+	while (*token_stack)
+	{
+		next = (*token_stack)->next;
+		token_free_elem(*token_stack);
+		*token_stack = next;
+	}
 }
