@@ -15,12 +15,16 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_hashtable	*envp_dict;
+	char		**new_envp;
 
 	(void) argc;
 	(void) argv;
 	envp_dict = envp_to_dict(envp);
-	if (envp_dict == NULL)
+	if (errno)
 		return (errno);
-	hashtable_display(envp_dict);
+	new_envp = hashtable_get_array(envp_dict);
+	if (errno)
+		return (errno);
+	hashtable_clear(envp_dict);
 	return (0);
 }

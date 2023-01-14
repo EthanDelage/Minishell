@@ -29,16 +29,27 @@ typedef struct s_dict
 typedef struct s_hashtable
 {
 	size_t	size;
+	size_t	nb_elem;
 	t_dict	**dict;
 }				t_hashtable;
+
+enum
+{
+	REMOVE		=	0,
+	NOT_FOUND	=	1,
+};
 
 /* ----------	HASHTABLE FUNCTIONS	---------- */
 
 t_hashtable		*hashtable_init(size_t size);
-void			hashtable_clean(t_hashtable *hashtable);
+void			hashtable_array_clear(char **array);
+void			hashtable_clear(t_hashtable *hashtable);
 void			hashtable_display(t_hashtable *hashtable);
+char			**hashtable_get_array(t_hashtable *hashtable);
 size_t			hashtable_get_key(const char *name, size_t size);
 void			hashtable_push(t_hashtable *hashtable, t_dict *elem);
+t_dict			*hashtable_search(t_hashtable *hashtable, const char *name);
+int				hashtable_remove_one(t_hashtable *hashtable, const char *name);
 
 /* ----------	DICT_UTILS FUNCTIONS	---------- */
 

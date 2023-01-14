@@ -75,7 +75,7 @@ t_hashtable	*envp_to_dict(char **envp)
 		env_var = parse_env_var(envp[index]);
 		if (env_var == NULL)
 		{
-			hashtable_clean(hashtable);
+			hashtable_clear(hashtable);
 			return (NULL);
 		}
 		hashtable_push(hashtable, env_var);

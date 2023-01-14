@@ -21,6 +21,8 @@ LIBFT		=		$(LIBFT_DIR)libft.a
 SRCS		=		main.c \
 					envp/hashtable.c \
 					envp/hashtable_utils.c \
+					envp/hashtable_display.c \
+					envp/hashtable_get_array.c \
 					envp/dict.c \
 					envp/dict_utils.c \
 
