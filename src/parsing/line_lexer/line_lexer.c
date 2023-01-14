@@ -28,6 +28,12 @@ int	token_get_type(const char *c)
 		return (COMMAND);
 }
 
+void	line_trim_space(char *line, size_t *i)
+{
+	while (ft_strchr("\t\v\n\f\r ", line[*i]))
+		(*i)++;
+}
+
 t_line_token	*line_lexer(char *line)
 {
 	t_line_token	*token_stack;
@@ -38,6 +44,7 @@ t_line_token	*line_lexer(char *line)
 	i = 0;
 	while (line[i])
 	{
+		line_trim_space(line, &i);
 		token = token_get_type(line + i);
 		if (token == COMMAND)
 			token_add_command(&token_stack, line, &i);
