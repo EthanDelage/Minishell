@@ -81,6 +81,7 @@ STRING =			ft_split.c \
 					ft_strchr.c \
 					ft_strcmp.c \
 					ft_strdup.c \
+					ft_strcpy.c \
 					ft_substr.c \
 					ft_strlcpy.c \
 					ft_strlcat.c \
