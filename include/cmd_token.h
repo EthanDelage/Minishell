@@ -1,20 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   line_lexer.h                                       :+:      :+:    :+:   */
+/*   cmd_token.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/13 16:04:00 by hferraud          #+#    #+#             */
-/*   Updated: 2023/01/13 16:04:00 by hferraud         ###   ########lyon.fr   */
+/*   Created: 2023/01/16 20:06:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/01/16 20:06:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef LINE_LEXER_H
-# define LINE_LEXER_H
+#ifndef CMD_TOKEN_H
+# define CMD_TOKEN_H
 
-# include "token.h"
 
-t_token	*line_lexer(char *line);
-void	cmd_lexer(t_token *cmd_token);
+typedef struct s_cmd_token
+{
+	int					type;
+	void				*value;
+	struct s_cmd_token	*next;
+}						t_cmd_token;
 
 #endif

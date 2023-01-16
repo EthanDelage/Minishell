@@ -11,32 +11,15 @@
 /* ************************************************************************** */
 #include "line_lexer.h"
 
-static int	is_operator(const char *c)
-{
-	return ((*c == '&' && *(c + 1) == '&') || (*c == '|' && *(c + 1) == '|'));
-}
-
-int	token_get_type(const char *c)
-{
-	if (is_operator(c))
-		return (OPERATOR);
-	else if (*c == '(')
-		return (OPEN_PARENTHESIS);
-	else if (*c == ')')
-		return (CLOSE_PARENTHESIS);
-	else
-		return (COMMAND);
-}
-
-void	line_trim_space(char *line, size_t *i)
+static void	line_trim_space(char *line, size_t *i)
 {
 	while (ft_strchr("\t\v\n\f\r ", line[*i]))
 		(*i)++;
 }
 
-t_line_token	*line_lexer(char *line)
+t_token	*line_lexer(char *line)
 {
-	t_line_token	*token_stack;
+	t_token	*token_stack;
 	int				token;
 	size_t			i;
 
@@ -48,6 +31,8 @@ t_line_token	*line_lexer(char *line)
 		token = token_get_type(line + i);
 		if (token == COMMAND)
 			token_add_command(&token_stack, line, &i);
+		else if (token == PIPE)
+			token_add_pipe(&token_stack, &i);
 		else if (token == OPEN_PARENTHESIS || token == CLOSE_PARENTHESIS)
 			token_add_parenthesis(&token_stack, token, &i);
 		else

@@ -11,16 +11,16 @@
 /* ************************************************************************** */
 #include "line_lexer.h"
 
-static void	token_free_elem(t_line_token *elem)
+static void	token_free_elem(t_token *elem)
 {
 	if (elem->type == COMMAND)
 		free(elem->value);
 	free(elem);
 }
 
-void	token_clear(t_line_token **token_stack)
+void	token_clear(t_token **token_stack)
 {
-	t_line_token	*next;
+	t_token	*next;
 
 	while (*token_stack)
 	{

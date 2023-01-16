@@ -11,22 +11,9 @@
 /* ************************************************************************** */
 #include "line_lexer.h"
 
-static t_line_token	*token_new(int type, void *value)
+static void	token_add(t_token **stack, int type, void *value)
 {
-	t_line_token	*token;
-
-	token = (t_line_token *) malloc(sizeof(t_line_token));
-	if (token == NULL)
-		return (NULL);
-	token->type = type;
-	token->value = value;
-	token->next = NULL;
-	return (token);
-}
-
-static void	token_add(t_line_token **stack, int type, void *value)
-{
-	t_line_token	*new;
+	t_token	*new;
 
 	new = token_new(type, value);
 	if (new == NULL)
@@ -35,7 +22,7 @@ static void	token_add(t_line_token **stack, int type, void *value)
 	*stack = new;
 }
 
-void	token_add_command(t_line_token **token_stack, char *line, size_t *i)
+void	token_add_command(t_token **token_stack, char *line, size_t *i)
 {
 	size_t	last_i;
 
@@ -60,7 +47,7 @@ void	token_add_command(t_line_token **token_stack, char *line, size_t *i)
 		ft_substr(line, last_i, *i - last_i));
 }
 
-void	token_add_parenthesis(t_line_token **token_stack, int type, size_t *i)
+void	token_add_parenthesis(t_token **token_stack, int type, size_t *i)
 {
 	if (type == OPEN_PARENTHESIS)
 		token_add(token_stack, type, "(");
@@ -69,7 +56,7 @@ void	token_add_parenthesis(t_line_token **token_stack, int type, size_t *i)
 	(*i)++;
 }
 
-void	token_add_operator(t_line_token **token_stack, const char *line,
+void	token_add_operator(t_token **token_stack, const char *line,
 			size_t *i)
 {
 	if (line[*i] == '&')
@@ -77,4 +64,10 @@ void	token_add_operator(t_line_token **token_stack, const char *line,
 	else
 		token_add(token_stack, OPERATOR, "||");
 	(*i) += 2;
+}
+
+void	token_add_pipe(t_token **token_stack, size_t *i)
+{
+	token_add(token_stack, PIPE, "|");
+	(*i)++;
 }
