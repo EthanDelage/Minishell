@@ -23,9 +23,9 @@ SRCS		=		main.c \
 					envp/hashmap.c \
 					envp/dict_utils.c \
 					parsing/line_lexer/line_lexer.c \
-					parsing/line_lexer/token_utils.c \
-					parsing/line_lexer/token_add.c \
-					parsing/line_lexer/token_clear.c \
+					parsing/line_lexer/token/token_utils.c \
+					parsing/line_lexer/token/token_add.c \
+					parsing/line_lexer/token/token_clear.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
