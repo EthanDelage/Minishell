@@ -16,6 +16,6 @@
 
 /* ----------	HASHTABLE FUNCTIONS	---------- */
 
-int	builtin_unset(t_hashtable *envp_dict, const char *name);
+int	builtin_unset(t_hashtable *envp_dict, const char **args);
 
 #endif

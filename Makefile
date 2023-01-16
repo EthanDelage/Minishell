@@ -19,12 +19,13 @@ LIBFT_DIR	=		libft/
 LIBFT		=		$(LIBFT_DIR)libft.a
 
 SRCS		=		main.c \
+					envp/dict.c \
 					envp/hashtable.c \
+					envp/dict_utils.c \
 					envp/hashtable_utils.c \
 					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
-					envp/dict.c \
-					envp/dict_utils.c \
+					exec/builtin/unset/unset.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
