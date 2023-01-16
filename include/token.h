@@ -41,5 +41,6 @@ void	token_add_parenthesis(t_token **token_stack, int type, size_t *i);
 void	token_add_operator(t_token **token_stack, const char *line, size_t *i);
 void	token_add_pipe(t_token **token_stack, size_t *i);
 void	token_clear(t_token **token_stack);
+void	token_reverse(t_token **token_stack);
 
 #endif

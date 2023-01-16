@@ -26,6 +26,7 @@ SRCS		=		main.c \
 					parsing/line_lexer/token/token_utils.c \
 					parsing/line_lexer/token/token_add.c \
 					parsing/line_lexer/token/token_clear.c \
+					parsing/line_parser/line_parser.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
