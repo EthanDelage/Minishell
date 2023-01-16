@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "line_lexer.h"
 
-static void	token_add(t_token **stack, int type, void *value)
+static void	token_add(t_token **stack, int type, char *value)
 {
 	t_token	*new;
 
