@@ -11,6 +11,25 @@
 /* ************************************************************************** */
 #include "line_lexer.h"
 
+void	token_reverse(t_token **token_stack)
+{
+	t_token *next;
+	t_token *curr;
+	t_token *prev;
+
+	curr = *token_stack;
+	next = NULL;
+	prev = NULL;
+	while (curr)
+	{
+		next = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = next;
+	}
+	*token_stack = prev;
+}
+
 t_token	*token_new(int type, void *value)
 {
 	t_token	*token;

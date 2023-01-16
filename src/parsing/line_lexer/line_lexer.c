@@ -43,5 +43,6 @@ t_token	*line_lexer(char *line)
 			return (NULL);
 		}
 	}
+	token_reverse(&token_stack);
 	return (token_stack);
 }
