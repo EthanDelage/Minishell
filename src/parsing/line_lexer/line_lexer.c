@@ -20,8 +20,8 @@ static void	line_trim_space(char *line, size_t *i)
 t_token	*line_lexer(char *line)
 {
 	t_token	*token_stack;
-	int				token;
-	size_t			i;
+	int		token;
+	size_t	i;
 
 	token_stack = NULL;
 	i = 0;

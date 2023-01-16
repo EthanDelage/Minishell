@@ -15,6 +15,6 @@
 # include "token.h"
 
 t_token	*line_lexer(char *line);
-void	cmd_lexer(t_token *cmd_token);
+void	cmd_lexer(t_token *token);
 
 #endif
