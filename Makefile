@@ -25,6 +25,7 @@ SRCS		=		main.c \
 					envp/hashtable_utils.c \
 					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
+					exec/builtin/env/env.c \
 					exec/builtin/unset/unset.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
