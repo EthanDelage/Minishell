@@ -12,4 +12,4 @@ add_executable(minishell
         src/envp/dict.c
         src/envp/hashtable.c
         src/envp/dict_utils.c
-        src/envp/hashtable_utils.c src/envp/hashtable_display.c src/envp/hashtable_get_array.c libft/srcs/string/ft_strcpy.c src/exec/builtin/unset/unset.c)
+        src/envp/hashtable_utils.c src/envp/hashtable_display.c src/envp/hashtable_get_array.c libft/srcs/string/ft_strcpy.c src/exec/builtin/unset/unset.c include/builtin.h)
