@@ -32,11 +32,16 @@ char	*line_parser(t_token *head)
 			else
 				return (head->value);
 		}
-		if (head->type == OPEN_PARENTHESIS && head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
+		if (head->type == OPEN_PARENTHESIS &&
+			head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
 			return (head->next->value);
-		else if ((head->type == OPERATOR || head->type == PIPE) && (head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS))
+		else if ((head->type == OPERATOR || head->type == PIPE)
+			&& (head->next->type != COMMAND &&
+				head->next->type != OPEN_PARENTHESIS))
 			return (head->next->value);
-		else if (head->type == CLOSE_PARENTHESIS && (head->next->type == COMMAND || head->next->type == OPEN_PARENTHESIS))
+		else if (head->type == CLOSE_PARENTHESIS &&
+			(head->next->type == COMMAND ||
+				head->next->type == OPEN_PARENTHESIS))
 			return (head->next->value);
 		head = head->next;
 	}
