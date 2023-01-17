@@ -12,17 +12,15 @@
 #include <stdio.h>
 #include "parser.h"
 
-int	line_parser(t_token *head)
+char	*line_parser(t_token *head)
 {
 	int	count_parenthesis;
-	int	missing;
 
-	missing = -1;
 	count_parenthesis = 0;
 	if (head == NULL)
-		return (missing);
+		return (NULL);
 	if (head->type != COMMAND && head->type != OPEN_PARENTHESIS)
-		return (head->type);
+		return (head->value);
 	while (head->next != NULL)
 	{
 		if (head->type == OPEN_PARENTHESIS)
@@ -32,19 +30,19 @@ int	line_parser(t_token *head)
 			if (count_parenthesis > 0)
 				count_parenthesis--;
 			else
-				return (CLOSE_PARENTHESIS);
+				return (head->value);
 		}
-		if (head->type == OPEN_PARENTHESIS && head->next->type != COMMAND)
-			return (head->next->type);
+		if (head->type == OPEN_PARENTHESIS && head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
+			return (head->next->value);
 		else if ((head->type == OPERATOR || head->type == PIPE) && (head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS))
-			return (head->next->type);
-		else if (head->type == CLOSE_PARENTHESIS && head->next->type == COMMAND)
-			return (head->next->type);
+			return (head->next->value);
+		else if (head->type == CLOSE_PARENTHESIS && (head->next->type == COMMAND || head->next->type == OPEN_PARENTHESIS))
+			return (head->next->value);
 		head = head->next;
 	}
 	if (head->type == CLOSE_PARENTHESIS && count_parenthesis > 0)
 		count_parenthesis--;
 	if (count_parenthesis > 0)
-		return (OPEN_PARENTHESIS);
-	return (-1);
+		return ("(");
+	return (NULL);
 }

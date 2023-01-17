@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   error_line_parser.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/16 22:31:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/16 22:31:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/17 13:59:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/17 13:59:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef PARSER_H
-# define PARSER_H
+#include <stdio.h>
+#include <unistd.h>
+#include "parser.h"
 
-#include "token.h"
-
-enum
+int	error_syntax(char *value)
 {
-	SUCCESS		=		0,
-	FAILURE		=		1,
-};
-
-int	line_parser(t_token *head);
-
-#endif
+	if (value != NULL)
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `",
+			STDERR_FILENO);
+		ft_putstr_fd(value, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
+		return (FAILURE);
+	}
+	return (SUCCESS);
+}
