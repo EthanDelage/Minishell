@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include "parser.h"
 
+static int	check_parenthesis(t_token *token, int *count);
+
 char	*line_parser(t_token *head)
 {
 	int	count_parenthesis;
@@ -23,15 +25,8 @@ char	*line_parser(t_token *head)
 		return (head->value);
 	while (head->next != NULL)
 	{
-		if (head->type == OPEN_PARENTHESIS)
-			count_parenthesis++;
-		else if (head->type == CLOSE_PARENTHESIS)
-		{
-			if (count_parenthesis > 0)
-				count_parenthesis--;
-			else
-				return (head->value);
-		}
+		if (check_parenthesis(head, &count_parenthesis) == FAILURE)
+			return (head->value);
 		if (head->type == OPEN_PARENTHESIS &&
 			head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
 			return (head->next->value);
@@ -50,4 +45,18 @@ char	*line_parser(t_token *head)
 	if (count_parenthesis > 0)
 		return ("(");
 	return (NULL);
+}
+
+static int	check_parenthesis(t_token *token, int *count)
+{
+	if (token->type == OPEN_PARENTHESIS)
+		*count++;
+	else if (token->type == CLOSE_PARENTHESIS)
+	{
+		if (*count > 0)
+			*count--;
+		else
+			return (FAILURE);
+	}
+	return (SUCCESS);
 }

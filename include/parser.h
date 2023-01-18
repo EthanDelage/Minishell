@@ -20,6 +20,6 @@ enum
 	FAILURE		=		1,
 };
 
-int	line_parser(t_token *head);
+char	*line_parser(t_token *head);
 
 #endif
