@@ -55,16 +55,16 @@ static int	check_parenthesis(t_token *token, int *count)
 
 static int	check_error(t_token *head)
 {
-	if (head->type == OPEN_PARENTHESIS &&
-		head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
+	if (head->type == OPEN_PARENTHESIS
+		&& head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
 		return (FAILURE);
 	else if ((head->type == OPERATOR || head->type == PIPE)
-		&& (head->next->type != COMMAND &&
-			head->next->type != OPEN_PARENTHESIS))
+		&& (head->next->type != COMMAND
+			&& head->next->type != OPEN_PARENTHESIS))
 		return (FAILURE);
-	else if (head->type == CLOSE_PARENTHESIS &&
-		(head->next->type == COMMAND ||
-			head->next->type == OPEN_PARENTHESIS))
+	else if (head->type == CLOSE_PARENTHESIS
+		&& (head->next->type == COMMAND
+			|| head->next->type == OPEN_PARENTHESIS))
 		return (FAILURE);
 	return (SUCCESS);
 }
