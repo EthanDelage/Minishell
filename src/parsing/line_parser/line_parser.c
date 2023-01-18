@@ -13,6 +13,7 @@
 #include "parser.h"
 
 static int	check_parenthesis(t_token *token, int *count);
+static int	check_error(t_token *head);
 
 char	*line_parser(t_token *head)
 {
@@ -27,16 +28,7 @@ char	*line_parser(t_token *head)
 	{
 		if (check_parenthesis(head, &count_parenthesis) == FAILURE)
 			return (head->value);
-		if (head->type == OPEN_PARENTHESIS &&
-			head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
-			return (head->next->value);
-		else if ((head->type == OPERATOR || head->type == PIPE)
-			&& (head->next->type != COMMAND &&
-				head->next->type != OPEN_PARENTHESIS))
-			return (head->next->value);
-		else if (head->type == CLOSE_PARENTHESIS &&
-			(head->next->type == COMMAND ||
-				head->next->type == OPEN_PARENTHESIS))
+		if (check_error(head) == FAILURE)
 			return (head->next->value);
 		head = head->next;
 	}
@@ -50,13 +42,29 @@ char	*line_parser(t_token *head)
 static int	check_parenthesis(t_token *token, int *count)
 {
 	if (token->type == OPEN_PARENTHESIS)
-		*count++;
+		(*count)++;
 	else if (token->type == CLOSE_PARENTHESIS)
 	{
 		if (*count > 0)
-			*count--;
+			(*count)--;
 		else
 			return (FAILURE);
 	}
+	return (SUCCESS);
+}
+
+static int	check_error(t_token *head)
+{
+	if (head->type == OPEN_PARENTHESIS &&
+		head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
+		return (FAILURE);
+	else if ((head->type == OPERATOR || head->type == PIPE)
+		&& (head->next->type != COMMAND &&
+			head->next->type != OPEN_PARENTHESIS))
+		return (FAILURE);
+	else if (head->type == CLOSE_PARENTHESIS &&
+		(head->next->type == COMMAND ||
+			head->next->type == OPEN_PARENTHESIS))
+		return (FAILURE);
 	return (SUCCESS);
 }
