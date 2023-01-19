@@ -17,7 +17,7 @@ int	builtin_env(t_hashtable *envp_dict)
 {
 	char	**envp;
 
-	envp = hashtable_get_array(envp_dict);
+	envp = hashtable_get_array(envp_dict, false);
 	if (errno)
 		return (errno);
 	display_env(envp);

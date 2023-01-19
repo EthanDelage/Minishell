@@ -11,31 +11,32 @@
 /* ************************************************************************** */
 #include "envp.h"
 
-static char	*elem_to_str(t_dict *elem)
-{
-	char			*str;
-	const size_t	len_name = ft_strlen(elem->name);
-	const size_t	len_value = ft_strlen(elem->value);
+static char	*elem_to_str(t_dict *elem);
+static char	*elem_to_str_quote(t_dict *elem);
+static void	dict_to_array(char **array, t_dict *head, size_t *index, bool quote);
 
-	str = (char *) malloc(sizeof(char) * (len_name + len_value + 2));
+char	**hashtable_get_array(t_hashtable *hashtable, bool quote)
+{
+	size_t	index;
+	char	**array;
+	size_t	index_hashtable;
+
+	array = (char **) ft_calloc(sizeof(char *), hashtable->nb_elem + 1);
 	if (errno)
 		return (NULL);
-	ft_strcpy(str, elem->name);
-	str[len_name] = '=';
-	ft_strcpy(&str[len_name + 1], elem->value);
-	return (str);
-}
-
-static void	dict_to_array(char **array, t_dict *head, size_t *index)
-{
-	while (head != NULL)
+	index_hashtable = 0;
+	index = 0;
+	while (index_hashtable < hashtable->size)
 	{
-		array[*index] = elem_to_str(head);
-		(*index)++;
+		dict_to_array(array, hashtable->dict[index_hashtable], &index, quote);
 		if (errno)
-			return ;
-		head = head->next;
+		{
+			hashtable_array_clear(array);
+			return (NULL);
+		}
+		index_hashtable++;
 	}
+	return (array);
 }
 
 void	hashtable_array_clear(char **array)
@@ -51,26 +52,50 @@ void	hashtable_array_clear(char **array)
 	free(array);
 }
 
-char	**hashtable_get_array(t_hashtable *hashtable)
+static void	dict_to_array(char **array, t_dict *head, size_t *index, bool quote)
 {
-	size_t	index;
-	char	**array;
-	size_t	index_hashtable;
+	while (head != NULL)
+	{
+		if (quote == true)
+			array[*index] = elem_to_str_quote(head);
+		else
+			array[*index] = elem_to_str(head);
+		(*index)++;
+		if (errno)
+			return ;
+		head = head->next;
+	}
+}
 
-	array = (char **) ft_calloc(sizeof(char *), hashtable->nb_elem + 1);
+static char	*elem_to_str(t_dict *elem)
+{
+	char			*str;
+	const size_t	len_name = ft_strlen(elem->name);
+	const size_t	len_value = ft_strlen(elem->value);
+
+	str = (char *) malloc(sizeof(char) * (len_name + len_value + 2));
 	if (errno)
 		return (NULL);
-	index_hashtable = 0;
-	index = 0;
-	while (index_hashtable < hashtable->size)
-	{
-		dict_to_array(array, hashtable->dict[index_hashtable], &index);
-		if (errno)
-		{
-			hashtable_array_clear(array);
-			return (NULL);
-		}
-		index_hashtable++;
-	}
-	return (array);
+	ft_strcpy(str, elem->name);
+	str[len_name] = '=';
+	ft_strcpy(&str[len_name + 1], elem->value);
+	return (str);
+}
+
+static char	*elem_to_str_quote(t_dict *elem)
+{
+	char			*str;
+	const size_t	len_name = ft_strlen(elem->name);
+	const size_t	len_value = ft_strlen(elem->value);
+
+	str = (char *) malloc(sizeof(char) * (len_name + len_value + 4));
+	if (errno)
+		return (NULL);
+	ft_strcpy(str, elem->name);
+	str[len_name] = '=';
+	str[len_name + 1] = '"';
+	ft_strcpy(&str[len_name + 2], elem->value);
+	str[len_name + len_value + 2] = '"';
+	str[len_name + len_value + 3] = '\0';
+	return (str);
 }

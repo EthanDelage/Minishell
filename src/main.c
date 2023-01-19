@@ -17,7 +17,6 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_hashtable	*envp_dict;
-	char		*line;
 
 	(void) argc;
 	(void) argv;

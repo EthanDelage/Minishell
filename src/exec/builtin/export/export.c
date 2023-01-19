@@ -20,26 +20,28 @@ int	builtin_export(t_hashtable *envp_dict, const char **args)
 {
 	if (args == NULL || *args == NULL)
 		return (builtin_export_no_args(envp_dict));
+	return (0);
 }
 
 static int	builtin_export_no_args(t_hashtable *envp_dict)
 {
 	char	**envp;
 
-	envp = hashtable_get_array(envp_dict);
-	if (envp == NULL)
-		return (1);
+	envp = hashtable_get_array(envp_dict, true);
+	if (errno)
+		return (errno);
 	sort_array(envp);
 	display_export(envp);
 	hashtable_array_clear(envp);
+	return (0);
 }
 
 static void	display_export(char **envp)
 {
 	while (*envp != NULL)
 	{
-		printf("declare -x %s", *envp);
-		(*envp)++;
+		printf("declare -x %s\n", *envp);
+		envp++;
 	}
 }
 
