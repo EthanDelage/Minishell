@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include "envp.h"
+#include "builtin.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -23,10 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	envp_dict = envp_to_dict(envp);
 	if (errno)
 		return (errno);
-	hashtable_display(envp_dict);
+	builtin_export(envp_dict, NULL);
 	hashtable_clear(envp_dict);
-	line = readline(">");
-	printf("%s", line);
-	free(line);
 	return (0);
 }

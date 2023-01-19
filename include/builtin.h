@@ -18,5 +18,6 @@
 
 int	builtin_env(t_hashtable *envp_dict);
 int	builtin_unset(t_hashtable *envp_dict, const char **args);
+int	builtin_export(t_hashtable *envp_dict, const char **args);
 
 #endif
