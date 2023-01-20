@@ -38,7 +38,7 @@ typedef struct s_cmd_token
 
 int		cmd_token_get_type(const char *c);
 void	cmd_token_add(t_cmd_token **cmd_stack, int type, char *head, void *body);
-void	cmd_token_add_redirect(t_token *token, int type, size_t *i);
+//void	cmd_token_add_redirect(t_token *token, int type, size_t *i);
 char	*cmd_token_get_redirect_head(int type);
 char	*cmd_token_get_redirect_body(char *cmd_line, size_t *i);
 
