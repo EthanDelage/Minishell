@@ -30,7 +30,7 @@ typedef struct s_token
 {
 	int					type;
 	char				*value;
-	struct s_cmd_token	*cmd_start;
+	struct s_cmd_token	*cmd_stack;
 	struct s_token		*next;
 }						t_token;
 
@@ -42,5 +42,6 @@ void	token_add_operator(t_token **token_stack, const char *line, size_t *i);
 void	token_add_pipe(t_token **token_stack, size_t *i);
 void	token_clear(t_token **token_stack);
 void	token_reverse(t_token **token_stack);
+void	line_trim_space(char *line, size_t *i);
 
 #endif

@@ -20,7 +20,7 @@ t_token	*token_new(int type, void *value)
 		return (NULL);
 	token->type = type;
 	token->value = value;
-	token->cmd_start = NULL;
+	token->cmd_stack = NULL;
 	token->next = NULL;
 	return (token);
 }
@@ -61,4 +61,10 @@ void	token_reverse(t_token **token_stack)
 		curr = next;
 	}
 	*token_stack = prev;
+}
+
+void	line_trim_space(char *line, size_t *i)
+{
+	while (ft_strchr("\t\v\n\f\r ", line[*i]))
+		(*i)++;
 }
