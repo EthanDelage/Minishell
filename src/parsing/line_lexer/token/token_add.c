@@ -57,7 +57,7 @@ void	token_add_parenthesis(t_token **token_stack, int type, size_t *i)
 }
 
 void	token_add_operator(t_token **token_stack, const char *line,
-			size_t *i)
+						   size_t *i)
 {
 	if (line[*i] == '&')
 		token_add(token_stack, OPERATOR, "&&");
