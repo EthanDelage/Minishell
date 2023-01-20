@@ -15,22 +15,22 @@ static int	valid_name(const char *name);
 
 int	builtin_unset(t_hashtable *envp_dict, char **args)
 {
-	size_t	count;
+	size_t	index;
 	int		return_value;
 
-	count = 1;
+	index = 1;
 	return_value = 0;
-	while (args[count] != NULL)
+	while (args[index] != NULL)
 	{
-		if (valid_name(args[count]) == false)
+		if (valid_name(args[index]) == false)
 		{
 			printf("minishell: unset: `%s': invalid parameter name\n",
-				args[count]);
+				args[index]);
 			return_value = 1;
 		}
 		else
-			hashtable_remove_one(envp_dict, args[count]);
-		count++;
+			hashtable_remove_one(envp_dict, args[index]);
+		index++;
 	}
 	return (return_value);
 }
