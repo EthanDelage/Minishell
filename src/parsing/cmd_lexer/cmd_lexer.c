@@ -27,6 +27,7 @@ void	cmd_lexer(t_token *token)
 		else
 			cmd_token_add_cmd_arg(token, &cmd_arg_stack, &i);
 	}
+	cmd_token_reverse(&(token->cmd_stack));
 	if (cmd_arg_stack != NULL)
 	{
 		cmd_arg_reverse(&cmd_arg_stack);
