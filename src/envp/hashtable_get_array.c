@@ -13,7 +13,8 @@
 
 static char	*elem_to_str(t_dict *elem);
 static char	*elem_to_str_quote(t_dict *elem);
-static void	dict_to_array(char **array, t_dict *head, size_t *index, bool quote);
+static void	dict_to_array(char **array, t_dict *head, size_t *index,
+				bool quote);
 
 char	**hashtable_get_array(t_hashtable *hashtable, bool quote)
 {

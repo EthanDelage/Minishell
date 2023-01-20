@@ -11,69 +11,55 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
-static void	sort_array(char **envp);
-static void	swap_value(char **head);
-static void	display_export(char **envp);
-static int	builtin_export_no_args(t_hashtable *envp_dict);
+static int	valid_env(const char *env);
+static void	export_one(t_hashtable *envp_dict, const char *env);
 
-int	builtin_export(t_hashtable *envp_dict, const char **args)
-{
-	if (args == NULL || *args == NULL)
-		return (builtin_export_no_args(envp_dict));
-	return (0);
-}
-
-static int	builtin_export_no_args(t_hashtable *envp_dict)
-{
-	char	**envp;
-
-	envp = hashtable_get_array(envp_dict, true);
-	if (errno)
-		return (errno);
-	sort_array(envp);
-	display_export(envp);
-	hashtable_array_clear(envp);
-	return (0);
-}
-
-static void	display_export(char **envp)
-{
-	while (*envp != NULL)
-	{
-		printf("declare -x %s\n", *envp);
-		envp++;
-	}
-}
-
-static void	sort_array(char **envp)
+int	builtin_export(t_hashtable *envp_dict, char **args)
 {
 	size_t	index;
-	int		change;
+	int		return_value;
 
-	change = 1;
-	if (*envp == NULL)
-		return ;
-	while (change)
+	if (args[1] == NULL)
+		return (builtin_export_no_args(envp_dict));
+	index = 1;
+	return_value = 0;
+	while (args[index])
 	{
-		change = 0;
-		index = 0;
-		while (envp[index + 1] != NULL)
+		if (valid_env(args[index]) == false)
 		{
-			if (ft_strcmp(envp[index], envp[index + 1]) > 0)
-			{
-				change = 1;
-				swap_value(&envp[index]);
-			}
-			index++;
+			printf("minishell: export: `%s': not a valid identifier\n",
+				args[index]);
+			return_value = 1;
 		}
+		else
+		{
+			export_one(envp_dict, args[index]);
+			if (errno)
+				return (errno);
+		}
+		index++;
 	}
+	return (return_value);
 }
 
-static void	swap_value(char **head)
+static void	export_one(t_hashtable *envp_dict, const char *env)
 {
-	char	*tmp;
+	t_dict	*env_var;
 
-	tmp = head[0];
-	*head = head[1];
-	head[1] = tmp;
+	env_var = parse_env_var(env);
+	if (errno)
+		return ;
+	hashtable_push(envp_dict, env_var);
+}
+
+static int	valid_env(const char *env)
+{
+	size_t	index;
+
+	index = 0;
+	while (valid_char(env[index]))
+		index++;
+	if (index == 0 || env[index] != '=')
+		return (false);
+	return (true);
 }

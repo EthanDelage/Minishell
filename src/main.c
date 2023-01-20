@@ -17,13 +17,15 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_hashtable	*envp_dict;
+	int			return_value;
 
 	(void) argc;
 	(void) argv;
 	envp_dict = envp_to_dict(envp);
 	if (errno)
 		return (errno);
-	builtin_export(envp_dict, NULL);
+	return_value = builtin_export(envp_dict, argv);
+	hashtable_display(envp_dict);
 	hashtable_clear(envp_dict);
-	return (0);
+	return (return_value);
 }

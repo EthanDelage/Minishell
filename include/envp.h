@@ -60,5 +60,6 @@ t_dict			*dict_free_elem(t_dict **elem);
 /* ----------	DICT FUNCTIONS	---------- */
 
 t_hashtable		*envp_to_dict(char **envp);
+t_dict			*parse_env_var(const char *envp_line);
 
 #endif
