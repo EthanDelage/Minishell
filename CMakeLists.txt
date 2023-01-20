@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.21.1)
 project(minishell C)
 
 set(CMAKE_C_STANDARD 11)
@@ -74,4 +74,4 @@ add_executable(minishell
         src/parsing/line_lexer/token/token_clear.c
         src/parsing/line_lexer/token/token_utils.c
         src/parsing/line_lexer/line_lexer.c
-        src/main.c)
+        src/main.c src/parsing/cmd_parsing/cmd_parsing.c include/parser.h)
