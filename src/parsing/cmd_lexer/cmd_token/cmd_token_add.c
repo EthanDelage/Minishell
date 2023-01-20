@@ -52,7 +52,7 @@ void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
 	cmd_token_add(&token->cmd_stack, type, head, body);
 }
 
-void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg *arg_stack, size_t *i)
+void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 {
 	size_t	last_i;
 	int		current_type;
@@ -70,7 +70,7 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg *arg_stack, size_t *i)
 		current_type = cmd_token_get_type(token->value + *i);
 		if (current_type != COMMAND)
 		{
-			cmd_arg_add(&arg_stack,
+			cmd_arg_add(arg_stack,
 				ft_substr(token->value, last_i, *i - last_i));
 			cmd_token_add_redirect(token, current_type, i);
 			return ;
@@ -78,7 +78,7 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg *arg_stack, size_t *i)
 		(*i)++;
 	}
 	if (last_i != *i)
-		cmd_arg_add(&arg_stack,
+		cmd_arg_add(arg_stack,
 					ft_substr(token->value, last_i, *i - last_i));
 }
 

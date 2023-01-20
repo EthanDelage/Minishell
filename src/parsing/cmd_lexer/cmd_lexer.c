@@ -17,15 +17,15 @@ void	cmd_lexer(t_token *token)
 	t_cmd_arg	*cmd_arg_stack;
 	int			current_type;
 
-	cmd_arg_stack = NULL;
 	i = 0;
+	cmd_arg_stack = NULL;
 	while (token->value[i])
 	{
 		current_type = cmd_token_get_type(token->value + i);
 		if (current_type != COMMAND)
 			cmd_token_add_redirect(token, current_type, &i);
 		else
-			cmd_token_add_cmd_arg(token, cmd_arg_stack, &i);
+			cmd_token_add_cmd_arg(token, &cmd_arg_stack, &i);
 	}
 	if (cmd_arg_stack != NULL)
 	{

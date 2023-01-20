@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.21.1)
 project(minishell C)
 
 set(CMAKE_C_STANDARD 11)
@@ -69,6 +69,8 @@ add_executable(minishell
         src/envp/hashmap.c
         src/parsing/cmd_lexer/cmd_token/cmd_token_add.c
         src/parsing/cmd_lexer/cmd_token/cmd_token_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_arg_utils.c
         src/parsing/cmd_lexer/cmd_lexer.c
         src/parsing/line_lexer/token/token_add.c
         src/parsing/line_lexer/token/token_clear.c

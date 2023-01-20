@@ -40,7 +40,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra
+CFLAGS		=		-Wall -Werror -Wextra -g3
 
 DFLAGS		=		-MMD -MP
 
@@ -56,7 +56,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(LFLAGS) $(OBJS) -o $@
+					$(CC) $(LFLAGS) $(OBJS) -o $@ -g3
 
 $(LIBFT):			FORCE
 					$(MAKE) all -C $(LIBFT_DIR)

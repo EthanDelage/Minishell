@@ -76,7 +76,7 @@ char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
 	t_cmd_arg	*iterator;
 	int			i;
 
-	args = malloc(cmd_arg_size(cmd_arg_stack) * sizeof (* cmd_arg_stack));
+	args = malloc((cmd_arg_size(cmd_arg_stack) + 1) * sizeof (* cmd_arg_stack));
 	i = 0;
 	iterator = cmd_arg_stack;
 	while (iterator)
@@ -85,5 +85,6 @@ char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
 		i++;
 		iterator = iterator->next;
 	}
+	args[i] = NULL;
 	return (args);
 }
