@@ -14,10 +14,20 @@
 static bool	contain_cmd(t_cmd_token *head);
 static void	place_cmd_top(t_cmd_token **cmd_stack);
 
-void	parse_cmd(t_cmd_token **cmd_stack)
+char	*parse_cmd(t_cmd_token **cmd_stack)
 {
+	t_cmd_token	*head;
+
 	if ((*cmd_stack)->type != COMMAND && contain_cmd(*cmd_stack) == true)
 		place_cmd_top(cmd_stack);
+	head = *cmd_stack;
+	while (head->next != NULL)
+	{
+		if (head->type != COMMAND && *((char *) head->body) == '\0')
+			return (head->next->head);
+		head = head->next;
+	}
+	return (NULL);
 }
 
 static bool	contain_cmd(t_cmd_token *head)
