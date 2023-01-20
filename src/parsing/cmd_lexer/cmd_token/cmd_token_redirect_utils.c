@@ -30,9 +30,9 @@ char	*cmd_token_get_redirect_body(char *cmd_line, size_t *i)
 	size_t	last_i;
 	char	*body;
 
-	last_i = *i;
 	line_trim_space(cmd_line, i);
-	while (!ft_strchr("\t\v\n\f\r ", cmd_line[*i]))
+	last_i = *i;
+	while (!ft_isspace(cmd_line[*i]))
 		(*i)++;
 	body = ft_substr(cmd_line, last_i, *i - last_i);
 	return (body);

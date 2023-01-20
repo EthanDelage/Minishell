@@ -65,6 +65,6 @@ void	token_reverse(t_token **token_stack)
 
 void	line_trim_space(char *line, size_t *i)
 {
-	while (ft_strchr("\t\v\n\f\r ", line[*i]))
+	while (ft_isspace(line[*i]))
 		(*i)++;
 }
