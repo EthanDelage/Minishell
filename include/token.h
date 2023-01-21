@@ -43,7 +43,6 @@ typedef struct s_cmd_token
 	struct s_cmd_token	*next;
 }						t_cmd_token;
 
-
 typedef struct s_token
 {
 	int					type;

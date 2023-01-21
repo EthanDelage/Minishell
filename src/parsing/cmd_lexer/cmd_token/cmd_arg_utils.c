@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
-static	t_cmd_arg *cmd_arg_new(char *arg);
+static	t_cmd_arg	*cmd_arg_new(char *arg);
 
 void	cmd_arg_add(t_cmd_arg **cmd_arg_stack, char *arg)
 {
@@ -24,9 +24,9 @@ void	cmd_arg_add(t_cmd_arg **cmd_arg_stack, char *arg)
 	*cmd_arg_stack = new;
 }
 
-static	t_cmd_arg *cmd_arg_new(char *arg)
+static	t_cmd_arg	*cmd_arg_new(char *arg)
 {
-	t_cmd_arg *cmd_arg;
+	t_cmd_arg	*cmd_arg;
 
 	cmd_arg = malloc(sizeof (t_cmd_arg));
 	if (cmd_arg == NULL)
@@ -38,9 +38,9 @@ static	t_cmd_arg *cmd_arg_new(char *arg)
 
 void	cmd_arg_reverse(t_cmd_arg **cmd_arg)
 {
-	t_cmd_arg *next;
-	t_cmd_arg *curr;
-	t_cmd_arg *prev;
+	t_cmd_arg	*next;
+	t_cmd_arg	*curr;
+	t_cmd_arg	*prev;
 
 	curr = *cmd_arg;
 	next = NULL;
@@ -76,7 +76,7 @@ char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
 	t_cmd_arg	*iterator;
 	int			i;
 
-	args = malloc((cmd_arg_size(cmd_arg_stack) + 1) * sizeof (* cmd_arg_stack));
+	args = malloc((cmd_arg_size(cmd_arg_stack) + 1) * sizeof (*cmd_arg_stack));
 	i = 0;
 	iterator = cmd_arg_stack;
 	while (iterator)

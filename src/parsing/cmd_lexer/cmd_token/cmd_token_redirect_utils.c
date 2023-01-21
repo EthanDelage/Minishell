@@ -12,7 +12,7 @@
 
 #include "cmd_token.h"
 
-char *cmd_token_get_redirect_head(int type)
+char	*cmd_token_get_redirect_head(int type)
 {
 	if (type == REDIRECT_OUT)
 		return (">");
@@ -32,7 +32,8 @@ char	*cmd_token_get_redirect_body(char *cmd_line, size_t *i)
 
 	line_trim_space(cmd_line, i);
 	last_i = *i;
-	while (cmd_line[*i] != '\0' && !ft_isspace(cmd_line[*i]) && cmd_token_get_type(cmd_line + *i) == COMMAND)
+	while (cmd_line[*i] != '\0' && !ft_isspace(cmd_line[*i])
+		&& cmd_token_get_type(cmd_line + *i) == COMMAND)
 		(*i)++;
 	body = ft_substr(cmd_line, last_i, *i - last_i);
 	return (body);

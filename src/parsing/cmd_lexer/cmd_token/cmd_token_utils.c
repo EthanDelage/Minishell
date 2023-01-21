@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
-int cmd_token_get_type(const char *c)
+int	cmd_token_get_type(const char *c)
 {
 	if (*c == '>')
 	{
@@ -33,9 +33,9 @@ int cmd_token_get_type(const char *c)
 
 void	cmd_token_reverse(t_cmd_token **head)
 {
-	t_cmd_token *next;
-	t_cmd_token *curr;
-	t_cmd_token *prev;
+	t_cmd_token	*next;
+	t_cmd_token	*curr;
+	t_cmd_token	*prev;
 
 	curr = *head;
 	next = NULL;

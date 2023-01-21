@@ -15,7 +15,7 @@ static t_cmd_token	*cmd_token_new(int type, char *head, void *body);
 
 void	cmd_token_add(t_cmd_token **cmd_stack, int type, char *head, void *body)
 {
-	t_cmd_token *new;
+	t_cmd_token	*new;
 
 	new = cmd_token_new(type, head, body);
 	if (new == NULL)
@@ -40,8 +40,8 @@ static t_cmd_token	*cmd_token_new(int type, char *head, void *body)
 
 void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
 {
-	char *body;
-	char *head;
+	char	*body;
+	char	*head;
 
 	if (type == REDIRECT_OUT || type == REDIRECT_IN)
 		(*i)++;
@@ -78,7 +78,7 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 		{
 			if (last_i != *i)
 				cmd_arg_add(arg_stack,
-				ft_substr(token->value, last_i, *i - last_i));
+					ft_substr(token->value, last_i, *i - last_i));
 			cmd_token_add_redirect(token, current_type, i);
 			return ;
 		}
@@ -86,11 +86,11 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 	}
 	if (last_i != *i)
 		cmd_arg_add(arg_stack,
-					ft_substr(token->value, last_i, *i - last_i));
+			ft_substr(token->value, last_i, *i - last_i));
 }
 
 void	cmd_token_add_command(t_token *token, t_cmd_arg *cmd_arg_stack)
 {
 	cmd_token_add(&token->cmd_stack, COMMAND,
-		  ft_strdup(cmd_arg_stack->arg), cmd_arg_stack_to_array(cmd_arg_stack));
+		ft_strdup(cmd_arg_stack->arg), cmd_arg_stack_to_array(cmd_arg_stack));
 }
