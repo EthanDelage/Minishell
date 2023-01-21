@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
-#include "envp.h"
-#include "lexer.h"
-
 #include <readline/readline.h>
+#include "envp.h"
+#include "token.h"
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);

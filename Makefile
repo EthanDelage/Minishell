@@ -19,22 +19,26 @@ LIBFT_DIR	=		libft/
 LIBFT		=		$(LIBFT_DIR)libft.a
 
 SRCS		=		main.c \
+					envp/dict.c \
 					envp/hashtable.c \
+					envp/dict_utils.c \
 					envp/hashtable_utils.c \
 					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
-					envp/dict.c \
-					envp/dict_utils.c \
 					parsing/line_lexer/line_lexer.c \
-					parsing/line_lexer/token/token_utils.c \
+					parsing/line_parser/line_parser.c \
 					parsing/line_lexer/token/token_add.c \
 					parsing/line_lexer/token/token_clear.c \
-					parsing/line_parser/line_parser.c \
+					parsing/line_lexer/token/token_utils.c \
 					parsing/cmd_lexer/cmd_lexer.c \
+					parsing/cmd_lexer/cmd_token/cmd_arg_utils.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_add.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_utils.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
-					parsing/cmd_lexer/cmd_token/cmd_arg_utils.c \
+					exec/builtin/env/env.c \
+					exec/builtin/unset/unset.c \
+					exec/builtin/export/export.c \
+					exec/builtin/export/export_no_args.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
