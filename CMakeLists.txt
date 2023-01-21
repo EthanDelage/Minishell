@@ -9,7 +9,7 @@ include_directories(libft/includes)
 add_executable(minishell
         include/cmd_token.h
         include/envp.h
-        include/line_lexer.h
+        include/lexer.h
         include/token.h
         libft/includes/get_next_line.h
         libft/includes/libft.h

@@ -61,18 +61,7 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 	last_i = *i;
 	while (token->value[*i] && !ft_isspace(token->value[*i]))
 	{
-		if (token->value[*i] == '"')
-		{
-			(*i)++;
-			while (token->value[*i] && token->value[*i] != '"')
-				(*i)++;
-		}
-		if (token->value[*i] == '\'')
-		{
-			(*i)++;
-			while (token->value[*i] && token->value[*i] != '\'')
-				(*i)++;
-		}
+		line_skip_quote(token->value, i);
 		current_type = cmd_token_get_type(token->value + *i);
 		if (current_type != COMMAND)
 		{

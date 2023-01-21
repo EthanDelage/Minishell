@@ -32,9 +32,12 @@ char	*cmd_token_get_redirect_body(char *cmd_line, size_t *i)
 
 	line_trim_space(cmd_line, i);
 	last_i = *i;
-	while (cmd_line[*i] != '\0' && !ft_isspace(cmd_line[*i])
+	while (cmd_line[*i] && !ft_isspace(cmd_line[*i])
 		&& cmd_token_get_type(cmd_line + *i) == COMMAND)
+	{
+		line_skip_quote(cmd_line, i);
 		(*i)++;
+	}
 	body = ft_substr(cmd_line, last_i, *i - last_i);
 	return (body);
 }

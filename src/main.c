@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include <stdio.h>
 #include "envp.h"
-#include "line_lexer.h"
+#include "lexer.h"
 
 #include <readline/readline.h>
 
