@@ -25,13 +25,16 @@ SRCS		=		main.c \
 					envp/hashtable_get_array.c \
 					envp/dict.c \
 					envp/dict_utils.c \
-					envp/hashmap.c \
-					envp/dict_utils.c \
 					parsing/line_lexer/line_lexer.c \
 					parsing/line_lexer/token/token_utils.c \
 					parsing/line_lexer/token/token_add.c \
 					parsing/line_lexer/token/token_clear.c \
 					parsing/line_parser/line_parser.c \
+					parsing/cmd_lexer/cmd_lexer.c \
+					parsing/cmd_lexer/cmd_token/cmd_token_add.c \
+					parsing/cmd_lexer/cmd_token/cmd_token_utils.c \
+					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
+					parsing/cmd_lexer/cmd_token/cmd_arg_utils.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
@@ -41,7 +44,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra -g3
+CFLAGS		=		-Wall -Werror -Wextra
 
 DFLAGS		=		-MMD -MP
 
@@ -57,7 +60,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(LFLAGS) $(OBJS) -o $@
+					$(CC) $(LFLAGS) $(OBJS) -o $@ -g3
 
 $(LIBFT):			FORCE
 					$(MAKE) all -C $(LIBFT_DIR)

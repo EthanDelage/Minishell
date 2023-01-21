@@ -1,8 +1,78 @@
-cmake_minimum_required(VERSION 3.21)
-project(Minishell C)
+cmake_minimum_required(VERSION 3.21.1)
+project(minishell C)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
 include_directories(include)
+include_directories(libft/includes)
 
-add_executable(minishell src/main.c include/envp.h src/envp/dict.c src/envp/dict_utils.c include/line_lexer.h src/parsing/line_lexer/line_lexer.c src/parsing/line_lexer/token/token_add.c src/parsing/line_lexer/token/token_add.c src/parsing/line_lexer/token/token_clear.c src/parsing/line_lexer/token/token_utils.c include/token.h include/cmd_token.h src/parsing/line_parser/line_parser.c include/parser.h src/parsing/line_parser/error_line_parser.c)
+add_executable(minishell
+        include/cmd_token.h
+        include/envp.h
+        include/lexer.h
+        include/token.h
+        libft/includes/get_next_line.h
+        libft/includes/libft.h
+        libft/srcs/char/ft_isalnum.c
+        libft/srcs/char/ft_isalpha.c
+        libft/srcs/char/ft_isascii.c
+        libft/srcs/char/ft_isdigit.c
+        libft/srcs/char/ft_isprint.c
+        libft/srcs/char/ft_issign.c
+        libft/srcs/char/ft_isspace.c
+        libft/srcs/char/ft_tolower.c
+        libft/srcs/char/ft_toupper.c
+        libft/srcs/convert/ft_atoi.c
+        libft/srcs/convert/ft_itoa.c
+        libft/srcs/fd/ft_putchar_fd.c
+        libft/srcs/fd/ft_putendl_fd.c
+        libft/srcs/fd/ft_putnbr_fd.c
+        libft/srcs/fd/ft_putstr_fd.c
+        libft/srcs/get_next_line/get_next_line.c
+        libft/srcs/get_next_line/get_next_line_utils.c
+        libft/srcs/list/ft_lstadd_back.c
+        libft/srcs/list/ft_lstadd_front.c
+        libft/srcs/list/ft_lstclear.c
+        libft/srcs/list/ft_lstdelone.c
+        libft/srcs/list/ft_lstiter.c
+        libft/srcs/list/ft_lstlast.c
+        libft/srcs/list/ft_lstmap.c
+        libft/srcs/list/ft_lstnew.c
+        libft/srcs/list/ft_lstsize.c
+        libft/srcs/memory/ft_bzero.c
+        libft/srcs/memory/ft_calloc.c
+        libft/srcs/memory/ft_memchr.c
+        libft/srcs/memory/ft_memcmp.c
+        libft/srcs/memory/ft_memcpy.c
+        libft/srcs/memory/ft_memmove.c
+        libft/srcs/memory/ft_memset.c
+        libft/srcs/stdout/ft_putchar.c
+        libft/srcs/stdout/ft_putendl.c
+        libft/srcs/stdout/ft_putnbr.c
+        libft/srcs/stdout/ft_putstr.c
+        libft/srcs/string/ft_split.c
+        libft/srcs/string/ft_strchr.c
+        libft/srcs/string/ft_strdup.c
+        libft/srcs/string/ft_striteri.c
+        libft/srcs/string/ft_strjoin.c
+        libft/srcs/string/ft_strlcat.c
+        libft/srcs/string/ft_strlcpy.c
+        libft/srcs/string/ft_strlen.c
+        libft/srcs/string/ft_strmapi.c
+        libft/srcs/string/ft_strncmp.c
+        libft/srcs/string/ft_strnstr.c
+        libft/srcs/string/ft_strrchr.c
+        libft/srcs/string/ft_strtrim.c
+        libft/srcs/string/ft_substr.c
+        src/envp/dict.c
+        src/envp/dict_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_add.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_arg_utils.c
+        src/parsing/cmd_lexer/cmd_lexer.c
+        src/parsing/line_lexer/token/token_add.c
+        src/parsing/line_lexer/token/token_clear.c
+        src/parsing/line_lexer/token/token_utils.c
+        src/parsing/line_lexer/line_lexer.c
+        src/main.c src/parsing/cmd_parser/cmd_parser.c include/parser.h)

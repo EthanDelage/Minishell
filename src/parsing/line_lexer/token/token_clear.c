@@ -9,7 +9,7 @@
 /*   Updated: 2023/01/14 17:10:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "line_lexer.h"
+#include "lexer.h"
 
 static void	token_free_elem(t_token *elem)
 {

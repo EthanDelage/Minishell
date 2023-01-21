@@ -12,7 +12,9 @@
 #ifndef PARSER_H
 # define PARSER_H
 
+# include <stdbool.h>
 # include "token.h"
+# include "cmd_token.h"
 
 enum
 {
@@ -21,5 +23,6 @@ enum
 };
 
 char	*line_parser(t_token *head);
+char	*cmd_parse(t_cmd_token **cmd_stack);
 
 #endif

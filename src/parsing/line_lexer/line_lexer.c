@@ -9,9 +9,7 @@
 /*   Updated: 2023/01/13 16:14:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "line_lexer.h"
-
-static void	line_trim_space(char *line, size_t *i);
+#include "lexer.h"
 
 t_token	*line_lexer(char *line)
 {
@@ -41,10 +39,4 @@ t_token	*line_lexer(char *line)
 	}
 	token_reverse(&token_stack);
 	return (token_stack);
-}
-
-static void	line_trim_space(char *line, size_t *i)
-{
-	while (ft_strchr("\t\v\n\f\r ", line[*i]))
-		(*i)++;
 }

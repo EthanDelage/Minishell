@@ -9,9 +9,9 @@
 /*   Updated: 2023/01/13 17:50:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "line_lexer.h"
+#include "lexer.h"
 
-static void	token_add(t_token **stack, int type, void *value)
+static void	token_add(t_token **stack, int type, char *value)
 {
 	t_token	*new;
 
@@ -29,18 +29,7 @@ void	token_add_command(t_token **token_stack, char *line, size_t *i)
 	last_i = *i;
 	while (line[*i] && token_get_type(line + *i) == COMMAND)
 	{
-		if (line[(*i)] == '"')
-		{
-			(*i)++;
-			while (line[*i] && line[*i] != '"')
-				(*i)++;
-		}
-		if (line[(*i)] == '\'')
-		{
-			(*i)++;
-			while (line[*i] && line[*i] != '\'')
-				(*i)++;
-		}
+		line_skip_quote(line, i);
 		(*i)++;
 	}
 	token_add(token_stack, COMMAND,
@@ -57,7 +46,7 @@ void	token_add_parenthesis(t_token **token_stack, int type, size_t *i)
 }
 
 void	token_add_operator(t_token **token_stack, const char *line,
-			size_t *i)
+						   size_t *i)
 {
 	if (line[*i] == '&')
 		token_add(token_stack, OPERATOR, "&&");

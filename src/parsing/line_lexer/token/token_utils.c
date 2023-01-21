@@ -9,7 +9,59 @@
 /*   Updated: 2023/01/16 17:51:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "line_lexer.h"
+#include "lexer.h"
+
+int	token_get_type(const char *c)
+{
+	if (*c == '&' && *(c + 1) == '&')
+		return (OPERATOR);
+	else if (*c == '|' && *(c + 1) == '|')
+		return (OPERATOR);
+	else if (*c == '|')
+		return (PIPE);
+	else if (*c == '(')
+		return (OPEN_PARENTHESIS);
+	else if (*c == ')')
+		return (CLOSE_PARENTHESIS);
+	else
+		return (COMMAND);
+}
+
+void	line_skip_quote(const char *line, size_t *i)
+{
+	if (line[(*i)] == '"')
+	{
+		(*i)++;
+		while (line[*i] && line[*i] != '"')
+			(*i)++;
+	}
+	else if (line[(*i)] == '\'')
+	{
+		(*i)++;
+		while (line[*i] && line[*i] != '\'')
+			(*i)++;
+	}
+}
+
+void	line_trim_space(char *line, size_t *i)
+{
+	while (ft_isspace(line[*i]))
+		(*i)++;
+}
+
+t_token	*token_new(int type, void *value)
+{
+	t_token	*token;
+
+	token = (t_token *) malloc(sizeof(t_token));
+	if (token == NULL)
+		return (NULL);
+	token->type = type;
+	token->value = value;
+	token->cmd_stack = NULL;
+	token->next = NULL;
+	return (token);
+}
 
 void	token_reverse(t_token **token_stack)
 {
@@ -28,37 +80,4 @@ void	token_reverse(t_token **token_stack)
 		curr = next;
 	}
 	*token_stack = prev;
-}
-
-t_token	*token_new(int type, void *value)
-{
-	t_token	*token;
-
-	token = (t_token *) malloc(sizeof(t_token));
-	if (token == NULL)
-		return (NULL);
-	token->type = type;
-	token->value = value;
-	token->cmd_start = NULL;
-	token->next = NULL;
-	return (token);
-}
-
-static int	is_operator(const char *c)
-{
-	return ((*c == '&' && *(c + 1) == '&') || (*c == '|' && *(c + 1) == '|'));
-}
-
-int	token_get_type(const char *c)
-{
-	if (is_operator(c))
-		return (OPERATOR);
-	else if (*c == '|')
-		return (PIPE);
-	else if (*c == '(')
-		return (OPEN_PARENTHESIS);
-	else if (*c == ')')
-		return (CLOSE_PARENTHESIS);
-	else
-		return (COMMAND);
 }
