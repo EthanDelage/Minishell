@@ -11,11 +11,7 @@
 /* ************************************************************************** */
 #include "line_lexer.h"
 
-static void	line_trim_space(char *line, size_t *i)
-{
-	while (ft_strchr("\t\v\n\f\r ", line[*i]))
-		(*i)++;
-}
+static void	line_trim_space(char *line, size_t *i);
 
 t_token	*line_lexer(char *line)
 {
@@ -45,4 +41,10 @@ t_token	*line_lexer(char *line)
 	}
 	token_reverse(&token_stack);
 	return (token_stack);
+}
+
+static void	line_trim_space(char *line, size_t *i)
+{
+	while (ft_strchr("\t\v\n\f\r ", line[*i]))
+		(*i)++;
 }

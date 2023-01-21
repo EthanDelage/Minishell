@@ -13,9 +13,9 @@
 
 void	token_reverse(t_token **token_stack)
 {
-	t_token *next;
-	t_token *curr;
-	t_token *prev;
+	t_token	*next;
+	t_token	*curr;
+	t_token	*prev;
 
 	curr = *token_stack;
 	next = NULL;
