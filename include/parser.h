@@ -23,6 +23,6 @@ enum
 };
 
 char	*line_parser(t_token *head);
-char	*parse_cmd(t_cmd_token **cmd_stack);
+char	*cmd_parse(t_cmd_token **cmd_stack);
 
 #endif

@@ -74,4 +74,4 @@ add_executable(minishell
         src/parsing/line_lexer/token/token_clear.c
         src/parsing/line_lexer/token/token_utils.c
         src/parsing/line_lexer/line_lexer.c
-        src/main.c src/parsing/cmd_parsing/cmd_parsing.c include/parser.h)
+        src/main.c src/parsing/cmd_parser/cmd_parser.c include/parser.h)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_parsing.c                                      :+:      :+:    :+:   */
+/*   cmd_parser.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,7 +14,7 @@
 static bool	contain_cmd(t_cmd_token *head);
 static void	place_cmd_top(t_cmd_token **cmd_stack);
 
-char	*parse_cmd(t_cmd_token **cmd_stack)
+char	*cmd_parse(t_cmd_token **cmd_stack)
 {
 	t_cmd_token	*head;
 
