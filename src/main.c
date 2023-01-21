@@ -32,10 +32,10 @@ int	main(int argc, char **argv, char **envp)
 		line = readline("minishell > ");
 		errno = 0;
 		line_token = line_lexer(line);
-		if (error_syntax(line_parser(line_token)) == FAILURE)
-			break;
 		if (line_token == NULL)
 			return (1);
+		if (error_syntax(line_parser(line_token)) == FAILURE)
+			break;
 		tmp = line_token;
 		while (tmp)
 		{

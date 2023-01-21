@@ -21,10 +21,15 @@ char	*cmd_parse(t_cmd_token **cmd_stack)
 	if ((*cmd_stack)->type != COMMAND && contain_cmd(*cmd_stack) == true)
 		place_cmd_top(cmd_stack);
 	head = *cmd_stack;
-	while (head->next != NULL)
+	while (head != NULL)
 	{
-		if (head->type != COMMAND && *((char *) head->body) == '\0')
-			return (head->next->head);
+		if (head->type != COMMAND && ((char *) head->body)[0] == '\0')
+		{
+			if (head->next != NULL)
+				return (head->next->head);
+			else
+				return ("newline");
+		}
 		head = head->next;
 	}
 	return (NULL);
