@@ -30,6 +30,13 @@ char	*line_parser(t_token *head)
 			return (head->value);
 		if (check_error(head) == FAILURE)
 			return (head->next->value);
+		else if (head->type == COMMAND && head->next->type != OPERATOR)
+		{
+			if (head->next->next == NULL)
+				return ("newline");
+			else
+				return (head->next->next->value);
+		}
 		head = head->next;
 	}
 	if (head->type == CLOSE_PARENTHESIS && count_parenthesis > 0)
@@ -58,6 +65,7 @@ static int	check_error(t_token *head)
 	if (head->type == OPEN_PARENTHESIS
 		&& head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
 		return (FAILURE);
+
 	else if ((head->type == OPERATOR || head->type == PIPE)
 		&& (head->next->type != COMMAND
 			&& head->next->type != OPEN_PARENTHESIS))

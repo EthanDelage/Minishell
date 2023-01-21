@@ -26,7 +26,6 @@ SRCS		=		main.c \
 					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
 					parsing/line_lexer/line_lexer.c \
-					parsing/line_parser/line_parser.c \
 					parsing/line_lexer/token/token_add.c \
 					parsing/line_lexer/token/token_clear.c \
 					parsing/line_lexer/token/token_utils.c \
@@ -35,6 +34,9 @@ SRCS		=		main.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_add.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_utils.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
+					parsing/cmd_parser/cmd_parser.c \
+					parsing/line_parser/line_parser.c \
+					parsing/line_parser/error_line_parser.c \
 					exec/builtin/env/env.c \
 					exec/builtin/unset/unset.c \
 					exec/builtin/export/export.c \

@@ -22,6 +22,7 @@ enum
 	FAILURE		=		1,
 };
 
+int		error_syntax(char *value);
 char	*line_parser(t_token *head);
 char	*cmd_parse(t_cmd_token **cmd_stack);
 
