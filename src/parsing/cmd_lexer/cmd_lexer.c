@@ -34,5 +34,6 @@ void	cmd_lexer(t_token *token)
 	{
 		cmd_arg_reverse(&cmd_arg_stack);
 		cmd_token_add_command(token, cmd_arg_stack);
+		cmd_arg_clear(&cmd_arg_stack);
 	}
 }
