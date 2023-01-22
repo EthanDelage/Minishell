@@ -12,72 +12,108 @@
 #include <stdlib.h>
 #include "envp.h"
 
-static t_list	*create_new_elem(int start, int end);
+static void	change_quote_value(char *quote, char c);
+static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t index);
+static char	*add_env_var(char *line, char *value, size_t index, size_t end_index);
+
+int	valid_char(char c)
+{
+	return (ft_isdigit(c) || ft_isalpha(c) || c == '_');
+}
 
 char	*replace(t_hashtable *envp_dict, char *line)
 {
-	char	*new_line;
-	t_list	*head;
-
-	head = NULL;
-	return (new_line);
-}
-
-static t_list	*get_index(t_list *head, char *line)
-{
-	size_t	start;
 	size_t	index;
 	char	quote;
-	t_list	*tmp;
 
-	head = NULL;
-	start = 0;
 	index = 0;
 	quote = 0;
-	while (line[index] != '\0')
+	while (line[index])
 	{
-		if (line[index] == '$' && (quote == 0 || quote == '"'))
+		if (line[index] == '$' && quote != '\'')
 		{
-			tmp = create_new_elem(start, index);
+			if (!valid_char(line[index + 1]))
+			{
+				index++;
+				break ;
+			}
+			line = replace_env_var(envp_dict, line, index + 1);
 			if (errno)
 			{
-				ft_lstclear(head);
+				free(line);
 				return (NULL);
 			}
-			ft_lstadd_back(&head, tmp);
-			while (line[index] != '\0' && !ft_isspace(line[index]))
-				index++;
-			start = index;
+			quote = 0;
+			index = 0;
 		}
-		else if (line[index] == '"')
+		else
 		{
-			if (quote == 0)
-				quote = line[index];
-			else if (quote == '"')
-				quote = 0;
+			if (line[index] == '"' || line[index] == '\'')
+				change_quote_value(&quote, line[index]);
+			index++;
 		}
-		index++;
+	}
+	return (line);
+}
+
+static void	change_quote_value(char *quote, char c)
+{
+	if (c == '"')
+	{
+		if (*quote == '\'')
+			return ;
+		if (*quote == '"')
+			*quote = 0;
+		else if (*quote == 0)
+			*quote = '"';
+	}
+	else
+	{
+		if (*quote == '"')
+			return ;
+		else if (*quote == '\'')
+			*quote = 0;
+		else if (*quote == 0)
+			*quote = '\'';
 	}
 }
 
-static t_list	*create_new_elem(int start, int end)
+static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t index)
 {
-	t_list	*elem;
-	int		*new;
+	t_dict	*env;
+	char	*name;
+	size_t	end_index;
 
-	new = (int *) malloc(sizeof(int) * 2);
+	end_index = index;
+	while (line[end_index] && !ft_isspace(line[end_index])
+		&& line[end_index] != '"' && line[end_index] != '\'')
+		end_index++;
+	name = ft_substr(line, index, end_index - index);
 	if (errno)
-	{
-		free(elem);
 		return (NULL);
-	}
-	new[0] = start;
-	new[1] = end;
-	elem = ft_lstnew(new);
+	env = hashtable_search(envp_dict, name);
+	if (env == NULL)
+		line = add_env_var(line, "\0", index, end_index);
+	else
+		line = add_env_var(line, env->value, index, end_index);
+	return (line);
+}
+
+static char	*add_env_var(char *line, char *value, size_t index, size_t end_index)
+{
+	const size_t	len_value = ft_strlen(value);
+	const size_t	len_line = ft_strlen(line);
+	char			*end;
+	char			*start;
+	char			*new_line;
+
+	new_line = (char *) malloc(sizeof(char) * (len_line + index - end_index + len_value));
 	if (errno)
-	{
-		free(new);
 		return (NULL);
-	}
-	return (elem);
+	start = ft_substr(line, 0, index - 1);
+	end = ft_substr(line, end_index, len_line - end_index);
+	new_line = ft_strjoin(start, value);
+	new_line = ft_strjoin(new_line, end);
+	free(line);
+	return (new_line);
 }
