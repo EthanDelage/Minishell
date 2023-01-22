@@ -49,3 +49,22 @@ void	cmd_token_reverse(t_cmd_token **head)
 	}
 	*head = prev;
 }
+
+void	cmd_token_clear(t_cmd_token **head)
+{
+	t_cmd_token	*next;
+
+	while (*head)
+	{
+		next = (*head)->next;
+		if ((*head)->type == COMMAND)
+		{
+			free((*head)->head);
+			free_string_array((char **) (*head)->body);
+		}
+		else
+			free((*head)->body);
+		free(*head);
+		(*head) = next;
+	}
+}
