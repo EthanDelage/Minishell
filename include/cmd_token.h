@@ -26,5 +26,6 @@ void	cmd_token_add_command(t_token *token, t_cmd_arg *cmd_arg_stack);
 void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i);
 void	cmd_token_add(t_cmd_token **cmd_stack, int type, char *head,
 			void *body);
+void	cmd_token_clear(t_cmd_token **head);
 
 #endif
