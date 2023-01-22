@@ -21,7 +21,7 @@ int	builtin_export_no_args(t_hashtable *envp_dict)
 
 	envp = hashtable_get_array(envp_dict, true);
 	if (errno)
-		return (errno);
+		return (return_errno_error());
 	sort_array(envp);
 	display_export(envp);
 	hashtable_array_clear(envp);

@@ -27,18 +27,17 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 	{
 		if (valid_env(args[index]) == false)
 		{
-			printf("minishell: export: `%s': not a valid identifier\n",
-				args[index]);
+			ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+			ft_putstr_fd(args[index], STDERR_FILENO);
+			ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 			return_value = 1;
 		}
 		else
-		{
 			export_one(envp_dict, args[index]);
-			if (errno)
-				return (errno);
-		}
 		index++;
 	}
+	if (errno)
+		return (return_errno_error());
 	return (return_value);
 }
 

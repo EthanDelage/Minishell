@@ -26,8 +26,7 @@ int	builtin_cd(char **args)
 	{
 		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 		perror(args[1]);
-		errno = 0;
-		return (1);
+		return (return_errno_error());
 	}
 	return (0);
 }

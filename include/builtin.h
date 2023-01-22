@@ -16,15 +16,16 @@
 
 /* ----------	BUILTIN FUNCTIONS	---------- */
 
+int	builtin_pwd(void);
+int	builtin_cd(char **args);
 int	builtin_env(t_hashtable *envp_dict);
 int	builtin_unset(t_hashtable *envp_dict, char **args);
 int	builtin_export(t_hashtable *envp_dict, char **args);
-int	builtin_pwd(void);
-int	builtin_cd(char **args);
 
 /* ----------	BUILTIN UTILS	---------- */
 
 int	valid_char(char c);
+int	return_errno_error(void);
 int	builtin_export_no_args(t_hashtable *envp_dict);
 
 #endif
