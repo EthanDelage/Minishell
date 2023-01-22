@@ -31,6 +31,7 @@ SRCS		=		main.c \
 					parsing/line_lexer/token/token_utils.c \
 					parsing/cmd_lexer/cmd_lexer.c \
 					parsing/cmd_lexer/cmd_token/cmd_arg_utils.c \
+					parsing/cmd_lexer/cmd_token/cmd_arg_add.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_add.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_utils.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
