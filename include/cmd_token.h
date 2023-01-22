@@ -20,6 +20,7 @@ void	cmd_token_reverse(t_cmd_token **head);
 char	*cmd_token_get_redirect_head(int type);
 void	cmd_arg_add(t_cmd_arg **cmd_arg_stack, char *arg);
 char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack);
+void	cmd_arg_clear(t_cmd_arg **head);
 char	*cmd_token_get_redirect_body(char *cmd_line, size_t *i);
 void	cmd_token_add_redirect(t_token *token, int type, size_t *i);
 void	cmd_token_add_command(t_token *token, t_cmd_arg *cmd_arg_stack);

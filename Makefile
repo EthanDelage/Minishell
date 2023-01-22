@@ -69,7 +69,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(LFLAGS) $(OBJS) -o $@ -g3
+					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
 
 $(LIBFT):			FORCE
 					$(MAKE) all -C $(LIBFT_DIR)
