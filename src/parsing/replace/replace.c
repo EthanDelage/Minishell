@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "envp.h"
 
+int			valid_char(char c);
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote);
 static void	change_quote_value(char *quote, char c);
