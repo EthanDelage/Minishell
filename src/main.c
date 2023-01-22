@@ -13,6 +13,7 @@
 #include "envp.h"
 
 #include <readline/readline.h>
+#include <readline/history.h>
 
 char	*replace(t_hashtable *envp_dict, char *line);
 
@@ -29,6 +30,9 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		line = readline("> ");
+		if (errno || line == NULL)
+			return (1);
+		add_history(line);
 		errno = 0;
 		printf("%s|\n", replace(envp_dict, line));
 		if (errno)

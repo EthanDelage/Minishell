@@ -86,7 +86,7 @@ static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t index)
 
 	end_index = index;
 	while (line[end_index] && !ft_isspace(line[end_index])
-		&& line[end_index] != '"' && line[end_index] != '\'')
+		&& line[end_index] != '"' && line[end_index] != '\'' && line[end_index] != '$')
 		end_index++;
 	name = ft_substr(line, index, end_index - index);
 	if (errno)
