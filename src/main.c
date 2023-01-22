@@ -26,11 +26,14 @@ int	main(int argc, char **argv, char **envp)
 	envp_dict = envp_to_dict(envp);
 	if (errno)
 		return (errno);
-	line = readline("> ");
-	errno = 0;
-	printf("%s|\n", replace(envp_dict, line));
-	if (errno)
-		printf("error\n");
+	while (1)
+	{
+		line = readline("> ");
+		errno = 0;
+		printf("%s|\n", replace(envp_dict, line));
+		if (errno)
+			printf("error\n");
+	}
 	hashtable_clear(envp_dict);
 	return (0);
 }

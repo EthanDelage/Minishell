@@ -32,7 +32,7 @@ char	*replace(t_hashtable *envp_dict, char *line)
 	{
 		if (line[index] == '$' && quote != '\'')
 		{
-			if (!valid_char(line[index + 1]))
+			if (quote == '"' && !valid_char(line[index + 1]))
 			{
 				index++;
 				break ;

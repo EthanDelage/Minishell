@@ -51,7 +51,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(LFLAGS) $(OBJS) -o $@
+					$(CC) $(OBJS) $(LFLAGS) -o $@
 
 $(LIBFT):			FORCE
 					$(MAKE) all -C $(LIBFT_DIR)
