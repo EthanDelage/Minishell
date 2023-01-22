@@ -11,10 +11,34 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
-int	builtin_cd(const char *path)
+static size_t	nb_args(char **args);
+
+int	builtin_cd(char **args)
 {
-	chdir(path);
+	if (nb_args(args) > 2)
+	{
+		ft_putstr_fd("minishell: cd: too many arguments\n",
+			STDERR_FILENO);
+		return (1);
+	}
+	chdir(args[1]);
 	if (errno)
-		return (errno);
+	{
+		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+		perror(args[1]);
+		errno = 0;
+		return (1);
+	}
 	return (0);
 }
+
+static size_t	nb_args(char **args)
+{
+	size_t	count;
+
+	count = 0;
+	while (args[count] != NULL)
+		count++;
+	return (count);
+}
+
