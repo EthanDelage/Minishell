@@ -14,7 +14,10 @@
 static void	token_free_elem(t_token *elem)
 {
 	if (elem->type == COMMAND)
+	{
+		cmd_token_clear(&elem->cmd_stack);
 		free(elem->value);
+	}
 	free(elem);
 }
 

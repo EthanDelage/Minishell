@@ -13,6 +13,7 @@
 # define LEXER_H
 
 # include "token.h"
+# include "cmd_token.h"
 
 t_token	*line_lexer(char *line);
 void	cmd_lexer(t_token *token);
