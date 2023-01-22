@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/22 08:57:00 by hferraud          #+#    #+#             */
-/*   Updated: 2023/01/22 08:57:00 by hferraud         ###   ########lyon.fr   */
+/*   Created: 2023/01/21 23:34:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/21 23:34:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "builtin.h"
+#include <stdlib.h>
 
-int	builtin_pwd(void)
+char	*ft_strncpy(char *dst, const char *src, size_t len)
 {
-	char	*buf;
+	size_t	index;
 
-	buf = getcwd(NULL, 0);
-	if (errno)
-		return (errno);
-	ft_putendl(buf);
-	free(buf);
-	return (0);
+	index = 0;
+	while (src[index] && index < len)
+	{
+		dst[index] = src[index];
+		index++;
+	}
+	if (index < len)
+		dst[index] = '\0';
+	return (dst);
 }

@@ -44,7 +44,7 @@ SRCS		=		main.c \
 					exec/builtin/export/export_no_args.c \
 					exec/builtin/cd/cd.c \
 					exec/builtin/pwd/pwd.c \
-
+					parsing/replace/replace.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
@@ -70,7 +70,8 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
+					$(CC) $(OBJS) $(LFLAGS) -o $@
+
 
 $(LIBFT):			FORCE
 					$(MAKE) all -C $(LIBFT_DIR)

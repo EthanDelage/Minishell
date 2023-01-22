@@ -18,6 +18,11 @@
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
+char	*replace(t_hashtable *envp_dict, char *line);
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;

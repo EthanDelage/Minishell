@@ -60,7 +60,7 @@ void	cmd_token_clear(t_cmd_token **head)
 		if ((*head)->type == COMMAND)
 		{
 			free((*head)->head);
-			free_string_array((char **) (*head)->body);
+			free_string_array((char **)(*head)->body);
 		}
 		else
 			free((*head)->body);

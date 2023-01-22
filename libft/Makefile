@@ -38,6 +38,7 @@ CHAR =				ft_isalpha.c \
 					ft_isdigit.c \
 					ft_isalnum.c \
 					ft_isascii.c \
+					ft_isspace.c \
 					ft_isprint.c \
 					ft_isspace.c \
 					ft_toupper.c \
@@ -93,6 +94,7 @@ STRING =			ft_split.c \
 					ft_strjoin.c \
 					ft_strtrim.c \
 					ft_strmapi.c \
+					ft_strncpy.c \
 					ft_striteri.c \
 
 SRCS =				$(addprefix fd/, $(FD)) \
