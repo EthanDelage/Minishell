@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl.c                                       :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/20 17:19:11 by edelage           #+#    #+#             */
-/*   Updated: 2022/12/20 17:19:51 by edelage          ###   ########.fr       */
+/*   Created: 2023/01/22 08:52:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/01/22 08:52:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
+#include "builtin.h"
 
-void	ft_putendl(const char *str)
+int	builtin_cd(const char *path)
 {
-	if (str != NULL)
-		write(1, str, ft_strlen(str));
-	write(1, "\n", 1);
+	chdir(path);
+	if (errno)
+		return (errno);
+	return (0);
 }

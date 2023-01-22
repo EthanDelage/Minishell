@@ -41,6 +41,9 @@ SRCS		=		main.c \
 					exec/builtin/unset/unset.c \
 					exec/builtin/export/export.c \
 					exec/builtin/export/export_no_args.c \
+					exec/builtin/cd/cd.c \
+					exec/builtin/pwd/pwd.c \
+
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
