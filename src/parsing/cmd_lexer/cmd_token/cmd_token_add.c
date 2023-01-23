@@ -40,14 +40,24 @@ static t_cmd_token	*cmd_token_new(int type, char *head, void *body)
 
 void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
 {
-	char	*body;
-	char	*head;
+	t_redirect_param	*body;
+	char				*head;
 
 	if (type == REDIRECT_OUT || type == REDIRECT_IN)
 		(*i)++;
 	else if (type == APPEND_OUT || type == HERE_DOC)
 		*i += 2;
-	body = cmd_token_get_redirect_body(token->value, i);
+	body = malloc(sizeof(t_redirect_param));
+	if (errno)
+		return ;
+	body->name = cmd_token_get_redirect_body(token->value, i);
+	if (errno)
+	{
+		free(body);
+		return ;
+	}
+	body->fd[0] = -1;
+	body->fd[1] = -1;
 	head = cmd_token_get_redirect_head(type);
 	cmd_token_add(&token->cmd_stack, type, head, body);
 }

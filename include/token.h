@@ -35,6 +35,12 @@ typedef struct s_cmd_arg
 	struct s_cmd_arg	*next;
 }				t_cmd_arg;
 
+typedef struct s_redirect_param
+{
+	char	*name;
+	int		fd[2];
+}				t_redirect_param;
+
 typedef struct s_cmd_token
 {
 	int					type;

@@ -41,3 +41,9 @@ char	*cmd_token_get_redirect_body(char *cmd_line, size_t *i)
 	body = ft_substr(cmd_line, last_i, *i - last_i);
 	return (body);
 }
+
+void	cmd_token_redirect_clear_redirect_param(t_redirect_param *param)
+{
+	free(param->name);
+	free(param);
+}

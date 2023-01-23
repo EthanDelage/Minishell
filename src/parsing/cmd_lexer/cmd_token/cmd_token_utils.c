@@ -63,7 +63,8 @@ void	cmd_token_clear(t_cmd_token **head)
 			free_string_array((char **)(*head)->body);
 		}
 		else
-			free((*head)->body);
+			cmd_token_redirect_clear_redirect_param(
+				(t_redirect_param *)(*head)->body);
 		free(*head);
 		(*head) = next;
 	}
