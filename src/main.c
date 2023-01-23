@@ -14,6 +14,7 @@
 #include "envp.h"
 #include "parser.h"
 #include "lexer.h"
+#include "redirect.h"
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
@@ -25,48 +26,20 @@ char	*replace(t_hashtable *envp_dict, char *line);
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*line;
-	t_token	*line_token;
-	t_token	*tmp;
+	char				buf;
+	t_redirect_param	redirect_param;
+	t_hashtable			*envp_dict;
 
-	(void) argc;
 	(void) argv;
-	(void) envp;
-	do
-	{
-		line = readline("minishell > ");
-		errno = 0;
-		line_token = line_lexer(line);
-		if (line_token == NULL)
-			return (1);
-		if (error_syntax(line_parser(line_token)) == FAILURE)
-			break;
-		tmp = line_token;
-		while (tmp)
-		{
-			if (tmp->type != COMMAND)
-			{
-				printf("%s\n", tmp->value);
-				printf("=========================\n");
-			}
-			else
-			{
-				cmd_lexer(tmp);
-				if (error_syntax(cmd_parse(&tmp->cmd_stack)) == FAILURE)
-					break;
-				while (tmp->cmd_stack)
-				{
-					if (tmp->cmd_stack->type == COMMAND)
-						print_cmd_body(tmp);
-					else
-						print_redirect(tmp);
-					printf("=========================\n");
-					tmp->cmd_stack = tmp->cmd_stack->next;
-				}
-			}
-			tmp = tmp->next;
-		}
-	} while (line);
+	(void) argc;
+	envp_dict = envp_to_dict(envp);
+	if (envp_dict == NULL)
+		return (1);
+	redirect_param.body = "EOF";
+	here_doc_open(envp_dict, &redirect_param);
+	while (read(redirect_param.fd[READ], &buf, 1) != 0)
+		printf("%c", buf);
+	here_doc_close(&redirect_param);
 	return (0);
 }
 

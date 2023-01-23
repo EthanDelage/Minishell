@@ -29,6 +29,12 @@ enum
 	HERE_DOC = 3
 };
 
+enum
+{
+	READ = 0,
+	WRITE = 1,
+};
+
 typedef struct s_cmd_arg
 {
 	char				*arg;
