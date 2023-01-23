@@ -77,4 +77,4 @@ add_executable(minishell
         src/parsing/line_lexer/line_lexer.c
         src/main.c
         src/parsing/cmd_parser/cmd_parser.c
-        include/parser.h src/exec/builtin/cd/cd.c src/exec/builtin/pwd/pwd.c src/exec/builtin/builtin_error.c)
+        include/parser.h src/exec/builtin/cd/cd.c src/exec/builtin/pwd/pwd.c src/exec/builtin/builtin_error.c src/exec/router/router.c include/router.h)

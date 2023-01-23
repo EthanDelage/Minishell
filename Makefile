@@ -45,6 +45,7 @@ SRCS		=		main.c \
 					exec/builtin/export/export_no_args.c \
 					exec/builtin/cd/cd.c \
 					exec/builtin/pwd/pwd.c \
+					exec/router/router.c \
 					parsing/replace/replace.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
@@ -55,7 +56,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra
+CFLAGS		=		-Wall -Werror -Wextra -g3
 
 DFLAGS		=		-MMD -MP
 

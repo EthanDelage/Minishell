@@ -14,6 +14,7 @@
 #include "envp.h"
 #include "parser.h"
 #include "lexer.h"
+#include "router.h"
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
@@ -25,13 +26,14 @@ char	*replace(t_hashtable *envp_dict, char *line);
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*line;
-	t_token	*line_token;
-	t_token	*tmp;
+	char		*line;
+	t_token		*line_token;
+	t_token		*tmp;
+	t_hashtable	*envp_dict;
 
 	(void) argc;
 	(void) argv;
-	(void) envp;
+	envp_dict = envp_to_dict(envp);
 	do
 	{
 		line = readline("minishell > ");
@@ -44,26 +46,27 @@ int	main(int argc, char **argv, char **envp)
 		tmp = line_token;
 		while (tmp)
 		{
-			if (tmp->type != COMMAND)
-			{
-				printf("%s\n", tmp->value);
-				printf("=========================\n");
-			}
-			else
-			{
+//			if (tmp->type != COMMAND)
+//			{
+//				printf("%s\n", tmp->value);
+//				printf("=========================\n");
+//			}
+//			else
+//			{
 				cmd_lexer(tmp);
 				if (error_syntax(cmd_parse(&tmp->cmd_stack)) == FAILURE)
 					break;
-				while (tmp->cmd_stack)
-				{
-					if (tmp->cmd_stack->type == COMMAND)
-						print_cmd_body(tmp);
-					else
-						print_redirect(tmp);
-					printf("=========================\n");
-					tmp->cmd_stack = tmp->cmd_stack->next;
-				}
-			}
+				cmd_router(tmp->cmd_stack, envp_dict);
+//				while (tmp->cmd_stack)
+//				{
+//					if (tmp->cmd_stack->type == COMMAND)
+//						print_cmd_body(tmp);
+//					else
+//						print_redirect(tmp);
+//					printf("=========================\n");
+//					tmp->cmd_stack = tmp->cmd_stack->next;
+//				}
+//			}
 			tmp = tmp->next;
 		}
 	} while (line);
