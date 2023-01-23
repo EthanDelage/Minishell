@@ -47,7 +47,7 @@ void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
 		(*i)++;
 	else if (type == APPEND_OUT || type == HERE_DOC)
 		*i += 2;
-	body = malloc(sizeof(t_redirect_param));
+	body = (t_redirect_param *) malloc(sizeof(t_redirect_param));
 	if (errno)
 		return ;
 	body->name = cmd_token_get_redirect_body(token->value, i);
