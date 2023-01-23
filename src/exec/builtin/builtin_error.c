@@ -16,3 +16,12 @@ int	return_errno_error(void)
 	errno = 0;
 	return (1);
 }
+
+void	builtin_print_error(char *name, char *arg)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(name, STDERR_FILENO);
+	ft_putstr_fd(": `", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putstr_fd("': ");
+}
