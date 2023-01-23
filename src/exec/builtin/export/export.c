@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
+int			builtin_export_no_args(t_hashtable *envp_dict);
 static int	valid_env(const char *env);
 static void	export_one(t_hashtable *envp_dict, const char *env);
 
@@ -27,18 +28,16 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 	{
 		if (valid_env(args[index]) == false)
 		{
-			printf("minishell: export: `%s': not a valid identifier\n",
-				args[index]);
+			builtin_print_error("export", args[index]);
+			ft_putstr_fd("not a valid identifier\n", STDERR_FILENO);
 			return_value = 1;
 		}
 		else
-		{
 			export_one(envp_dict, args[index]);
-			if (errno)
-				return (errno);
-		}
 		index++;
 	}
+	if (errno)
+		return (return_errno_error());
 	return (return_value);
 }
 

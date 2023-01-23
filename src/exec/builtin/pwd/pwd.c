@@ -17,7 +17,7 @@ int	builtin_pwd(void)
 
 	buf = getcwd(NULL, 0);
 	if (errno)
-		return (errno);
+		return (return_errno_error());
 	ft_putendl(buf);
 	free(buf);
 	return (0);

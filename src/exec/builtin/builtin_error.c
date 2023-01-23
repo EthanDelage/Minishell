@@ -1,38 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   builtin_error.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/16 11:55:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/16 11:55:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/23 00:46:32 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/23 00:46:33 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 #include "builtin.h"
 
-static void	display_env(char **envp);
-
-int	builtin_env(t_hashtable *envp_dict)
+int	return_errno_error(void)
 {
-	char	**envp;
-
-	envp = hashtable_get_array(envp_dict, false);
-	if (errno)
-		return (return_errno_error());
-	display_env(envp);
-	hashtable_array_clear(envp);
-	return (0);
+	errno = 0;
+	return (1);
 }
 
-static void	display_env(char **envp)
+void	builtin_print_error(char *name, char *arg)
 {
-	size_t	index;
-
-	index = 0;
-	while (envp[index] != NULL)
-	{
-		printf("%s\n", envp[index]);
-		index++;
-	}
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(name, STDERR_FILENO);
+	ft_putstr_fd(": `", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putstr_fd("': ");
 }

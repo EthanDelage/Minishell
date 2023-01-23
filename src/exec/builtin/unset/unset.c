@@ -24,8 +24,8 @@ int	builtin_unset(t_hashtable *envp_dict, char **args)
 	{
 		if (valid_name(args[index]) == false)
 		{
-			printf("minishell: unset: `%s': invalid parameter name\n",
-				args[index]);
+			builtin_print_error("unset", args[index]);
+			perror(NULL);
 			return_value = 1;
 		}
 		else
