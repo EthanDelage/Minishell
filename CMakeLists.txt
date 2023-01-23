@@ -77,4 +77,4 @@ add_executable(minishell
         src/parsing/line_lexer/line_lexer.c
         src/main.c
         src/parsing/cmd_parser/cmd_parser.c
-        include/parser.h src/exec/builtin/cd/cd.c src/exec/builtin/pwd/pwd.c src/exec/builtin/builtin_error.c include/redirect.h src/exec/redirect/redirect.c src/exec/redirect/redirect_in/redirect_in.c src/exec/redirect/redirect_out/redirect_out.c src/exec/redirect/append_out/append_out.c src/exec/redirect/here_doc/here_doc.c)
+        include/parser.h src/exec/builtin/cd/cd.c src/exec/builtin/pwd/pwd.c src/exec/builtin/builtin_error.c include/redirect.h src/exec/redirect/redirect.c src/exec/redirect/redirect_in/redirect_in.c src/exec/redirect/redirect_out/redirect_out.c src/exec/redirect/append_out/append_out.c src/exec/redirect/here_doc/here_doc.c src/exec/redirect/append_out/replace_here_doc.c)

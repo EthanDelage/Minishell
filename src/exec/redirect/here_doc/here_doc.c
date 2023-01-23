@@ -12,7 +12,7 @@
 #include <readline/readline.h>
 #include "redirect.h"
 
-char		*replace(t_hashtable *envp_dict, char *line);
+char		*here_doc_replace_env(t_hashtable *envp_dict, char *line);
 static int	here_doc(int fd, char *delimiter, t_hashtable *envp_dict);
 
 int	here_doc_open(t_hashtable *envp_dict, t_redirect_param *redirect_param)
@@ -38,6 +38,12 @@ static int	here_doc(int fd, char *delimiter, t_hashtable *envp_dict)
 	char	*line;
 
 	line = readline("> ");
+	if (line == NULL)
+		return (errno);
+	errno = 0;
+	line = here_doc_replace_env(envp_dict, line);
+	if (errno)
+		return (errno);
 	if (ft_strcmp(line, delimiter) != 0)
 		ft_putendl_fd(line, fd);
 	while (ft_strcmp(line, delimiter) != 0)
@@ -47,7 +53,7 @@ static int	here_doc(int fd, char *delimiter, t_hashtable *envp_dict)
 		if (line == NULL)
 			return (errno);
 		errno = 0;
-		line = replace(envp_dict, line);
+		line = here_doc_replace_env(envp_dict, line);
 		if (errno)
 			return (errno);
 		if (ft_strcmp(line, delimiter) != 0)
