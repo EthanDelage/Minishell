@@ -23,7 +23,7 @@ char	*cmd_parse(t_cmd_token **cmd_stack)
 	head = *cmd_stack;
 	while (head != NULL)
 	{
-		if (head->type != COMMAND && ((char *) head->body)[0] == '\0')
+		if (head->type != COMMAND && ((t_redirect_param *) head->body)->body[0] == '\0')
 		{
 			if (head->next != NULL)
 				return (head->next->head);

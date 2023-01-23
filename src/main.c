@@ -74,7 +74,7 @@ void	print_redirect(t_token *token)
 {
 	printf("REDIRECT:\n");
 	printf("%s\n", token->cmd_stack->head);
-	printf("%s\n", (char *) token->cmd_stack->body);
+	printf("%s\n", ((t_redirect_param *)token->cmd_stack->body)->body);
 }
 
 void	print_cmd_body(t_token *token)
