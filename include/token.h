@@ -35,9 +35,17 @@ typedef struct s_cmd_arg
 	struct s_cmd_arg	*next;
 }				t_cmd_arg;
 
+/**
+ * @brief This struct stock params of redirect
+ *
+ * @var	body - The file name or delimitor
+ * @var fd - The fd associated with the redirection
+ *		fd[0] => read
+ *		fd[1] => write
+ */
 typedef struct s_redirect_param
 {
-	char	*name;
+	char	*body;
 	int		fd[2];
 }				t_redirect_param;
 

@@ -50,7 +50,7 @@ void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
 	body = (t_redirect_param *) malloc(sizeof(t_redirect_param));
 	if (errno)
 		return ;
-	body->name = cmd_token_get_redirect_body(token->value, i);
+	body->body = cmd_token_get_redirect_body(token->value, i);
 	if (errno)
 	{
 		free(body);
