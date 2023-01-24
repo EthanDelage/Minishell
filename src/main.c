@@ -15,14 +15,12 @@
 #include "parser.h"
 #include "lexer.h"
 #include "redirect.h"
+#include "replace.h"
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
 
-#include <readline/readline.h>
 #include <readline/history.h>
-
-char	*replace(t_hashtable *envp_dict, char *line);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -58,6 +56,7 @@ void	print_cmd_body(t_token *token)
 	printf("COMMAND:\nName:\n%s\n------------\n", token->cmd_stack->head);
 	while (body[i])
 	{
+		body[i] = trim_quotes(body[i]);
 		printf("%s\n", body[i]);
 		i++;
 	}
