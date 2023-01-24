@@ -41,16 +41,7 @@ static int	here_doc(t_redirect_param *param)
 	bool	end;
 
 	delimiter = param->body;
-	param->body = readline("> ");
-	if (param->body == NULL)
-		return (1);
-	errno = 0;
-	if (ft_strcmp(param->body, delimiter) == 0)
-	{
-		free(delimiter);
-		param->body = ft_calloc(sizeof(char), 1);
-		return (errno);
-	}
+	param->body = NULL;
 	end = false;
 	while (end == false)
 	{
@@ -66,30 +57,34 @@ static int	here_doc(t_redirect_param *param)
 		else
 		{
 			param->body = ft_strjoin_endl(param->body, tmp);
-			if (param->body == NULL)
+			if (errno)
+			{
+				free(delimiter);
 				return (errno);
+			}
 		}
 		free(tmp);
 	}
+	free(delimiter);
 	return (0);
 }
 
 static char	*ft_strjoin_endl(char *s1, char *s2)
 {
-	char	*fresh;
+	char	*new;
 	size_t	len_s1;
 	size_t	len_s2;
 
-	if (s1 == NULL)
-		return (NULL);
-	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
-	fresh = (char *) malloc(sizeof(char) * (len_s1 + len_s2 + 2));
-	if (fresh == NULL)
+	if (s1 == NULL)
+		return (ft_strdup(s2));
+	len_s1 = ft_strlen(s1);
+	new = (char *) malloc(sizeof(char) * (len_s1 + len_s2 + 2));
+	if (new == NULL)
 		return (NULL);
-	ft_memcpy((void *) fresh, (void *) s1, len_s1);
-	fresh[len_s1] = '\n';
-	ft_strlcpy(&(fresh[len_s1 + 1]), s2, len_s2 + 1);
+	ft_memcpy((void *) new, (void *) s1, len_s1);
+	new[len_s1] = '\n';
+	ft_strlcpy(&(new[len_s1 + 1]), s2, len_s2 + 1);
 	free(s1);
-	return (fresh);
+	return (new);
 }
