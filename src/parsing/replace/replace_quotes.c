@@ -12,7 +12,7 @@
 #include "replace.h"
 
 static size_t	count_trimmed_quotes(const char *str);
-static	void	strcat_trimmed_quotes(const char *src, char *dst);
+static void		strcat_trimmed_quotes(const char *src, char *dst);
 
 char	*trim_quotes(char *str)
 {
@@ -59,28 +59,21 @@ static	void	strcat_trimmed_quotes(const char *src, char *dst)
 static size_t	count_trimmed_quotes(const char *str)
 {
 	size_t	count;
+	char	quote;
 	size_t	i;
 
 	count = 0;
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '"')
+		if (str[i] == '"' || str[i] == '\'')
 		{
+			quote = str[i];
 			i++;
 			count++;
-			while (str[i] && str[i] != '"')
+			while (str[i] && str[i] != quote)
 				i++;
-			if (str[i] == '"')
-				count++;
-		}
-		else if (str[i] == '\'')
-		{
-			i++;
-			count++;
-			while (str[i] && str[i] != '\'')
-				i++;
-			if (str[i] == '\'')
+			if (str[i] == quote)
 				count++;
 		}
 		i++;
