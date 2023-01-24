@@ -9,10 +9,8 @@
 /*   Updated: 2023/01/16 18:03:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdlib.h>
-#include "envp.h"
+#include "replace.h"
 
-int			valid_char(char c);
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote);
 static void	change_quote_value(char *quote, char c);
