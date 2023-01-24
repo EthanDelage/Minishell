@@ -12,6 +12,7 @@
 #ifndef ROUTER_H
 # define ROUTER_H
 
+# include <wait.h>
 # include "builtin.h"
 # include "token.h"
 # include "envp.h"

@@ -45,7 +45,7 @@ static int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	cmd_path = cmd_find_path(cmd_token, envp_dict);
 	if (cmd_path == NULL)
 	{
-		ft_putstr_fd("minishell: commandd not found: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
 		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
 		return (127);
 	}
