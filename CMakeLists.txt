@@ -89,4 +89,4 @@ add_executable(minishell
         src/exec/redirect/here_doc/here_doc.c
         src/exec/redirect/here_doc/replace_here_doc.c
         src/parsing/replace/replace_quotes.c
-        include/replace.h)
+        include/replace.h src/exec/exec.c src/exec/exec_pipe.c)

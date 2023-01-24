@@ -19,23 +19,53 @@
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
+int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout);
 
-#include <readline/history.h>
+int	g_return_value;
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_redirect_param	redirect_param;
 	t_hashtable			*envp_dict;
+	t_token				*cmd_stack;
+	t_token				*tmp;
+	char				*line;
 
-	(void) argv;
 	(void) argc;
+	(void) argv;
 	envp_dict = envp_to_dict(envp);
-	if (envp_dict == NULL)
-		return (1);
-	redirect_param.body = "EOF";
-	here_doc_open(&redirect_param);
-	printf("%s", redirect_param.body);
-	here_doc_close(&redirect_param);
+	if (errno)
+		return (errno);
+	while (1)
+	{
+		line = readline("> ");
+		if (line == NULL)
+			return (1);
+		errno = 0;
+		cmd_stack = line_lexer(line);
+		if (errno)
+			return (errno);
+		if (error_syntax(line_parser(cmd_stack)) == FAILURE)
+			return (FAILURE);
+		tmp = cmd_stack;
+		while (tmp)
+		{
+			if (tmp->type == COMMAND)
+			{
+				cmd_lexer(tmp);
+				if (errno)
+					return (errno);
+				if (error_syntax(cmd_parse(&tmp->cmd_stack)) == FAILURE)
+					return (FAILURE);
+			}
+			tmp = tmp->next;
+		}
+		if (exec_pipe(cmd_stack, envp_dict, STDIN_FILENO, STDOUT_FILENO) == -1)
+			return (1);
+		free(line);
+		token_clear(&cmd_stack);
+	}
+	hashtable_clear(envp_dict);
 	return (0);
 }
 
