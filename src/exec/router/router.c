@@ -38,8 +38,6 @@ static int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	char	**args;
 	char	**envp;
 	char	*cmd_path;
-	int		pid;
-	int		return_value;
 
 	args = (char **) cmd_token->body;
 	cmd_path = cmd_find_path(cmd_token, envp_dict);
@@ -50,16 +48,7 @@ static int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 		return (127);
 	}
 	envp = hashtable_get_array(envp_dict, 0);
-	pid = fork();
-	return_value = 0;
-	if (pid == 0)
-		execve(cmd_path, args, envp);
-	else
-	{
-		waitpid(pid, &return_value, 0);
-		return_value = WEXITSTATUS(return_value);
-	}
-	return (return_value);
+	return (execve(cmd_path, args, envp));
 }
 
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
@@ -81,4 +70,26 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 		paths++;
 	}
 	return (NULL);
+}
+
+int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
+{
+	if (ft_strcmp(cmd_token->head, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd_token->head, "cd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd_token->head, "env") == 0)
+		return (1);
+	else if (ft_strcmp(cmd_token->head, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(cmd_token->head, "export") == 0)
+		return (1);
+	else if (ft_strcmp(cmd_token->head, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(cmd_token->head, "exit") == 0)
+		return (1);
+	else if (cmd_find_path(cmd_token, envp_dict) != NULL)
+		return (0);
+	else
+		return (-1);
 }
