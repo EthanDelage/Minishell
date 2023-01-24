@@ -60,6 +60,7 @@ static int	cd_no_args(t_hashtable *envp_dict)
 		perror(NULL);
 		return (return_errno_error());
 	}
+	return (0);
 }
 
 static int	too_many_args(void)

@@ -23,5 +23,5 @@ void	builtin_print_error(char *name, char *arg)
 	ft_putstr_fd(name, STDERR_FILENO);
 	ft_putstr_fd(": `", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
-	ft_putstr_fd("': ");
+	ft_putstr_fd("': ", STDERR_FILENO);
 }
