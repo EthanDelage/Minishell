@@ -16,38 +16,35 @@
 #include "lexer.h"
 #include "redirect.h"
 #include "replace.h"
+#include "router.h"
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
 int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout);
 
-int	g_return_value;
+int	g_return_value = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_redirect_param	redirect_param;
-	t_hashtable			*envp_dict;
-	t_token				*cmd_stack;
-	t_token				*tmp;
-	char				*line;
+	char		*line;
+	t_token		*line_token;
+	t_token		*tmp;
+	t_hashtable	*envp_dict;
 
 	(void) argc;
 	(void) argv;
 	envp_dict = envp_to_dict(envp);
-	if (errno)
-		return (errno);
 	while (1)
 	{
 		line = readline("> ");
 		if (line == NULL)
-			return (1);
-		errno = 0;
-		cmd_stack = line_lexer(line);
+			return (errno);
+		line_token = line_lexer(line);
 		if (errno)
 			return (errno);
-		if (error_syntax(line_parser(cmd_stack)) == FAILURE)
+		if (error_syntax(line_parser(line_token)) == FAILURE)
 			return (FAILURE);
-		tmp = cmd_stack;
+		tmp = line_token;
 		while (tmp)
 		{
 			if (tmp->type == COMMAND)
@@ -60,10 +57,8 @@ int	main(int argc, char **argv, char **envp)
 			}
 			tmp = tmp->next;
 		}
-		if (exec_pipe(cmd_stack, envp_dict, STDIN_FILENO, STDOUT_FILENO) == -1)
-			return (1);
+		exec_pipe(line_token, envp_dict, STDIN_FILENO, STDOUT_FILENO);
 		free(line);
-		token_clear(&cmd_stack);
 	}
 	hashtable_clear(envp_dict);
 	return (0);

@@ -11,8 +11,10 @@
 /* ************************************************************************** */
 #include "envp.h"
 #include "token.h"
+#include "router.h"
+#include <wait.h>
 
-int	g_return_value;
+extern int	g_return_value;
 
 int	exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout)
 {
@@ -35,14 +37,16 @@ int	exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout
 	if (pid == -1)
 		return (-1);
 	else if (pid == 0)
-		return (exec());
+		return (cmd_router(head->cmd_stack, envp_dict));
 	else
 	{
 		waitpid(pid, &g_return_value, 0);
 		g_return_value = WEXITSTATUS(g_return_value);
 		if (head->next && head->next->type == PIPE)
 		{
-			if (dup2(save_stdout, pipe_fd[WRITE]) == -1)
+			if (close(pipe_fd[WRITE]) == -1)
+				return (-1);
+			if (dup2(save_stdout, fd_stdout) == -1)
 				return (-1);
 			save_stdin = dup(fd_stdin);
 			if (save_stdin == -1)
@@ -51,7 +55,9 @@ int	exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout
 				return (-1);
 			if (exec_pipe(head->next->next, envp_dict, pipe_fd[READ], save_stdout))
 				return (-1);
-			if (dup2(save_stdin, pipe_fd[READ]) == -1)
+			if (close(pipe_fd[READ]) == -1)
+				return (-1);
+			if (dup2(save_stdin, fd_stdin) == -1)
 				return (-1);
 		}
 	}
