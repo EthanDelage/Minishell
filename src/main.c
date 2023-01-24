@@ -26,7 +26,6 @@ char	*replace(t_hashtable *envp_dict, char *line);
 
 int	main(int argc, char **argv, char **envp)
 {
-	char				buf;
 	t_redirect_param	redirect_param;
 	t_hashtable			*envp_dict;
 
@@ -36,9 +35,8 @@ int	main(int argc, char **argv, char **envp)
 	if (envp_dict == NULL)
 		return (1);
 	redirect_param.body = "EOF";
-	here_doc_open(envp_dict, &redirect_param);
-	while (read(redirect_param.fd[READ], &buf, 1) != 0)
-		printf("%c", buf);
+	here_doc_open(&redirect_param);
+	printf("%s", redirect_param.body);
 	here_doc_close(&redirect_param);
 	return (0);
 }

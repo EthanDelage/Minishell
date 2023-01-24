@@ -25,7 +25,7 @@ int		redirect_out_open(t_redirect_param *redirect_param);
 void	redirect_out_close(t_redirect_param *redirect_param);
 int		append_out_open(t_redirect_param *redirect_param);
 void	append_out_close(t_redirect_param *redirect_param);
-int		here_doc_open(t_hashtable *envp_dict, t_redirect_param *redirect_param);
+int		here_doc_open(t_redirect_param *param);
 void	here_doc_close(t_redirect_param *redirect_param);
 
 /* ----------	REDIRECT_UTILS FUNCTIONS	---------- */

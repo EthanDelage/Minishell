@@ -44,7 +44,7 @@ typedef struct s_cmd_arg
 /**
  * @brief This struct stock params of redirect
  *
- * @var	body - The file name or delimitor
+ * @var	body - The file name or delimiter
  * @var fd - The fd associated with the redirection
  *		fd[0] => read
  *		fd[1] => write
