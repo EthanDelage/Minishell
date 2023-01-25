@@ -15,28 +15,28 @@
 static int	check_parenthesis(t_token *token, int *count);
 static int	check_error(t_token *head);
 
-char	*line_parser(t_token *head)
+int	line_parser(t_token *head)
 {
 	int	count_parenthesis;
 
 	count_parenthesis = 0;
 	if (head == NULL)
-		return (NULL);
+		return (SUCCESS);
 	if (head->type != COMMAND && head->type != OPEN_PARENTHESIS)
-		return (head->value);
+		return (error_syntax(head->value));
 	while (head->next != NULL)
 	{
 		if (check_parenthesis(head, &count_parenthesis) == FAILURE)
-			return (head->value);
+			return (error_syntax(head->value));
 		if (check_error(head) == FAILURE)
-			return (head->next->value);
+			return (error_syntax(head->next->value));
 		head = head->next;
 	}
 	if (head->type == CLOSE_PARENTHESIS && count_parenthesis > 0)
 		count_parenthesis--;
 	if (count_parenthesis > 0)
-		return ("(");
-	return (NULL);
+		return (error_syntax("("));
+	return (SUCCESS);
 }
 
 static int	check_parenthesis(t_token *token, int *count)

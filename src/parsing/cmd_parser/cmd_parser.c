@@ -11,51 +11,18 @@
 /* ************************************************************************** */
 #include "parser.h"
 
-static bool	contain_cmd(t_cmd_token *head);
-static void	place_cmd_top(t_cmd_token **cmd_stack);
-
-char	*cmd_parse(t_cmd_token **cmd_stack)
+int	cmd_parser(t_cmd_token *head)
 {
-	t_cmd_token	*head;
-
-	if ((*cmd_stack)->type != COMMAND && contain_cmd(*cmd_stack) == true)
-		place_cmd_top(cmd_stack);
-	head = *cmd_stack;
 	while (head != NULL)
 	{
 		if (head->type != COMMAND && ((t_redirect_param *) head->body)->body[0] == '\0')
 		{
 			if (head->next != NULL)
-				return (head->next->head);
+				return (error_syntax(head->next->head));
 			else
-				return ("newline");
+				return (error_syntax("newline"));
 		}
 		head = head->next;
 	}
-	return (NULL);
-}
-
-static bool	contain_cmd(t_cmd_token *head)
-{
-	while (head != NULL)
-	{
-		if (head->type == COMMAND)
-			return (true);
-		head = head->next;
-	}
-	return (false);
-}
-
-static void	place_cmd_top(t_cmd_token **cmd_stack)
-{
-	t_cmd_token	*token;
-	t_cmd_token	*cmd_token;
-
-	token = *cmd_stack;
-	while (token->next != NULL && token->next->type != COMMAND)
-		token = token->next;
-	cmd_token = token->next;
-	token->next = cmd_token->next;
-	cmd_token->next = *cmd_stack;
-	*cmd_stack = cmd_token;
+	return (SUCCESS);
 }
