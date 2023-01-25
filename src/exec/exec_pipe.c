@@ -12,7 +12,6 @@
 #include "envp.h"
 #include "token.h"
 #include "router.h"
-#include <wait.h>
 
 extern int	g_return_value;
 
@@ -28,16 +27,17 @@ int	exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout
 		if (pipe(pipe_fd) == -1)
 			return (-1);
 		save_stdout = dup(fd_stdout);
-		if (save_stdout == -1)
-			return (-1);
-		if (dup2(pipe_fd[WRITE], fd_stdout) == -1)
+		if (save_stdout == -1 || dup2(pipe_fd[WRITE], fd_stdout) == -1)
 			return (-1);
 	}
 	pid = fork();
 	if (pid == -1)
 		return (-1);
 	else if (pid == 0)
+	{
+		errno = 0;
 		return (cmd_router(head->cmd_stack, envp_dict));
+	}
 	else
 	{
 		waitpid(pid, &g_return_value, 0);
@@ -49,9 +49,7 @@ int	exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout
 			if (dup2(save_stdout, fd_stdout) == -1)
 				return (-1);
 			save_stdin = dup(fd_stdin);
-			if (save_stdin == -1)
-				return (-1);
-			if (dup2(pipe_fd[READ], fd_stdin) == -1)
+			if (save_stdin == -1 || dup2(pipe_fd[READ], fd_stdin) == -1)
 				return (-1);
 			if (exec_pipe(head->next->next, envp_dict, pipe_fd[READ], save_stdout))
 				return (-1);

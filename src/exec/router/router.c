@@ -13,11 +13,14 @@
 
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 static int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+static int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 
 int	cmd_router(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
 	char	**args;
 
+	if (ft_strchr(cmd_token->head, '/') != NULL)
+		return (exec_path(cmd_token, envp_dict));
 	args = (char **) cmd_token->body;
 	if (ft_strcmp(cmd_token->head, "pwd") == 0)
 		return (builtin_pwd());
@@ -31,6 +34,19 @@ int	cmd_router(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 		return (builtin_export(envp_dict, args));
 	else
 		return (exec_bin(cmd_token, envp_dict));
+}
+
+static int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
+{
+	char	**envp;
+	char	**args;
+
+	printf("Exec path\n");
+	args = (char **) cmd_token->body;
+	envp = hashtable_get_array(envp_dict, 0);
+	if (errno)
+		return (errno);
+	return (execve(cmd_token->head, args, envp));
 }
 
 static int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
@@ -48,6 +64,8 @@ static int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 		return (127);
 	}
 	envp = hashtable_get_array(envp_dict, 0);
+	if (errno)
+		return (errno);
 	return (execve(cmd_path, args, envp));
 }
 
@@ -67,6 +85,7 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 		current_path = ft_strjoin(*paths, cmd_token->head);
 		if (access(current_path, X_OK) == 0)
 			return (current_path);
+		errno = 0;
 		paths++;
 	}
 	return (NULL);
@@ -74,11 +93,13 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 
 int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
-	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", "echo", "exit"};
+	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", "echo", "exit", NULL};
 	char		*path;
 	size_t		index;
 
 	index = 0;
+	if (ft_strchr(cmd_token->head, '/') != NULL)
+		return (0);
 	while (builtin[index] != NULL)
 	{
 		if (ft_strcmp(cmd_token->head, builtin[index]) == 0)

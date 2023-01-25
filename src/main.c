@@ -39,6 +39,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline("> ");
 		if (line == NULL)
 			return (errno);
+		errno = 0;
 		line_token = line_lexer(line);
 		if (errno)
 			return (errno);
