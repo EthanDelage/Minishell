@@ -26,5 +26,6 @@ int	append_out_open(t_redirect_param *redirect_param)
 
 void	append_out_close(t_redirect_param *redirect_param)
 {
-	close(redirect_param->fd[WRITE]);
+	if (redirect_param->fd[WRITE] > 0)
+		close(redirect_param->fd[WRITE]);
 }

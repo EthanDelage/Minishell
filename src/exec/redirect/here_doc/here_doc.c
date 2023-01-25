@@ -31,7 +31,8 @@ int	here_doc_open(t_redirect_param *param)
 
 void	here_doc_close(t_redirect_param *redirect_param)
 {
-	close(redirect_param->fd[WRITE]);
+	if (redirect_param->fd[WRITE] > 0)
+		close(redirect_param->fd[WRITE]);
 }
 
 static int	here_doc(t_redirect_param *param)

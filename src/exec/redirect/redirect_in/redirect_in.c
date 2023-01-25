@@ -25,5 +25,6 @@ int	redirect_in_open(t_redirect_param *redirect_param)
 
 void	redirect_in_close(t_redirect_param *redirect_param)
 {
-	close(redirect_param->fd[READ]);
+	if (redirect_param->fd[READ] > 0)
+		close(redirect_param->fd[READ]);
 }

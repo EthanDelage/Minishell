@@ -20,7 +20,7 @@
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
-int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout);
+int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_out);
 
 int	g_return_value = 0;
 
@@ -58,7 +58,8 @@ int	main(int argc, char **argv, char **envp)
 			}
 			tmp = tmp->next;
 		}
-		exec_pipe(line_token, envp_dict, STDIN_FILENO, STDOUT_FILENO);
+		if (line_token && exec_pipe(line_token, envp_dict, STDIN_FILENO, STDOUT_FILENO) == -1)
+			return (1);
 		free(line);
 	}
 	hashtable_clear(envp_dict);

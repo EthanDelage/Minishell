@@ -45,6 +45,9 @@ SRCS		=		main.c \
 					exec/builtin/export/export_no_args.c \
 					exec/builtin/cd/cd.c \
 					exec/builtin/pwd/pwd.c \
+					exec/redirect/redirect_in/redirect_in.c \
+					exec/redirect/redirect_out/redirect_out.c \
+					exec/redirect/append_out/append_out.c \
 					exec/redirect/here_doc/here_doc.c \
 					exec/redirect/redirect.c \
 					exec/redirect/here_doc/replace_here_doc.c \
@@ -77,7 +80,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@
+					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
 
 
 $(LIBFT):			FORCE
