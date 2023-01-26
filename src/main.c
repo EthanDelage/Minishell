@@ -16,35 +16,52 @@
 #include "lexer.h"
 #include "redirect.h"
 #include "replace.h"
+#include "router.h"
 
 static void	print_line(t_token *token);
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
-int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout);
+int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_out);
 
-int	g_return_value;
+int	g_return_value = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_hashtable			*envp_dict;
-	t_token				*cmd_stack;
-	char				*line;
+	char		*line;
+	t_token		*line_token;
+	t_token		*tmp;
+	t_hashtable	*envp_dict;
 
 	(void) argc;
 	(void) argv;
 	envp_dict = envp_to_dict(envp);
-	if (errno)
-		return (errno);
 	while (1)
 	{
 		line = readline("> ");
 		if (line == NULL)
-			return (1);
+			return (errno);
 		errno = 0;
-		cmd_stack = analyser(line);
-		print_line(cmd_stack);
+		line_token = line_lexer(line);
+		if (errno)
+			return (errno);
+		if (error_syntax(line_parser(line_token)) == FAILURE)
+			return (FAILURE);
+		tmp = line_token;
+		while (tmp)
+		{
+			if (tmp->type == COMMAND)
+			{
+				cmd_lexer(tmp);
+				if (errno)
+					return (errno);
+				if (error_syntax(cmd_parser(&tmp->cmd_stack)) == FAILURE)
+					return (FAILURE);
+			}
+			tmp = tmp->next;
+		}
+		if (line_token && exec_pipe(line_token, envp_dict, STDIN_FILENO, STDOUT_FILENO) == -1)
+			return (1);
 		free(line);
-		token_clear(&cmd_stack);
 	}
 }
 

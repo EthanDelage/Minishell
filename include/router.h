@@ -1,0 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   router.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/23 09:16:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/01/23 09:16:00 by hferraud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+#ifndef ROUTER_H
+# define ROUTER_H
+
+# include "builtin.h"
+# include "token.h"
+# include "envp.h"
+# include "libft.h"
+
+# define BUILTIN (char*[]){"pwd", "cd", "env", "unset", "export"}
+
+int	cmd_router(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+int	exec_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+
+#endif

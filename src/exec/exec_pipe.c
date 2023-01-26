@@ -11,49 +11,75 @@
 /* ************************************************************************** */
 #include "envp.h"
 #include "token.h"
+#include "router.h"
+#include "redirect.h"
 
-int	g_return_value;
+extern int	g_return_value;
 
-int	exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_stdin, int fd_stdout)
+static int	init_pipe(t_token *head, int fd_pipe[2]);
+
+int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 {
-	pid_t	pid;
-	int		save_stdin;
-	int		save_stdout;
-	int		pipe_fd[2];
+	int	pid;
+	int	fd_io[2];
+	int	fd_pipe[2];
 
-	if (head->next && head->next->type == PIPE)
-	{
-		if (pipe(pipe_fd) == -1)
-			return (-1);
-		save_stdout = dup(fd_stdout);
-		if (save_stdout == -1)
-			return (-1);
-		if (dup2(pipe_fd[WRITE], fd_stdout) == -1)
-			return (-1);
-	}
+	redirect_open(token->cmd_stack);
+	if (init_pipe(token, fd_pipe) != 0)
+		return (-1);
+	fd_io[WRITE] = redirect_get_output_fd(token->cmd_stack);
+	fd_io[READ] = redirect_get_input_fd(token->cmd_stack);
+	if (fd_io[READ] == -1 && fd_pipe_in == -1)
+		fd_io[READ] = STDIN_FILENO;
+	else if (fd_io[READ] == -1)
+		fd_io[READ] = fd_pipe_in;
+	if (fd_io[WRITE] == -1 && fd_pipe[WRITE] == -1)
+		fd_io[WRITE] = STDOUT_FILENO;
+	else if (fd_io[WRITE] == -1)
+		fd_io[WRITE] = fd_pipe[WRITE];
 	pid = fork();
 	if (pid == -1)
 		return (-1);
 	else if (pid == 0)
-		return (exec());
+	{
+		errno = 0;
+		if (token && token->next && token->next->type == PIPE)
+			close(fd_pipe[READ]);
+		if (fd_io[WRITE] != STDOUT_FILENO)
+		{
+			dup2(fd_io[WRITE], STDOUT_FILENO);
+			close(fd_io[WRITE]);
+		}
+		if (fd_io[READ] != STDIN_FILENO)
+		{
+			dup2(fd_io[READ], STDIN_FILENO);
+			close(fd_io[READ]);
+		}
+		exit(cmd_router(token->cmd_stack, envp_dict));
+	}
 	else
 	{
+		if (token && token->next && token->next->type == PIPE)
+		{
+			close(fd_pipe[WRITE]);
+			exec_pipe(token->next->next, envp_dict, fd_pipe[READ]);
+			close(fd_pipe[READ]);
+		}
 		waitpid(pid, &g_return_value, 0);
 		g_return_value = WEXITSTATUS(g_return_value);
-		if (head->next && head->next->type == PIPE)
-		{
-			if (dup2(save_stdout, pipe_fd[WRITE]) == -1)
-				return (-1);
-			save_stdin = dup(fd_stdin);
-			if (save_stdin == -1)
-				return (-1);
-			if (dup2(pipe_fd[READ], fd_stdin) == -1)
-				return (-1);
-			if (exec_pipe(head->next->next, envp_dict, pipe_fd[READ], save_stdout))
-				return (-1);
-			if (dup2(save_stdin, pipe_fd[READ]) == -1)
-				return (-1);
-		}
 	}
+	redirect_close(token->cmd_stack);
+	return (0);
+}
+
+static int	init_pipe(t_token *head, int fd_pipe[2])
+{
+	if (head && head->next && head->next->type == PIPE)
+	{
+		if (pipe(fd_pipe) == -1)
+			return (errno);
+	}
+	else
+		fd_pipe[WRITE] = -1;
 	return (0);
 }

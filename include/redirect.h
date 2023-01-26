@@ -30,6 +30,10 @@ void	here_doc_close(t_redirect_param *redirect_param);
 
 /* ----------	REDIRECT_UTILS FUNCTIONS	---------- */
 
+void	redirect_open(t_cmd_token *cmd_token);
+void	redirect_close(t_cmd_token *cmd_token);
+int		redirect_get_input_fd(t_cmd_token *head);
+int		redirect_get_output_fd(t_cmd_token *head);
 int		return_errno_error(void);
 void	redirect_print_error(char *file_name);
 
