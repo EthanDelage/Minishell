@@ -18,7 +18,6 @@
 #include "replace.h"
 #include "router.h"
 
-static void	print_line(t_token *token);
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
 int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_out);
@@ -29,7 +28,6 @@ int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	t_token		*line_token;
-	t_token		*tmp;
 	t_hashtable	*envp_dict;
 
 	(void) argc;
@@ -41,42 +39,12 @@ int	main(int argc, char **argv, char **envp)
 		if (line == NULL)
 			return (errno);
 		errno = 0;
-		line_token = line_lexer(line);
-		if (errno)
-			return (errno);
-		if (error_syntax(line_parser(line_token)) == FAILURE)
-			return (FAILURE);
-		tmp = line_token;
-		while (tmp)
-		{
-			if (tmp->type == COMMAND)
-			{
-				cmd_lexer(tmp);
-				if (errno)
-					return (errno);
-				if (error_syntax(cmd_parser(&tmp->cmd_stack)) == FAILURE)
-					return (FAILURE);
-			}
-			tmp = tmp->next;
-		}
+		line_token = analyser(line);
+		if (line_token == NULL)
+			return (1);
 		if (line_token && exec_pipe(line_token, envp_dict, STDIN_FILENO, STDOUT_FILENO) == -1)
 			return (1);
 		free(line);
-	}
-}
-
-static void	print_line(t_token *token)
-{
-	while (token)
-	{
-		if (token->type == COMMAND)
-		{
-			if (token->cmd_stack->type == COMMAND)
-				print_cmd_body(token);
-			else
-				print_redirect(token);
-		}
-		token = token->next;
 	}
 }
 
