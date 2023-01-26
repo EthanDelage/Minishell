@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "replace.h"
 
+extern unsigned char	g_return_value;
+
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote);
 static void	change_quote_value(char *quote, char c);
@@ -18,7 +20,7 @@ static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);
 static char	*add_env_var(char *line, char *value, size_t *index,
 				size_t end_index);
 
-char	*replace(t_hashtable *envp_dict, char *line)
+char	*replace_env(t_hashtable *envp_dict, char *line)
 {
 	size_t	index;
 	char	quote;
@@ -29,6 +31,12 @@ char	*replace(t_hashtable *envp_dict, char *line)
 	{
 		if (line[index] == '$' && quote != '\'')
 		{
+			if (line[index + 1] == '?')
+			{
+				line = replace_ret_value(line, &index);
+				if (errno)
+					return (NULL);
+			}
 			line = check_env_var(envp_dict, line, &index, &quote);
 			if (errno)
 				return (NULL);

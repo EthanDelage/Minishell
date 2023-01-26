@@ -14,12 +14,13 @@
 #include "router.h"
 #include "redirect.h"
 
-extern int	g_return_value;
+extern unsigned char	g_return_value;
 
 static int	init_pipe(t_token *head, int fd_pipe[2]);
 
 int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 {
+	int	return_val;
 	int	pid;
 	int	fd_io[2];
 	int	fd_pipe[2];
@@ -65,8 +66,8 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 			exec_pipe(token->next->next, envp_dict, fd_pipe[READ]);
 			close(fd_pipe[READ]);
 		}
-		waitpid(pid, &g_return_value, 0);
-		g_return_value = WEXITSTATUS(g_return_value);
+		waitpid(pid, &return_val, 0);
+		g_return_value = WEXITSTATUS(return_val);
 	}
 	redirect_close(token->cmd_stack);
 	return (0);

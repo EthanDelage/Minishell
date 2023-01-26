@@ -15,8 +15,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include "envp.h"
+# include "token.h"
 
-char	*replace(t_hashtable *envp_dict, char *line);
+int		replace(t_hashtable *envp_dict, t_cmd_token *head);
+char	*replace_env(t_hashtable *envp_dict, char *line);
+char	*replace_ret_value(char *line, size_t *index);
 char	*trim_quotes(char *str);
 int		valid_char(char c);
 

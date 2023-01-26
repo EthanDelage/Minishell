@@ -71,7 +71,8 @@ void	cmd_arg_clear(t_cmd_arg **head)
 	while (*head)
 	{
 		next = (*head)->next;
-		free((*head)->arg);
+		if ((*head)->arg)
+			free((*head)->arg);
 		free(*head);
 		*head = next;
 	}

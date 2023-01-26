@@ -20,9 +20,10 @@
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
-int		exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_out);
+int		exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in);
+int		exec_simple_cmd(t_token *token, t_hashtable *envp_dict);
 
-int	g_return_value = 0;
+unsigned char	g_return_value = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -42,7 +43,7 @@ int	main(int argc, char **argv, char **envp)
 		line_token = analyser(line);
 		if (line_token == NULL)
 			return (1);
-		if (line_token && exec_pipe(line_token, envp_dict, STDIN_FILENO, STDOUT_FILENO) == -1)
+		if (exec_pipe(line_token, envp_dict, STDIN_FILENO) == -1)
 			return (1);
 		free(line);
 	}
