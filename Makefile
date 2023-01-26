@@ -55,6 +55,7 @@ SRCS		=		main.c \
 					parsing/replace/replace.c \
 					parsing/replace/replace_quotes.c \
 					exec/exec_pipe.c \
+					exec/exec_simple_cmd.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 

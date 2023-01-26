@@ -68,6 +68,7 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 		waitpid(pid, &g_return_value, 0);
 		g_return_value = WEXITSTATUS(g_return_value);
 	}
+	redirect_close(token->cmd_stack);
 	return (0);
 }
 
