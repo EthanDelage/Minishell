@@ -22,7 +22,7 @@ int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict)
 	pid_t	pid;
 	int		fd_save[2];
 
-	redirect_open(token->cmd_stack);
+	redirect_open(envp_dict, token->cmd_stack);
 	fd_io[READ] = redirect_get_input_fd(token->cmd_stack);
 	if (fd_io[READ] == -1)
 		fd_io[READ] = STDIN_FILENO;

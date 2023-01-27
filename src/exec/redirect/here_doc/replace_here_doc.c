@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 #include <stdlib.h>
 #include "envp.h"
+#include "replace.h"
+
+extern unsigned char	g_return_value;
 
 int			valid_char(char c);
 static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
@@ -24,10 +27,18 @@ char	*here_doc_replace_env(t_hashtable *envp_dict, char *line)
 	size_t	index;
 
 	index = 0;
+	if (line == NULL)
+		return (ft_strdup(""));
 	while (line[index])
 	{
 		if (line[index] == '$')
 		{
+			if (line[index + 1] == '?')
+			{
+				line = replace_ret_value(line, &index);
+				if (errno)
+					return (NULL);
+			}
 			line = check_env_var_here_doc(envp_dict, line, &index);
 			if (errno)
 				return (NULL);

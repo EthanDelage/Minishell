@@ -25,7 +25,8 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 	int	fd_io[2];
 	int	fd_pipe[2];
 
-	redirect_open(token->cmd_stack);
+	if (redirect_open(envp_dict, token->cmd_stack) == EXIT_FAILURE)
+		return (-1);
 	if (init_pipe(token, fd_pipe) != 0)
 		return (-1);
 	fd_io[WRITE] = redirect_get_output_fd(token->cmd_stack);
@@ -63,7 +64,8 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 		if (token && token->next && token->next->type == PIPE)
 		{
 			close(fd_pipe[WRITE]);
-			exec_pipe(token->next->next, envp_dict, fd_pipe[READ]);
+			if (exec_pipe(token->next->next, envp_dict, fd_pipe[READ]) == -1)
+				return (-1);
 			close(fd_pipe[READ]);
 		}
 		waitpid(pid, &return_val, 0);
