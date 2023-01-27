@@ -13,6 +13,7 @@
 # define BUILTIN_H
 
 # include "envp.h"
+# include "token.h"
 
 /* ----------	BUILTIN FUNCTIONS	---------- */
 

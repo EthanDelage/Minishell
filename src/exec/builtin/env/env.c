@@ -15,6 +15,7 @@ static void	display_env(char **envp);
 
 int	builtin_env(t_hashtable *envp_dict)
 {
+//TODO add args error
 	char	**envp;
 
 	envp = hashtable_get_array(envp_dict, false);

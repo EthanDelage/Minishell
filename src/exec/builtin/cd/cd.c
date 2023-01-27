@@ -17,6 +17,7 @@ static int		too_many_args(void);
 
 int	builtin_cd(t_hashtable *envp_dict, char **args)
 {
+	//TODO replace tilde
 	const size_t	nb_args = count_nb_args(args);
 
 	if (nb_args == 1)
