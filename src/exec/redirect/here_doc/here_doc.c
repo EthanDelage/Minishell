@@ -40,7 +40,8 @@ int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 	redirect_param->body = here_doc_replace_env(envp_dict, redirect_param->body);
 	if (redirect_param->body == NULL)
 		return (return_errno_error());
-	ft_putendl_fd(redirect_param->body, redirect_param->fd[WRITE]);
+	if (*redirect_param->body != 0)
+		ft_putendl_fd(redirect_param->body, redirect_param->fd[WRITE]);
 	close(redirect_param->fd[WRITE]);
 	return (0);
 }
