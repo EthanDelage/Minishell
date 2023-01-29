@@ -12,11 +12,10 @@
 #ifndef EXEC_H
 # define EXEC_H
 
-#include "token.h"
-#include "redirect.h"
-#include "envp.h"
-#include "router.h"
-#include "wait.h"
+# include "token.h"
+# include "redirect.h"
+# include "envp.h"
+# include "router.h"
 
 int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict);
 int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in);

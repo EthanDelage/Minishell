@@ -45,7 +45,7 @@ int	exec_builtin(t_token *token, t_hashtable *envp_dict)
 	else if (ft_strcmp(token->cmd_stack->head, "cd") == 0)
 		return (builtin_cd(envp_dict, args));
 	else if (ft_strcmp(token->cmd_stack->head, "env") == 0)
-		return (builtin_env(envp_dict));
+		return (builtin_env(envp_dict, args));
 	else if (ft_strcmp(token->cmd_stack->head, "unset") == 0)
 		return (builtin_unset(envp_dict, args));
 	else if (ft_strcmp(token->cmd_stack->head, "export") == 0)

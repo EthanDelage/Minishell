@@ -13,11 +13,15 @@
 
 static void	display_env(char **envp);
 
-int	builtin_env(t_hashtable *envp_dict)
+int	builtin_env(t_hashtable *envp_dict, char **args)
 {
-//TODO add args error
 	char	**envp;
 
+	if (args[1] != NULL)
+	{
+		ft_putstr_fd("minishell: env: too many arguments\n", 2);
+		return (1);
+	}
 	envp = hashtable_get_array(envp_dict, false);
 	if (errno)
 		return (return_errno_error());

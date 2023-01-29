@@ -9,8 +9,7 @@
 /*   Updated: 2023/01/24 16:43:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "envp.h"
-#include "token.h"
+#include "exec.h"
 
 int	exec(t_token *head, t_hashtable *envp_dict, int std_fd[2])
 {
