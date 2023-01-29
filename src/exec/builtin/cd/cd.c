@@ -14,7 +14,7 @@
 static size_t	count_nb_args(char **args);
 static int		cd_no_args(t_hashtable *envp_dict);
 static int		too_many_args(void);
-static char*	replace_tilde(char *arg, t_hashtable *envp_dict);
+static char		*replace_tilde(char *arg, t_hashtable *envp_dict);
 
 int	builtin_cd(t_hashtable *envp_dict, char **args)
 {
@@ -40,7 +40,7 @@ int	builtin_cd(t_hashtable *envp_dict, char **args)
 	return (0);
 }
 
-static char*	replace_tilde(char *arg, t_hashtable *envp_dict)
+static char	*replace_tilde(char *arg, t_hashtable *envp_dict)
 {
 	char	*path;
 	t_dict	*home;

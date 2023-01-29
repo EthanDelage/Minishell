@@ -13,7 +13,7 @@
 
 static int	is_numeric_arg(char *arg);
 static void	exit_handle_arg(char *arg);
-static char *exit_get_arg(char **args);
+static char	*exit_get_arg(char **args);
 
 int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 {
@@ -37,7 +37,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 
 static void	exit_handle_arg(char *arg)
 {
-	int return_value;
+	int	return_value;
 
 	if (!is_numeric_arg(arg))
 		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
@@ -46,9 +46,9 @@ static void	exit_handle_arg(char *arg)
 	exit(return_value);
 }
 
-static char *exit_get_arg(char **args)
+static char	*exit_get_arg(char **args)
 {
-	char *arg;
+	char	*arg;
 
 	if (args[1])
 	{
