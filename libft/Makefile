@@ -40,6 +40,7 @@ CHAR =				ft_isalpha.c \
 					ft_isascii.c \
 					ft_isspace.c \
 					ft_isprint.c \
+					ft_issign.c \
 					ft_isspace.c \
 					ft_toupper.c \
 					ft_tolower.c \

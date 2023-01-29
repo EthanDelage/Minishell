@@ -22,6 +22,7 @@ int		builtin_cd(t_hashtable *envp_dict, char **args);
 int		builtin_env(t_hashtable *envp_dict);
 int		builtin_unset(t_hashtable *envp_dict, char **args);
 int		builtin_export(t_hashtable *envp_dict, char **args);
+int		builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args);
 
 /* ----------	BUILTIN UTILS	---------- */
 

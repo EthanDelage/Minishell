@@ -9,10 +9,7 @@
 /*   Updated: 2023/01/24 17:45:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "envp.h"
-#include "token.h"
-#include "router.h"
-#include "redirect.h"
+#include "exec.h"
 
 extern int	g_return_value;
 
@@ -55,7 +52,7 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 			dup2(fd_io[READ], STDIN_FILENO);
 			close(fd_io[READ]);
 		}
-		exit(cmd_router(token->cmd_stack, envp_dict));
+		exit(cmd_router(token, envp_dict));
 	}
 	else
 	{

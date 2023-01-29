@@ -9,10 +9,7 @@
 /*   Updated: 2023/01/26 01:22:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "token.h"
-#include "redirect.h"
-#include "envp.h"
-#include "router.h"
+#include "exec.h"
 
 extern int	g_return_value;
 
@@ -59,7 +56,7 @@ int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict)
 		}
 	}
 	else
-		g_return_value = exec_builtin(token->cmd_stack, envp_dict);
+		g_return_value = exec_builtin(token, envp_dict);
 	if (redirect_get_input_fd(token->cmd_stack) != -1)
 	{
 		dup2(fd_save[READ], STDIN_FILENO);

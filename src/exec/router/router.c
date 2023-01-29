@@ -13,14 +13,14 @@
 
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 
-int	cmd_router(t_cmd_token *cmd_token, t_hashtable *envp_dict)
+int	cmd_router(t_token *token, t_hashtable *envp_dict)
 {
-	if (ft_strchr(cmd_token->head, '/') != NULL)
-		return (exec_path(cmd_token, envp_dict));
-	else if (is_builtin(cmd_token, envp_dict) == 1)
-		return (exec_builtin(cmd_token, envp_dict));
+	if (ft_strchr(token->cmd_stack->head, '/') != NULL)
+		return (exec_path(token->cmd_stack, envp_dict));
+	else if (is_builtin(token->cmd_stack, envp_dict) == 1)
+		return (exec_builtin(token, envp_dict));
 	else
-		return (exec_bin(cmd_token, envp_dict));
+		return (exec_bin(token->cmd_stack, envp_dict));
 }
 
 int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
@@ -35,21 +35,23 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	return (execve(cmd_token->head, args, envp));
 }
 
-int	exec_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
+int	exec_builtin(t_token *token, t_hashtable *envp_dict)
 {
 	char	**args;
 
-	args = (char **) cmd_token->body;
-	if (ft_strcmp(cmd_token->head, "pwd") == 0)
+	args = (char **) token->cmd_stack->body;
+	if (ft_strcmp(token->cmd_stack->head, "pwd") == 0)
 		return (builtin_pwd());
-	else if (ft_strcmp(cmd_token->head, "cd") == 0)
+	else if (ft_strcmp(token->cmd_stack->head, "cd") == 0)
 		return (builtin_cd(envp_dict, args));
-	else if (ft_strcmp(cmd_token->head, "env") == 0)
+	else if (ft_strcmp(token->cmd_stack->head, "env") == 0)
 		return (builtin_env(envp_dict));
-	else if (ft_strcmp(cmd_token->head, "unset") == 0)
+	else if (ft_strcmp(token->cmd_stack->head, "unset") == 0)
 		return (builtin_unset(envp_dict, args));
-	else if (ft_strcmp(cmd_token->head, "export") == 0)
+	else if (ft_strcmp(token->cmd_stack->head, "export") == 0)
 		return (builtin_export(envp_dict, args));
+	else if (ft_strcmp(token->cmd_stack->head, "exit") == 0)
+		return (builtin_exit(envp_dict, token, args));
 	return (EXIT_FAILURE);
 }
 
@@ -97,7 +99,7 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 
 int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
-	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", NULL};
+	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", "exit",NULL};
 	char		*path;
 	size_t		index;
 
