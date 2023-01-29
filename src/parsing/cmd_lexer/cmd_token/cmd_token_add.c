@@ -90,6 +90,5 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 
 void	cmd_token_add_command(t_token *token, t_cmd_arg *cmd_arg_stack)
 {
-	cmd_token_add(&token->cmd_stack, COMMAND,
-		ft_strdup(cmd_arg_stack->arg), cmd_arg_stack_to_array(cmd_arg_stack));
+	cmd_token_add(&token->cmd_stack, COMMAND, NULL, cmd_arg_stack);
 }

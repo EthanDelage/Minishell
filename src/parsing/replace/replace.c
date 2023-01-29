@@ -9,6 +9,7 @@
 /*   Updated: 2023/01/28 00:47:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
+#include "cmd_token.h"
 #include "token.h"
 #include "replace.h"
 #include "envp.h"
@@ -42,8 +43,24 @@ int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 
 static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 {
-	(void) envp_dict;
-	(void) cmd_token;
+	char		**arg;
+	t_cmd_arg	*args;
+
+	args = (t_cmd_arg *) cmd_token->body;
+	arg = (char **) cmd_token->body;
+	while (args)
+	{
+		args->arg = replace_env(envp_dict, args->arg);
+		if (errno)
+			return (1);
+		args = args->next;
+	}
+	cmd_arg_reverse((t_cmd_arg **) &cmd_token->body);
+	free(cmd_token->head);
+	cmd_token->head = ft_strdup(((char **) cmd_token->body)[0]);
+	cmd_token->body = cmd_arg_stack_to_array((t_cmd_arg *) cmd_token->body);
+	if (errno)
+		return (1);
 	return (0);
 }
 
@@ -53,7 +70,6 @@ static int	replace_redirect(t_hashtable *envp_dict, t_cmd_token *redirect_token)
 
 	param = (t_redirect_param *) redirect_token->body;
 	param->body = replace_env(envp_dict, param->body);
-	printf("%s\n", param->body);
 	if (param->body == NULL)
 	{
 		perror("minishell");
