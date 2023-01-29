@@ -91,4 +91,4 @@ add_executable(minishell
         src/parsing/replace/replace_quotes.c
         src/parsing/analyser/analyser.c
         include/replace.h src/exec/exec.c src/exec/exec_pipe.c
-        src/exec/router/router.c include/router.h src/exec/exec_simple_cmd.c src/parsing/replace/replace_ret_value.c)
+        src/exec/router/router.c include/router.h src/exec/exec_simple_cmd.c src/parsing/replace/replace_ret_value.c src/parsing/replace/replace.c)

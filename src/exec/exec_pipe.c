@@ -13,6 +13,7 @@
 #include "token.h"
 #include "router.h"
 #include "redirect.h"
+#include "replace.h"
 
 extern unsigned char	g_return_value;
 
@@ -25,6 +26,8 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 	int	fd_io[2];
 	int	fd_pipe[2];
 
+	if (replace(envp_dict, token->cmd_stack) == 1)
+		return (1);
 	if (redirect_open(envp_dict, token->cmd_stack) == EXIT_FAILURE)
 		return (-1);
 	if (init_pipe(token, fd_pipe) != 0)
