@@ -46,6 +46,7 @@ CHAR =				ft_isalpha.c \
 					ft_tolower.c \
 
 CONVERT =			ft_atoi.c \
+					ft_atoll.c \
 					ft_itoa.c \
 
 FD =				ft_putchar_fd.c \

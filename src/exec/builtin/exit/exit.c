@@ -37,23 +37,30 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 
 static void	exit_handle_arg(char *arg)
 {
-	int	return_value;
+	long long	return_value;
 
-	if (!is_numeric_arg(arg))
+	return_value = ft_atoll((arg));
+	printf("%lld\n", return_value);
+	if (!is_numeric_arg(arg) || errno)
+	{
 		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-	return_value = ft_atoi((arg));
+		free(arg);
+		exit (1);
+	}
 	free(arg);
-	exit(return_value);
+	exit((unsigned char)return_value);
 }
 
 static char	*exit_get_arg(char **args)
 {
 	char	*arg;
+	size_t	size;
 
 	if (args[1])
 	{
-		arg = (char *) malloc((ft_strlen(args[1]) + 1) * sizeof (char));
-		ft_memcpy(arg, args[1], sizeof (args[1]));
+		size = ft_strlen(args[1]);
+		arg = (char *) malloc((size + 1) * sizeof (char));
+		ft_memcpy(arg, args[1], size + 1);
 		return (arg);
 	}
 	return (NULL);
@@ -61,6 +68,10 @@ static char	*exit_get_arg(char **args)
 
 static int	is_numeric_arg(char *arg)
 {
+	while (ft_isspace(*arg))
+		arg++;
+	if (*arg == '+' || *arg == '-')
+		arg++;
 	while (*arg)
 	{
 		if (!ft_isdigit(*arg))

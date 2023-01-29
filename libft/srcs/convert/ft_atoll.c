@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/05 16:29:09 by edelage           #+#    #+#             */
-/*   Updated: 2022/11/08 16:00:54 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/29 17:08:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/01/29 17:08:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
@@ -17,11 +17,11 @@ static int	return_error(int error_code)
 	return (-1);
 }
 
-int	ft_atoi(const char *nptr)
+long long	ft_atoll(const char *nptr)
 {
-	int	index;
-	int	sign;
-	int	result;
+	size_t		index;
+	int			sign;
+	long long	result;
 
 	index = 0;
 	sign = 1;
@@ -36,9 +36,9 @@ int	ft_atoi(const char *nptr)
 	}
 	while (ft_isdigit(nptr[index]))
 	{
-		if ((result * 10 + (sign * (nptr[index] - '0'))) / 10 != result)
+		if ((result * 10 + (nptr[index] - '0') * sign) / 10 != result)
 			return (return_error(ERANGE));
-		result = result * 10 + (nptr[index] - '0');
+		result = result * 10 + (nptr[index] - '0') * sign;
 		index++;
 	}
 	return (result * sign);

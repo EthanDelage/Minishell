@@ -14,6 +14,7 @@
 # define LIBFT_H
 # include <unistd.h>
 # include <stdlib.h>
+# include <errno.h>
 
 typedef struct s_list
 {
@@ -92,7 +93,8 @@ void	free_string_array(char **strings);
 
 /* -------------- CONVERT  FUNCTIONS -------------- */
 
-int		ft_atoi(const char *nptr);
-char	*ft_itoa(int n);
+int			ft_atoi(const char *nptr);
+long long	ft_atoll(const char *nptr);
+char		*ft_itoa(int n);
 
 #endif
