@@ -52,6 +52,8 @@ int	exec_builtin(t_token *token, t_hashtable *envp_dict)
 		return (builtin_export(envp_dict, args));
 	else if (ft_strcmp(token->cmd_stack->head, "exit") == 0)
 		return (builtin_exit(envp_dict, token, args));
+	else if (ft_strcmp(token->cmd_stack->head, "echo") == 0)
+		return (builtin_echo(args));
 	return (EXIT_FAILURE);
 }
 
@@ -99,7 +101,7 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 
 int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
-	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", "exit",NULL};
+	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", "exit", "echo", NULL};
 	char		*path;
 	size_t		index;
 

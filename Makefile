@@ -46,6 +46,7 @@ SRCS		=		main.c \
 					exec/builtin/cd/cd.c \
 					exec/builtin/pwd/pwd.c \
 					exec/builtin/exit/exit.c \
+					exec/builtin/echo/echo.c \
 					exec/redirect/redirect_in/redirect_in.c \
 					exec/redirect/redirect_out/redirect_out.c \
 					exec/redirect/append_out/append_out.c \
