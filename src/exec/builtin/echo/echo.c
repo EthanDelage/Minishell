@@ -41,7 +41,7 @@ static int	echo_put_args(char **args)
 		if (printf("%s", *args) <= 0)
 			return (1);
 		args++;
-		if (args)
+		if (*args)
 			if (printf(" ") <= 0)
 				return (1);
 	}
