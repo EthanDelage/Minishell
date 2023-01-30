@@ -17,10 +17,13 @@
 # include "envp.h"
 # include "token.h"
 
-int		replace(t_hashtable *envp_dict, t_cmd_token *head);
-char	*replace_env(t_hashtable *envp_dict, char *line);
-char	*replace_ret_value(char *line, size_t *index);
-char	*trim_quotes(char *str);
-int		valid_char(char c);
+int			replace(t_hashtable *envp_dict, t_cmd_token *head);
+char		*replace_env(t_hashtable *envp_dict, char *line);
+char		*replace_ret_value(char *line, size_t *index);
+char		*trim_quotes(char *str);
+int			valid_char(char c);
+
+t_cmd_arg	*split_arg(t_cmd_arg *current);
+int			cmd_arg_remove_quote(t_cmd_arg *head);
 
 #endif
