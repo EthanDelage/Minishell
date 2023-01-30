@@ -16,7 +16,8 @@
 #include "redirect.h"
 
 static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
-static int	replace_redirect(t_hashtable *envp_dict, t_cmd_token *redirect_token);
+static int	replace_redirect(t_hashtable *envp_dict,
+				t_cmd_token *redirect_token);
 static int	is_ambiguous_redirect(char *file_name);
 
 int	replace(t_hashtable *envp_dict, t_cmd_token *head)
@@ -65,7 +66,8 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 	return (0);
 }
 
-static int	replace_redirect(t_hashtable *envp_dict, t_cmd_token *redirect_token)
+static int	replace_redirect(t_hashtable *envp_dict,
+				t_cmd_token *redirect_token)
 {
 	t_redirect_param	*param;
 

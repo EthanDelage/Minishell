@@ -32,12 +32,9 @@ char	*replace_env(t_hashtable *envp_dict, char *line)
 		if (line[index] == '$' && quote != '\'')
 		{
 			if (line[index + 1] == '?')
-			{
 				line = replace_ret_value(line, &index);
-				if (errno)
-					return (NULL);
-			}
-			line = check_env_var(envp_dict, line, &index, &quote);
+			else
+				line = check_env_var(envp_dict, line, &index, &quote);
 			if (errno)
 				return (NULL);
 		}
@@ -122,8 +119,6 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	char			*start;
 	char			*new_line;
 
-	new_line = (char *) malloc(sizeof(char)
-			* (len_line + *index - end_index + len_value));
 	if (errno)
 	{
 		free(line);
