@@ -18,15 +18,15 @@
 
 enum
 {
-	OPEN_PARENTHESIS = 0,
-	OPERATOR = 1,
-	PIPE = 2,
-	CLOSE_PARENTHESIS = 3,
-	COMMAND = 4,
-	REDIRECT_OUT = 0,
-	REDIRECT_IN = 1,
-	APPEND_OUT = 2,
-	HERE_DOC = 3
+	OPEN_PARENTHESIS,
+	OPERATOR,
+	PIPE,
+	CLOSE_PARENTHESIS,
+	COMMAND,
+	REDIRECT_OUT,
+	REDIRECT_IN,
+	APPEND_OUT,
+	HERE_DOC
 };
 
 enum
@@ -34,6 +34,12 @@ enum
 	READ = 0,
 	WRITE = 1,
 };
+
+typedef enum e_body_type
+{
+	STACK,
+	ARRRAY
+}	t_body_type;
 
 typedef struct s_cmd_arg
 {
@@ -59,6 +65,7 @@ typedef struct s_cmd_token
 {
 	int					type;
 	char				*head;
+	t_body_type			body_type;
 	void				*body;
 	struct s_cmd_token	*next;
 }						t_cmd_token;

@@ -60,7 +60,10 @@ void	cmd_token_clear(t_cmd_token **head)
 		if ((*head)->type == COMMAND)
 		{
 			free((*head)->head);
-			free_string_array((char **)(*head)->body);
+			if ((*head)->body_type == ARRRAY)
+				free_string_array((char **)(*head)->body);
+			else
+				cmd_arg_clear((t_cmd_arg **) &(*head)->body);
 		}
 		else
 			cmd_token_redirect_clear_redirect_param(

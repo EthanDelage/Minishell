@@ -103,7 +103,7 @@ add_executable(Minishell
         src/exec/router/router.c
         src/exec/exec.c
         src/exec/exec_pipe.c
-        src/exec/exec_simple_cmd.c
+        src/exec/exec_cmd.c
         src/parsing/analyser/analyser.c
         src/parsing/cmd_lexer/cmd_token/cmd_arg_add.c
         src/parsing/cmd_lexer/cmd_token/cmd_arg_utils.c

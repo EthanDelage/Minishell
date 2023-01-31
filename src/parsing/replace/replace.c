@@ -61,6 +61,7 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 	free(cmd_token->head);
 	cmd_token->head = ft_strdup(((char **) cmd_token->body)[0]);
 	cmd_token->body = cmd_arg_stack_to_array((t_cmd_arg *) cmd_token->body);
+	cmd_token->body_type = ARRRAY;
 	if (errno)
 		return (1);
 	return (0);

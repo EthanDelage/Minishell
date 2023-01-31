@@ -33,6 +33,7 @@ static t_cmd_token	*cmd_token_new(int type, char *head, void *body)
 		return (NULL);
 	cmd_token->type = type;
 	cmd_token->head = head;
+	cmd_token->body_type = STACK;
 	cmd_token->body = body;
 	cmd_token->next = NULL;
 	return (cmd_token);

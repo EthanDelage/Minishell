@@ -13,7 +13,7 @@
 
 extern unsigned char	g_return_value;
 
-int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict)
+int	exec_cmd(t_token *token, t_hashtable *envp_dict)
 {
 	int		return_val;
 	int		fd_io[2];

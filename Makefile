@@ -61,8 +61,9 @@ SRCS		=		main.c \
 					parsing/replace/replace_ret_value.c \
 					parsing/replace/replace_quotes.c \
 					parsing/analyser/analyser.c \
+					exec/exec.c \
 					exec/exec_pipe.c \
-					exec/exec_simple_cmd.c \
+					exec/exec_cmd.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
@@ -74,7 +75,7 @@ DEPS		=		$(OBJS:.o=.d)
 
 CC			=		clang
 
-CFLAGS		=		-Wall -Werror -Wextra -fsanitize=address
+CFLAGS		=		-Wall -Werror -Wextra -fsanitize=address -g3
 
 DFLAGS		=		-MMD -MP
 
@@ -90,7 +91,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@ -fsanitize=address
+					$(CC) $(OBJS) $(LFLAGS) -o $@ -fsanitize=address -g3
 
 
 $(LIBFT):			FORCE

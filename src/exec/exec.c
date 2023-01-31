@@ -11,12 +11,57 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-int	exec(t_token *head, t_hashtable *envp_dict, int std_fd[2])
-{
-	int	pid;
-	int	return_value;
+extern unsigned char	g_return_value;
 
+static t_token	*exec_get_next_token(t_token *token);
+static t_token	*exec_get_next_operator(t_token *token);
+
+t_token	*exec_operator(t_token *head, t_hashtable *envp_dict)
+{
+	head = exec_router(head, envp_dict);
+	while (head && head->type == OPERATOR)
+	{
+		if ((*head->value == '&' && g_return_value == 0)
+			|| (*head->value == '|' && g_return_value != 0))
+			head = exec_router(head->next, envp_dict);
+		else
+			head = exec_get_next_operator(head->next);
+	}
+	return (head);
+}
+
+t_token	*exec_router(t_token *head, t_hashtable *envp_dict)
+{
 	if (head->next && head->next->type == PIPE)
 	{
+		exec_pipe(head, envp_dict, STDIN_FILENO);
+		return (exec_get_next_token(head));
 	}
+	else
+	{
+		exec_cmd(head, envp_dict);
+		return (head->next);
+	}
+}
+
+static t_token	*exec_get_next_token(t_token *token)
+{
+	while (token)
+	{
+		if (token->next == NULL || token->next->type == OPERATOR)
+			return (token->next);
+		token = token->next;
+	}
+	return (token);
+}
+
+static t_token	*exec_get_next_operator(t_token *token)
+{
+	while (token && token->type != OPERATOR)
+	{
+		if (token->type == OPEN_PARENTHESIS || token->type == CLOSE_PARENTHESIS)
+			return (token);
+		token = token->next;
+	}
+	return (token);
 }

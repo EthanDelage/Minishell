@@ -17,6 +17,8 @@ void	free_string_array(char **strings)
 	size_t	i;
 
 	i = 0;
+	if (strings == NULL)
+		return ;
 	while (strings[i])
 	{
 		free(strings[i]);

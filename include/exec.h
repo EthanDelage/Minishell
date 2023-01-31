@@ -18,7 +18,9 @@
 # include "router.h"
 # include "replace.h"
 
-int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict);
-int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in);
+t_token	*exec_router(t_token *head, t_hashtable *envp_dict);
+t_token	*exec_operator(t_token *head, t_hashtable *envp_dict);
+int		exec_cmd(t_token *token, t_hashtable *envp_dict);
+int		exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in);
 
 #endif

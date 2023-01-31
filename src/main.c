@@ -42,10 +42,7 @@ int	main(int argc, char **argv, char **envp)
 		line_token = analyser(line);
 		if (line_token == NULL)
 			return (1);
-		if (exec_simple_cmd(line_token, envp_dict) == -1)
-			return (1);
-		if (exec_pipe(line_token, envp_dict, STDIN_FILENO) == -1)
-			return (1);
+		exec_operator(line_token, envp_dict);
 		token_clear(&line_token);
 		free(line);
 	}
