@@ -41,5 +41,5 @@ long long	ft_atoll(const char *nptr)
 		result = result * 10 + (nptr[index] - '0') * sign;
 		index++;
 	}
-	return (result * sign);
+	return (result);
 }
