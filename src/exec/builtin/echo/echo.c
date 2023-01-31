@@ -18,7 +18,7 @@ static int	is_endl_option(char *arg);
 int	builtin_echo(char **args)
 {
 	args++;
-	if (args && is_endl_option(*args))
+	if (*args && is_endl_option(*args))
 		return (echo_handle_option(args));
 	if (echo_put_args(args) == 1)
 		return (1);

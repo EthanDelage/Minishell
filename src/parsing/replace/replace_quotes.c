@@ -20,7 +20,7 @@ char	*trim_quotes(char *str)
 	size_t	final_size;
 
 	final_size = ft_strlen(str) - count_trimmed_quotes(str);
-	trimmed_str = (char *) malloc(final_size * sizeof (char));
+	trimmed_str = (char *) malloc((final_size + 1) * sizeof (char));
 	if (trimmed_str == NULL)
 	{
 		free(str);

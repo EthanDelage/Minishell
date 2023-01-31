@@ -11,13 +11,15 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern int	g_return_value;
+extern unsigned char	g_return_value;
 
 int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict)
 {
+	int		return_val;
 	int		fd_io[2];
 	pid_t	pid;
 	int		fd_save[2];
+
 	if (replace(envp_dict, token->cmd_stack) == 1)
 		return (1);
 	if (redirect_open(envp_dict, token->cmd_stack) == EXIT_FAILURE)
@@ -53,8 +55,8 @@ int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict)
 		}
 		else
 		{
-			waitpid(pid, &g_return_value, 0);
-			g_return_value = WEXITSTATUS(g_return_value);
+			waitpid(pid, &return_val, 0);
+			g_return_value = WEXITSTATUS(return_val);
 		}
 	}
 	else
