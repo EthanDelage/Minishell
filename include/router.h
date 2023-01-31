@@ -17,8 +17,6 @@
 # include "envp.h"
 # include "libft.h"
 
-# define BUILTIN (char*[]){"pwd", "cd", "env", "unset", "export"}
-
 int	cmd_router(t_token *token, t_hashtable *envp_dict);
 int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);

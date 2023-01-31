@@ -101,7 +101,8 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 
 int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
-	const char	*builtin[] = {"pwd", "cd", "env", "unset", "export", "exit", "echo", NULL};
+	const char	*builtin[] = {"pwd", "cd", "env", "unset",
+		"export", "exit", "echo", NULL};
 	char		*path;
 	size_t		index;
 
