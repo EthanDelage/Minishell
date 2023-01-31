@@ -5,127 +5,101 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/16 18:03:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/16 18:03:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/28 00:47:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/28 00:47:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
+#include "cmd_token.h"
+#include "token.h"
 #include "replace.h"
+#include "envp.h"
+#include "redirect.h"
 
-static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
-				char *quote);
-static void	change_quote_value(char *quote, char c);
-static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);
-static char	*add_env_var(char *line, char *value, size_t *index,
-				size_t end_index);
+static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
+static int	replace_redirect(t_hashtable *envp_dict,
+				t_cmd_token *redirect_token);
+static int	is_ambiguous_redirect(char *file_name);
 
-char	*replace(t_hashtable *envp_dict, char *line)
+int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 {
-	size_t	index;
-	char	quote;
+	t_cmd_token	*token;
 
-	index = 0;
-	quote = 0;
-	while (line[index])
+	token = head;
+	while (token)
 	{
-		if (line[index] == '$' && quote != '\'')
+		if (token->type == COMMAND)
 		{
-			line = check_env_var(envp_dict, line, &index, &quote);
-			if (errno)
-				return (NULL);
+			if (replace_cmd(envp_dict, token) == 1)
+				return (1);
 		}
 		else
 		{
-			if (line[index] == '"' || line[index] == '\'')
-				change_quote_value(&quote, line[index]);
-			index++;
+			if (replace_redirect(envp_dict, token) == 1)
+				return (1);
 		}
+		token = token->next;
 	}
-	return (line);
+	return (0);
 }
 
-static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
-				char *quote)
+static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 {
-	if (*quote == '"' && !valid_char(line[*index + 1]))
-		(*index)++;
-	else
+	t_cmd_arg	*args;
+
+	args = (t_cmd_arg *) cmd_token->body;
+	while (args)
 	{
-		(*index)++;
-		line = replace_env_var(envp_dict, line, index);
+		args->arg = replace_env(envp_dict, args->arg);
 		if (errno)
+			return (1);
+		args = split_arg(args);
+		if (errno)
+			return (1);
+	}
+	cmd_arg_remove_quote((t_cmd_arg *) cmd_token->body);
+	cmd_arg_reverse((t_cmd_arg **) &cmd_token->body);
+	free(cmd_token->head);
+	cmd_token->head = ft_strdup(((char **) cmd_token->body)[0]);
+	cmd_token->body = cmd_arg_stack_to_array((t_cmd_arg *) cmd_token->body);
+	if (errno)
+		return (1);
+	return (0);
+}
+
+static int	replace_redirect(t_hashtable *envp_dict,
+				t_cmd_token *redirect_token)
+{
+	t_redirect_param	*param;
+
+	param = (t_redirect_param *) redirect_token->body;
+	param->body = replace_env(envp_dict, param->body);
+	if (param->body == NULL)
+	{
+		perror("minishell");
+		return (return_errno_error());
+	}
+	if (is_ambiguous_redirect(param->body) == 1)
+		return (1);
+	return (0);
+}
+
+static int	is_ambiguous_redirect(char *file_name)
+{
+	size_t	index;
+
+	index = 0;
+	while (file_name[index])
+	{
+		if (file_name[index] == '"' || file_name[index] == '\'')
+			line_skip_quote(file_name, &index);
+		if (ft_isspace(file_name[index]))
 		{
-			free(line);
-			return (NULL);
+			ft_putstr_fd("minishell: `", STDERR_FILENO);
+			ft_putstr_fd(file_name, STDERR_FILENO);
+			ft_putstr_fd("': ambiguous redirect\n", STDERR_FILENO);
+			return (1);
 		}
+		index++;
 	}
-	return (line);
-}
-
-static void	change_quote_value(char *quote, char c)
-{
-	if (c == '"')
-	{
-		if (*quote == '"')
-			*quote = 0;
-		else if (*quote == 0)
-			*quote = '"';
-	}
-	else
-	{
-		if (*quote == '\'')
-			*quote = 0;
-		else if (*quote == 0)
-			*quote = '\'';
-	}
-}
-
-static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index)
-{
-	t_dict	*env;
-	char	*name;
-	size_t	end_index;
-
-	end_index = *index;
-	while (line[end_index] && !ft_isspace(line[end_index])
-		&& line[end_index] != '"' && line[end_index] != '\''
-		&& line[end_index] != '$')
-		end_index++;
-	name = ft_substr(line, *index, end_index - *index);
-	if (errno)
-	{
-		free(line);
-		return (NULL);
-	}
-	env = hashtable_search(envp_dict, name);
-	if (env == NULL)
-		line = add_env_var(line, "\0", index, end_index);
-	else
-		line = add_env_var(line, env->value, index, end_index);
-	free(name);
-	return (line);
-}
-
-static char	*add_env_var(char *line, char *value, size_t *index,
-				size_t end_index)
-{
-	const size_t	len_value = ft_strlen(value);
-	const size_t	len_line = ft_strlen(line);
-	char			*end;
-	char			*start;
-	char			*new_line;
-
-	new_line = (char *) malloc(sizeof(char)
-			* (len_line + *index - end_index + len_value));
-	if (errno)
-	{
-		free(line);
-		return (NULL);
-	}
-	start = ft_substr(line, 0, *index - 1);
-	end = ft_substr(line, end_index, len_line - end_index);
-	new_line = ft_strjoin(start, value);
-	new_line = ft_strjoin(new_line, end);
-	*index = *index + len_value - 1;
-	free(line);
-	return (new_line);
+	return (0);
 }

@@ -1,15 +1,25 @@
-cmake_minimum_required(VERSION 3.21.1)
-project(minishell C)
+cmake_minimum_required(VERSION 3.21)
+project(Minishell C)
 
 set(CMAKE_C_STANDARD 11)
 
+include_directories(.)
 include_directories(include)
+include_directories(libft)
 include_directories(libft/includes)
+include_directories(libft/srcs)
+include_directories(src)
 
-add_executable(minishell
+add_executable(Minishell
+        include/builtin.h
         include/cmd_token.h
         include/envp.h
+        include/exec.h
         include/lexer.h
+        include/parser.h
+        include/redirect.h
+        include/replace.h
+        include/router.h
         include/token.h
         libft/includes/get_next_line.h
         libft/includes/libft.h
@@ -23,6 +33,7 @@ add_executable(minishell
         libft/srcs/char/ft_tolower.c
         libft/srcs/char/ft_toupper.c
         libft/srcs/convert/ft_atoi.c
+        libft/srcs/convert/ft_atoll.c
         libft/srcs/convert/ft_itoa.c
         libft/srcs/fd/ft_putchar_fd.c
         libft/srcs/fd/ft_putendl_fd.c
@@ -39,6 +50,7 @@ add_executable(minishell
         libft/srcs/list/ft_lstmap.c
         libft/srcs/list/ft_lstnew.c
         libft/srcs/list/ft_lstsize.c
+        libft/srcs/memory/free_string_array.c
         libft/srcs/memory/ft_bzero.c
         libft/srcs/memory/ft_calloc.c
         libft/srcs/memory/ft_memchr.c
@@ -52,6 +64,8 @@ add_executable(minishell
         libft/srcs/stdout/ft_putstr.c
         libft/srcs/string/ft_split.c
         libft/srcs/string/ft_strchr.c
+        libft/srcs/string/ft_strcmp.c
+        libft/srcs/string/ft_strcpy.c
         libft/srcs/string/ft_strdup.c
         libft/srcs/string/ft_striteri.c
         libft/srcs/string/ft_strjoin.c
@@ -60,35 +74,54 @@ add_executable(minishell
         libft/srcs/string/ft_strlen.c
         libft/srcs/string/ft_strmapi.c
         libft/srcs/string/ft_strncmp.c
+        libft/srcs/string/ft_strncpy.c
         libft/srcs/string/ft_strnstr.c
         libft/srcs/string/ft_strrchr.c
         libft/srcs/string/ft_strtrim.c
         libft/srcs/string/ft_substr.c
         src/envp/dict.c
         src/envp/dict_utils.c
-        src/parsing/cmd_lexer/cmd_token/cmd_token_add.c
-        src/parsing/cmd_lexer/cmd_token/cmd_token_utils.c
-        src/parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c
+        src/envp/hashtable.c
+        src/envp/hashtable_display.c
+        src/envp/hashtable_get_array.c
+        src/envp/hashtable_utils.c
+        src/exec/builtin/cd/cd.c
+        src/exec/builtin/echo/echo.c
+        src/exec/builtin/env/env.c
+        src/exec/builtin/exit/exit.c
+        src/exec/builtin/export/export.c
+        src/exec/builtin/export/export_no_args.c
+        src/exec/builtin/pwd/pwd.c
+        src/exec/builtin/unset/unset.c
+        src/exec/builtin/builtin_error.c
+        src/exec/redirect/append_out/append_out.c
+        src/exec/redirect/here_doc/here_doc.c
+        src/exec/redirect/here_doc/replace_here_doc.c
+        src/exec/redirect/redirect_in/redirect_in.c
+        src/exec/redirect/redirect_out/redirect_out.c
+        src/exec/redirect/redirect.c
+        src/exec/router/router.c
+        src/exec/exec.c
+        src/exec/exec_pipe.c
+        src/exec/exec_simple_cmd.c
+        src/parsing/analyser/analyser.c
+        src/parsing/cmd_lexer/cmd_token/cmd_arg_add.c
         src/parsing/cmd_lexer/cmd_token/cmd_arg_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_add.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c
+        src/parsing/cmd_lexer/cmd_token/cmd_token_utils.c
         src/parsing/cmd_lexer/cmd_lexer.c
+        src/parsing/cmd_parser/cmd_parser.c
         src/parsing/line_lexer/token/token_add.c
         src/parsing/line_lexer/token/token_clear.c
         src/parsing/line_lexer/token/token_utils.c
         src/parsing/line_lexer/line_lexer.c
-        src/main.c
-        src/parsing/cmd_parser/cmd_parser.c
-        include/parser.h
-        src/exec/builtin/cd/cd.c
-        src/exec/builtin/pwd/pwd.c
-        src/exec/builtin/builtin_error.c
-        include/redirect.h
-        src/exec/redirect/redirect.c
-        src/exec/redirect/redirect_in/redirect_in.c
-        src/exec/redirect/redirect_out/redirect_out.c
-        src/exec/redirect/append_out/append_out.c
-        src/exec/redirect/here_doc/here_doc.c
-        src/exec/redirect/here_doc/replace_here_doc.c
+        src/parsing/line_parser/error_line_parser.c
+        src/parsing/line_parser/line_parser.c
+        src/parsing/replace/replace.c
+        src/parsing/replace/replace_cmd_utils.c
+        src/parsing/replace/replace_env.c
         src/parsing/replace/replace_quotes.c
-        src/parsing/analyser/analyser.c
-        include/replace.h src/exec/exec.c src/exec/exec_pipe.c
-        src/exec/router/router.c include/router.h src/exec/exec_simple_cmd.c src/exec/builtin/exit/exit.c include/exec.h libft/srcs/convert/ft_atoll.c libft/srcs/convert/ft_atoll.c src/exec/builtin/echo/echo.c)
+        src/parsing/replace/replace_ret_value.c
+        src/parsing/replace/split_arg_utils.c
+        src/main.c)

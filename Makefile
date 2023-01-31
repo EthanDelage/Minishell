@@ -55,6 +55,10 @@ SRCS		=		main.c \
 					exec/redirect/here_doc/replace_here_doc.c \
 					exec/router/router.c \
 					parsing/replace/replace.c \
+					parsing/replace/replace_cmd_utils.c \
+					parsing/replace/split_arg_utils.c \
+					parsing/replace/replace_env.c \
+					parsing/replace/replace_ret_value.c \
 					parsing/replace/replace_quotes.c \
 					parsing/analyser/analyser.c \
 					exec/exec_pipe.c \

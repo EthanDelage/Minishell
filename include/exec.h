@@ -16,6 +16,7 @@
 # include "redirect.h"
 # include "envp.h"
 # include "router.h"
+# include "replace.h"
 
 int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict);
 int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in);

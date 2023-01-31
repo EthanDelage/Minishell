@@ -21,16 +21,40 @@ int	here_doc_open(t_redirect_param *param)
 {
 	pipe(param->fd);
 	if (errno)
-		return (errno);
+	{
+		perror("minishell: `<<'");
+		return (return_errno_error());
+	}
 	if (here_doc(param) != 0)
-		return (errno);
-	close(param->fd[WRITE]);
-	param->fd[WRITE] = -1;
+	{
+		perror("minishell: `<<'");
+		close(param->fd[WRITE]);
+		close(param->fd[READ]);
+		return (return_errno_error());
+	}
+	return (0);
+}
+
+int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
+{
+	redirect_param->body = here_doc_replace_env(envp_dict, redirect_param->body);
+	if (redirect_param->body == NULL)
+		return (return_errno_error());
+	if (*redirect_param->body != 0)
+		ft_putendl_fd(redirect_param->body, redirect_param->fd[WRITE]);
+	close(redirect_param->fd[WRITE]);
 	return (0);
 }
 
 void	here_doc_close(t_redirect_param *redirect_param)
 {
+	if (redirect_param->fd[READ] > 0)
+		close(redirect_param->fd[READ]);
+}
+
+void	here_doc_close_error(t_redirect_param *redirect_param)
+{
+	here_doc_close(redirect_param);
 	if (redirect_param->fd[WRITE] > 0)
 		close(redirect_param->fd[WRITE]);
 }
@@ -38,19 +62,27 @@ void	here_doc_close(t_redirect_param *redirect_param)
 static int	here_doc(t_redirect_param *param)
 {
 	char	*delimiter;
+	char	*prompt;
 	char	*tmp;
 	bool	end;
 
 	delimiter = param->body;
 	param->body = NULL;
 	end = false;
+	prompt = ft_strjoin(delimiter, " > ");
+	if (errno)
+	{
+		free(delimiter);
+		return (return_errno_error());
+	}
 	while (end == false)
 	{
-		tmp = readline("> ");
+		tmp = readline(prompt);
 		if (tmp == NULL)
 		{
+			free(prompt);
 			free(delimiter);
-			return (errno);
+			return (return_errno_error());
 		}
 		errno = 0;
 		if (ft_strcmp(tmp, delimiter) == 0)
@@ -60,12 +92,14 @@ static int	here_doc(t_redirect_param *param)
 			param->body = ft_strjoin_endl(param->body, tmp);
 			if (errno)
 			{
+				free(prompt);
 				free(delimiter);
-				return (errno);
+				return (return_errno_error());
 			}
 		}
 		free(tmp);
 	}
+	free(prompt);
 	free(delimiter);
 	return (0);
 }

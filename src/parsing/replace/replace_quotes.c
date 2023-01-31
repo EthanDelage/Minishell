@@ -22,7 +22,10 @@ char	*trim_quotes(char *str)
 	final_size = ft_strlen(str) - count_trimmed_quotes(str);
 	trimmed_str = (char *) malloc(final_size * sizeof (char));
 	if (trimmed_str == NULL)
+	{
+		free(str);
 		return (NULL);
+	}
 	strcat_trimmed_quotes(str, trimmed_str);
 	free(str);
 	return (trimmed_str);

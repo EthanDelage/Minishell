@@ -18,8 +18,10 @@ int	exec_simple_cmd(t_token *token, t_hashtable *envp_dict)
 	int		fd_io[2];
 	pid_t	pid;
 	int		fd_save[2];
-
-	redirect_open(token->cmd_stack);
+	if (replace(envp_dict, token->cmd_stack) == 1)
+		return (1);
+	if (redirect_open(envp_dict, token->cmd_stack) == EXIT_FAILURE)
+		return (1);
 	fd_io[READ] = redirect_get_input_fd(token->cmd_stack);
 	if (fd_io[READ] == -1)
 		fd_io[READ] = STDIN_FILENO;

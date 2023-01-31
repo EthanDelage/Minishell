@@ -11,17 +11,21 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern int	g_return_value;
+extern unsigned char	g_return_value;
 
 static int	init_pipe(t_token *head, int fd_pipe[2]);
 
 int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 {
+	int	return_val;
 	int	pid;
 	int	fd_io[2];
 	int	fd_pipe[2];
 
-	redirect_open(token->cmd_stack);
+	if (replace(envp_dict, token->cmd_stack) == 1)
+		return (1);
+	if (redirect_open(envp_dict, token->cmd_stack) == EXIT_FAILURE)
+		return (-1);
 	if (init_pipe(token, fd_pipe) != 0)
 		return (-1);
 	fd_io[WRITE] = redirect_get_output_fd(token->cmd_stack);
@@ -59,11 +63,12 @@ int	exec_pipe(t_token *token, t_hashtable *envp_dict, int fd_pipe_in)
 		if (token && token->next && token->next->type == PIPE)
 		{
 			close(fd_pipe[WRITE]);
-			exec_pipe(token->next->next, envp_dict, fd_pipe[READ]);
+			if (exec_pipe(token->next->next, envp_dict, fd_pipe[READ]) == -1)
+				return (-1);
 			close(fd_pipe[READ]);
 		}
-		waitpid(pid, &g_return_value, 0);
-		g_return_value = WEXITSTATUS(g_return_value);
+		waitpid(pid, &return_val, 0);
+		g_return_value = WEXITSTATUS(return_val);
 	}
 	redirect_close(token->cmd_stack);
 	return (0);

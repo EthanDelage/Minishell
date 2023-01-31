@@ -1,58 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   replace_here_doc.c                                 :+:      :+:    :+:   */
+/*   replace.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/23 11:18:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/23 11:18:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/01/16 18:03:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/01/16 18:03:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdlib.h>
-#include "envp.h"
 #include "replace.h"
 
 extern unsigned char	g_return_value;
 
-int			valid_char(char c);
-static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
-				size_t *index);
+static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
+				char *quote);
+static void	change_quote_value(char *quote, char c);
 static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);
 static char	*add_env_var(char *line, char *value, size_t *index,
 				size_t end_index);
 
-char	*here_doc_replace_env(t_hashtable *envp_dict, char *line)
+char	*replace_env(t_hashtable *envp_dict, char *line)
 {
 	size_t	index;
+	char	quote;
 
 	index = 0;
-	if (line == NULL)
-		return (ft_strdup(""));
+	quote = 0;
 	while (line[index])
 	{
-		if (line[index] == '$')
+		if (line[index] == '$' && quote != '\'')
 		{
 			if (line[index + 1] == '?')
-			{
 				line = replace_ret_value(line, &index);
-				if (errno)
-					return (NULL);
-			}
-			line = check_env_var_here_doc(envp_dict, line, &index);
+			else
+				line = check_env_var(envp_dict, line, &index, &quote);
 			if (errno)
 				return (NULL);
 		}
 		else
+		{
+			if (line[index] == '"' || line[index] == '\'')
+				change_quote_value(&quote, line[index]);
 			index++;
+		}
 	}
 	return (line);
 }
 
-static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
-				size_t *index)
+static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
+				char *quote)
 {
-	if (!valid_char(line[*index + 1]))
+	if (*quote == '"' && !valid_char(line[*index + 1]))
 		(*index)++;
 	else
 	{
@@ -65,6 +64,24 @@ static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
 		}
 	}
 	return (line);
+}
+
+static void	change_quote_value(char *quote, char c)
+{
+	if (c == '"')
+	{
+		if (*quote == '"')
+			*quote = 0;
+		else if (*quote == 0)
+			*quote = '"';
+	}
+	else
+	{
+		if (*quote == '\'')
+			*quote = 0;
+		else if (*quote == 0)
+			*quote = '\'';
+	}
 }
 
 static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index)
@@ -94,7 +111,7 @@ static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index)
 }
 
 static char	*add_env_var(char *line, char *value, size_t *index,
-		size_t end_index)
+				size_t end_index)
 {
 	const size_t	len_value = ft_strlen(value);
 	const size_t	len_line = ft_strlen(line);
@@ -102,8 +119,6 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	char			*start;
 	char			*new_line;
 
-	new_line = (char *) malloc(sizeof(char)
-			* (len_line + *index - end_index + len_value));
 	if (errno)
 	{
 		free(line);

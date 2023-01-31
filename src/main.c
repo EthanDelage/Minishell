@@ -22,7 +22,7 @@
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
 
-int	g_return_value = 0;
+unsigned char	g_return_value = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -44,6 +44,9 @@ int	main(int argc, char **argv, char **envp)
 			return (1);
 		if (exec_simple_cmd(line_token, envp_dict) == -1)
 			return (1);
+		if (exec_pipe(line_token, envp_dict, STDIN_FILENO) == -1)
+			return (1);
+		token_clear(&line_token);
 		free(line);
 	}
 }

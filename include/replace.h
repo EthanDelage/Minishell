@@ -15,9 +15,24 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include "envp.h"
+# include "token.h"
 
-char	*replace(t_hashtable *envp_dict, char *line);
-char	*trim_quotes(char *str);
-int		valid_char(char c);
+int			replace(t_hashtable *envp_dict, t_cmd_token *head);
+char		*replace_env(t_hashtable *envp_dict, char *line);
+char		*replace_ret_value(char *line, size_t *index);
+char		*trim_quotes(char *str);
+int			valid_char(char c);
+
+/* ----------	REPLACE_UTILS FUNCTIONS	---------- */
+
+t_cmd_arg	*split_arg(t_cmd_arg *current);
+int			cmd_arg_remove_quote(t_cmd_arg *head);
+
+/* ----------	SPLIT_ARG_UTILS FUNCTIONS	---------- */
+
+void		line_skip_isspace(char *line, size_t *i);
+void		get_end_index(char *arg, size_t *index);
+int			add_new_arg(char *arg, size_t *index, t_cmd_arg *current);
+t_cmd_arg	*get_return_cmd_arg(t_cmd_arg *current, size_t nb_new_arg);
 
 #endif
