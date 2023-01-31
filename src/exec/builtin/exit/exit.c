@@ -40,12 +40,13 @@ static void	exit_handle_arg(char *arg)
 	long long	return_value;
 
 	return_value = ft_atoll((arg));
-	printf("%lld\n", return_value);
 	if (!is_numeric_arg(arg) || errno)
 	{
-		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(arg, STDERR_FILENO);
+		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		free(arg);
-		exit (1);
+		exit (255);
 	}
 	free(arg);
 	exit((unsigned char)return_value);
