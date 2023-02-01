@@ -13,8 +13,8 @@
 
 int	append_out_open(t_redirect_param *redirect_param)
 {
-	redirect_param->fd[WRITE] = open(redirect_param->body, O_APPEND | O_CREAT,
-			0644);
+	redirect_param->fd[WRITE] = open(redirect_param->body, O_WRONLY
+			| O_APPEND | O_CREAT, 0644);
 	if (errno)
 	{
 		redirect_print_error(redirect_param->body);

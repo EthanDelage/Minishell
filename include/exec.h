@@ -17,6 +17,7 @@
 # include "envp.h"
 # include "router.h"
 # include "replace.h"
+# include <wait.h>
 
 t_token	*exec_router(t_token *head, t_hashtable *envp_dict);
 t_token	*exec_operator(t_token *head, t_hashtable *envp_dict);
