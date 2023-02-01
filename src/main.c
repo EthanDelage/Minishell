@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 #include <stdio.h>
 #include <readline/readline.h>
+#include <readline/history.h>
 #include "envp.h"
 #include "parser.h"
 #include "lexer.h"
@@ -39,6 +40,7 @@ int	main(int argc, char **argv, char **envp)
 		if (line == NULL)
 			return (errno);
 		errno = 0;
+		add_history(line);
 		line_token = analyser(line);
 		if (line_token == NULL)
 			return (1);
