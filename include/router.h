@@ -17,10 +17,10 @@
 # include "envp.h"
 # include "libft.h"
 
-int	cmd_router(t_token *token, t_hashtable *envp_dict);
-int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
-int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
-int	exec_builtin(t_token *cmd_token, t_hashtable *envp_dict);
-int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+int		cmd_router(t_token *token, t_hashtable *envp_dict);
+int		is_builtin(t_cmd_token *cmd_token);
+int		exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+int		exec_builtin(t_token *cmd_token, t_hashtable *envp_dict);
+void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 
 #endif

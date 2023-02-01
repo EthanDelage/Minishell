@@ -64,6 +64,7 @@ SRCS		=		main.c \
 					exec/exec.c \
 					exec/exec_pipe.c \
 					exec/exec_cmd.c \
+					exec/exec_utils.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 

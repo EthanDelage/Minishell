@@ -13,63 +13,76 @@
 
 extern unsigned char	g_return_value;
 
-int	exec_cmd(t_token *token, t_hashtable *envp_dict)
-{
-	int		return_val;
-	int		fd_io[2];
-	pid_t	pid;
-	int		fd_save[2];
+static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict);
+static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict);
 
-	if (replace(envp_dict, token->cmd_stack) == 1)
-		return (1);
-	if (redirect_open(envp_dict, token->cmd_stack) == EXIT_FAILURE)
-		return (1);
-	fd_io[READ] = redirect_get_input_fd(token->cmd_stack);
-	if (fd_io[READ] == -1)
-		fd_io[READ] = STDIN_FILENO;
-	fd_io[WRITE] = redirect_get_output_fd(token->cmd_stack);
-	if (fd_io[WRITE] == -1)
-		fd_io[WRITE] = STDOUT_FILENO;
+t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
+{
+	int	fd_io[2];
+
+	if (replace(envp_dict, head->cmd_stack) == 1)
+	{
+		g_return_value = 2;
+		return (NULL);
+	}
+	if (exec_set_fd_io(head->cmd_stack, fd_io, envp_dict) == 1)
+	{
+		g_return_value = 1;
+		return (head->next);
+	}
+	if (is_builtin(head->cmd_stack) == 0)
+		g_return_value = exec_cmd_bin(head, fd_io, envp_dict);
+	else
+		exec_cmd_builtin(head, fd_io, envp_dict);
+	return (head->next);
+}
+
+static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict)
+{
+	pid_t	pid;
+	int		return_value;
+
+	pid = fork();
+	if (pid == -1)
+		return (2);
+	else if (pid == 0)
+	{
+		if (fd_io[READ] != STDIN_FILENO)
+			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
+				exit(g_return_value);
+		if (fd_io[WRITE] != STDOUT_FILENO)
+			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
+				exit(g_return_value);
+		cmd_router(cmd_token, envp_dict);
+	}
+	else
+		waitpid(pid, &return_value, 0);
+	return (WEXITSTATUS(return_value));
+}
+
+static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict)
+{
+	int	fd_save[2];
+
+	fd_save[READ] = -1;
+	fd_save[WRITE] = -1;
 	if (fd_io[READ] != STDIN_FILENO)
 	{
-		fd_save[READ] = dup(STDIN_FILENO);
-		dup2(fd_io[READ], STDIN_FILENO);
-		close(fd_io[READ]);
+		fd_save[READ] = dup2_save_fd(fd_io[READ], STDIN_FILENO);
+		if (fd_save[READ] == -1)
+			return ;
 	}
 	if (fd_io[WRITE] != STDOUT_FILENO)
 	{
-		fd_save[WRITE] = dup(STDOUT_FILENO);
-		dup2(fd_io[WRITE], STDOUT_FILENO);
-		close(fd_io[WRITE]);
+		fd_save[WRITE] = dup2_save_fd(fd_io[WRITE], STDOUT_FILENO);
+		if (fd_save[WRITE] == -1)
+			return ;
 	}
-	if (is_builtin(token->cmd_stack, envp_dict) <= 0)
-	{
-		pid = fork();
-		if (pid == 0)
-		{
-			errno = 0;
-			if (ft_strchr(token->cmd_stack->head, '/') != NULL)
-				exec_path(token->cmd_stack, envp_dict);
-			else
-				exec_bin(token->cmd_stack, envp_dict);
-		}
-		else
-		{
-			waitpid(pid, &return_val, 0);
-			g_return_value = WEXITSTATUS(return_val);
-		}
-	}
-	else
-		g_return_value = exec_builtin(token, envp_dict);
-	if (redirect_get_input_fd(token->cmd_stack) != -1)
-	{
-		dup2(fd_save[READ], STDIN_FILENO);
-		close(fd_save[READ]);
-	}
-	if (redirect_get_output_fd(token->cmd_stack) != -1)
-	{
-		dup2(fd_save[WRITE], STDOUT_FILENO);
-		close(fd_save[WRITE]);
-	}
-	return (EXIT_SUCCESS);
+	g_return_value = exec_builtin(cmd_token, envp_dict);
+	if (fd_save[READ] != -1 && fd_save[READ] != STDIN_FILENO)
+		if (dup2_save_fd(fd_save[READ], STDIN_FILENO) == -1)
+			return ;
+	if (fd_save[WRITE] != -1 && fd_save[WRITE] != STDOUT_FILENO)
+		if (dup2_save_fd(fd_save[WRITE], STDOUT_FILENO) == -1)
+			return ;
 }

@@ -17,10 +17,11 @@ int	cmd_router(t_token *token, t_hashtable *envp_dict)
 {
 	if (ft_strchr(token->cmd_stack->head, '/') != NULL)
 		return (exec_path(token->cmd_stack, envp_dict));
-	else if (is_builtin(token->cmd_stack, envp_dict) == 1)
+	else if (is_builtin(token->cmd_stack) == 1)
 		return (exec_builtin(token, envp_dict));
 	else
-		return (exec_bin(token->cmd_stack, envp_dict));
+		exec_bin(token->cmd_stack, envp_dict);
+	return (0);
 }
 
 int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
@@ -63,7 +64,7 @@ int	exec_builtin(t_token *token, t_hashtable *envp_dict)
 	return (EXIT_FAILURE);
 }
 
-int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
+void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
 	char	**args;
 	char	**envp;
@@ -75,12 +76,12 @@ int	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	{
 		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
 		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
-		return (127);
+		exit(127);
 	}
 	envp = hashtable_get_array(envp_dict, 0);
 	if (errno)
-		return (errno);
-	return (execve(cmd_path, args, envp));
+		exit(errno);
+	execve(cmd_path, args, envp);
 }
 
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
@@ -105,11 +106,10 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	return (NULL);
 }
 
-int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
+int	is_builtin(t_cmd_token *cmd_token)
 {
 	const char	*builtin[] = {"pwd", "cd", "env", "unset",
 		"export", "exit", "echo", NULL};
-	char		*path;
 	size_t		index;
 
 	index = 0;
@@ -121,9 +121,5 @@ int	is_builtin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 			return (1);
 		index++;
 	}
-	path = cmd_find_path(cmd_token, envp_dict);
-	if (path == NULL)
-		return (-1);
-	free(path);
 	return (0);
 }
