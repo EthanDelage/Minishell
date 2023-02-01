@@ -73,13 +73,13 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CC			=		clang
-
 CFLAGS		=		-Wall -Werror -Wextra -g3
 
 DFLAGS		=		-MMD -MP
 
 LFLAGS		=		-L $(LIBFT_DIR) -lft -lreadline
+
+IFLAGS		=		-I $(INC_DIR) -I $(LIBFT_DIR)includes
 
 #######################
 #	RULES
@@ -101,7 +101,7 @@ FORCE:
 
 $(BUILD_DIR)%.o:	$(SRC_DIR)%.c
 					mkdir -p $(shell dirname $@)
-					$(CC) $(CFLAGS) $(DFLAGS) -I $(INC_DIR) -I $(LIBFT_DIR)includes -c $< -o $@
+					$(CC) $(CFLAGS) $(DFLAGS) $(IFLAGS) -c $< -o $@
 
 clean:
 					$(MAKE) clean -C $(LIBFT_DIR)
