@@ -42,7 +42,7 @@ int	exec_cmd(t_token *token, t_hashtable *envp_dict)
 		dup2(fd_io[WRITE], STDOUT_FILENO);
 		close(fd_io[WRITE]);
 	}
-	if (is_builtin(token->cmd_stack, envp_dict) == 0)
+	if (is_builtin(token->cmd_stack, envp_dict) <= 0)
 	{
 		pid = fork();
 		if (pid == 0)

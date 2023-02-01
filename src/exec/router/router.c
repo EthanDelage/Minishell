@@ -32,6 +32,12 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	envp = hashtable_get_array(envp_dict, 0);
 	if (errno)
 		return (errno);
+	if (access(cmd_token->head, X_OK) != 0)
+	{
+		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
+		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
+		return (127);
+	}
 	return (execve(cmd_token->head, args, envp));
 }
 
