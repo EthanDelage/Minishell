@@ -46,6 +46,7 @@ t_hashtable		*hashtable_init(size_t size);
 void			hashtable_array_clear(char **array);
 void			hashtable_clear(t_hashtable *hashtable);
 void			hashtable_display(t_hashtable *hashtable);
+char			*hashtable_set(t_dict *node, char *new_value);
 size_t			hashtable_get_key(const char *name, size_t size);
 void			hashtable_push(t_hashtable *hashtable, t_dict *elem);
 char			**hashtable_get_array(t_hashtable *hashtable, bool quote);

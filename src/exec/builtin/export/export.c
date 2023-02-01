@@ -44,11 +44,19 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 static void	export_one(t_hashtable *envp_dict, const char *env)
 {
 	t_dict	*env_var;
+	t_dict	*elem;
 
 	env_var = parse_env_var(env);
 	if (errno)
 		return ;
-	hashtable_push(envp_dict, env_var);
+	elem = hashtable_search(envp_dict, env_var->name);
+	if (elem != NULL)
+	{
+		env_var->value = hashtable_set(elem, env_var->value);
+		dict_free_elem(&env_var);
+	}
+	else
+		hashtable_push(envp_dict, env_var);
 }
 
 static int	valid_env(const char *env)
