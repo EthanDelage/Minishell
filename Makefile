@@ -75,7 +75,7 @@ DEPS		=		$(OBJS:.o=.d)
 
 CC			=		clang
 
-CFLAGS		=		-Wall -Werror -Wextra -fsanitize=address -g3
+CFLAGS		=		-Wall -Werror -Wextra -g3
 
 DFLAGS		=		-MMD -MP
 
@@ -91,7 +91,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@ -fsanitize=address -g3
+					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
 
 
 $(LIBFT):			FORCE

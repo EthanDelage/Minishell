@@ -32,7 +32,7 @@ int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 			if (replace_cmd(envp_dict, token) == 1)
 				return (1);
 		}
-		else
+		else if (token->type != HERE_DOC)
 		{
 			if (replace_redirect(envp_dict, token) == 1)
 				return (1);
