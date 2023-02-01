@@ -23,6 +23,15 @@ t_dict	*hashtable_search(t_hashtable *hashtable, const char *name)
 	return (elem);
 }
 
+char	*hashtable_set(t_dict *node, char *new_value)
+{
+	char	*previous_value;
+
+	previous_value = node->value;
+	node->value = new_value;
+	return (previous_value);
+}
+
 size_t	hashtable_get_key(const char *name, size_t size)
 {
 	size_t	index;
