@@ -13,8 +13,10 @@
 
 extern unsigned char	g_return_value;
 
-static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict);
-static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict);
+static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
+				t_hashtable *envp_dict);
+static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
+				t_hashtable *envp_dict);
 
 t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 {
@@ -37,7 +39,8 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 	return (head->next);
 }
 
-static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict)
+static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
+				t_hashtable *envp_dict)
 {
 	pid_t	pid;
 	int		return_value;
@@ -60,7 +63,8 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict
 	return (WEXITSTATUS(return_value));
 }
 
-static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2], t_hashtable *envp_dict)
+static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
+				t_hashtable *envp_dict)
 {
 	int	fd_save[2];
 
