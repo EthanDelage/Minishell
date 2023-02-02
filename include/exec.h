@@ -21,7 +21,9 @@
 
 /* ---------------	EXEC FUNCTIONS	--------------- */
 
+void	exec(t_token *head, t_hashtable *envp_dict);
 t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict);
+t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict);
 
 /* ---------------	EXEC_UTILS FUNCTIONS	--------------- */
 

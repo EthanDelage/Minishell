@@ -46,7 +46,7 @@ int	main(int argc, char **argv, char **envp)
 			return (1);
 		if (here_doc_get(line_token) != 0)
 			return (1);
-		exec_cmd(line_token, envp_dict);
+		exec(line_token, envp_dict);
 		token_clear(&line_token);
 		free(line);
 	}
