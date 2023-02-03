@@ -40,16 +40,28 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	else if (pid == 0)
 	{
 		if (fd_io[READ] != STDIN_FILENO)
+		{
 			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
+			{
+				redirect_close(head->cmd_stack);
 				exit(g_return_value);
+			}
+		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
+		{
 			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
+			{
+				redirect_close(head->cmd_stack);
 				exit(g_return_value);
+			}
+		}
+		redirect_close(head->cmd_stack);
 		exec(head->next, envp_dict);
 		exit(g_return_value);
 	}
 	else
 	{
+		redirect_close(head->cmd_stack);
 		waitpid(pid, &return_value, 0);
 		g_return_value = WEXITSTATUS(return_value);
 		if (next_token && next_token->type == COMMAND)

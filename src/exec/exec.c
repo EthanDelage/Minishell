@@ -34,9 +34,8 @@ void	exec(t_token *head, t_hashtable *envp_dict)
 static t_token	*exec_router(t_token *head, t_hashtable *envp_dict)
 {
 	if (is_piped(head) == true)
-		return (NULL);
-//		head = exec_pipe();
-	if (head->type == OPEN_PARENTHESIS)
+		head = exec_pipe(head, envp_dict, STDIN_FILENO);
+	else if (head->type == OPEN_PARENTHESIS)
 		head = exec_subshell(head, envp_dict);
 	else
 		head = exec_cmd(head, envp_dict);

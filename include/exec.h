@@ -23,11 +23,14 @@
 
 void	exec(t_token *head, t_hashtable *envp_dict);
 t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict);
+t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in);
 t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict);
 
 /* ---------------	EXEC_UTILS FUNCTIONS	--------------- */
 
 int		exec_set_fd_io(t_cmd_token *head, int fd_io[2], t_hashtable *envp_dict);
+int		exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
+			t_hashtable *envp_dict);
 int		dup2_save_fd(int new_fd, int old_fd);
 
 #endif
