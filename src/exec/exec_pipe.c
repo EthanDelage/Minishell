@@ -38,6 +38,10 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 		pid = exec_pipe_subshell_utils(head, envp_dict, fd_in, fd_pipe);
 	else
 		pid = exec_pipe_cmd(head, envp_dict, fd_in, fd_pipe);
+	if (pid == -1)
+	{
+		return (NULL);
+	}
 	redirect_close(head->cmd_stack);
 	if (next_cmd)
 	{
@@ -103,7 +107,9 @@ static t_token	*exec_pipe_get_next_cmd(t_token *head)
 	count_parenthesis = 0;
 	while (head)
 	{
-		if (head->type == PIPE && count_parenthesis == 0)
+		if (head->type == OPERATOR && count_parenthesis == 0)
+			return (NULL);
+		else if (head->type == PIPE && count_parenthesis == 0)
 			return (head->next);
 		else if (head->type == OPEN_PARENTHESIS)
 			count_parenthesis++;
