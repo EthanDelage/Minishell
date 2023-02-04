@@ -13,69 +13,20 @@
 
 extern unsigned char	g_return_value;
 
+static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2]);
 static void		close_pipe(int fd_pipe[2]);
 static t_token	*exec_pipe_get_next_cmd(t_token *head);
 static int		pipe_router(t_token *head, t_hashtable *envp_dict);
-
-//t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
-//{
-//	pid_t	pid;
-//	int		fd_pipe[2];
-//	int		return_value;
-//	t_token	*next_cmd;
-//
-//	next_cmd = exec_pipe_get_next_cmd(head);
-//	if (next_cmd)
-//	{
-//		if (pipe(fd_pipe) == -1)
-//			return (NULL);
-//	}
-//	pid = fork();
-//	if (pid == -1)
-//	{
-//		close_pipe(fd_pipe);
-//	}
-//	else if (pid == 0)
-//	{
-////		close(fd_pipe[READ]);
-//		if (fd_in != STDIN_FILENO)
-//		{
-//			if (dup2_save_fd(fd_in, STDIN_FILENO) == -1)
-//				return (NULL);
-//			close(fd_in);
-//		}
-//		if (next_cmd)
-//		{
-//			if (dup2_save_fd(fd_pipe[WRITE], STDOUT_FILENO) == -1)
-//				return (NULL);
-//			close(fd_pipe[WRITE]);
-//		}
-//		exit(pipe_router(head, envp_dict));
-//	}
-//	else
-//	{
-////		close(fd_pipe[READ]);
-//		if (next_cmd)
-//		{
-//			close(fd_pipe[WRITE]);
-//			next_cmd = exec_pipe(next_cmd, envp_dict, fd_pipe[READ]);
-//		}
-//		waitpid(pid, &return_value, 0);
-//		g_return_value = WEXITSTATUS(return_value);
-//	}
-//	return (next_cmd);
-//}
+static t_token	*after_pipe(t_token *head);
 
 t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 {
 	pid_t	pid;
-	int 	fd_io[2];
-	int 	fd_pipe[2];
+	int		fd_pipe[2];
 	int		return_value;
 	t_token	*next_cmd;
 
 	next_cmd = exec_pipe_get_next_cmd(head);
-	fd_io[READ] = fd_in;
 	if (next_cmd)
 	{
 		if (pipe(fd_pipe) == -1)
@@ -83,23 +34,44 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 	}
 	else
 		fd_pipe[WRITE] = -1;
+	if (head->type == OPEN_PARENTHESIS)
+		pid = exec_pipe_subshell_utils(head, envp_dict, fd_in, fd_pipe);
+	else
+		pid = exec_pipe_cmd(head, envp_dict, fd_in, fd_pipe);
+	redirect_close(head->cmd_stack);
+	if (next_cmd)
+	{
+		close(fd_pipe[WRITE]);
+		exec_pipe(next_cmd, envp_dict, fd_pipe[READ]);
+		close(fd_pipe[READ]);
+	}
+	waitpid(pid, &return_value, 0);
+	g_return_value = WEXITSTATUS(return_value);
+	return (after_pipe(head));
+}
+
+static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2])
+{
+	pid_t	pid;
+	int		fd_io[2];
+
+	fd_io[READ] = fd_in;
 	if (exec_pipe_set_fd_io(head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict) == EXIT_FAILURE)
 	{
 		close_pipe(fd_pipe);
-		return (NULL);
+		return (-1);
 	}
 	pid = fork();
 	if (pid == -1)
 	{
-		if (next_cmd)
+		if (fd_pipe[WRITE] != -1)
 			close_pipe(fd_pipe);
 		redirect_close(head->cmd_stack);
 		g_return_value = errno;
-		return (NULL);
 	}
 	else if (pid == 0)
 	{
-		if (next_cmd)
+		if (fd_pipe[WRITE] != -1)
 			close(fd_pipe[READ]);
 		if (fd_io[READ] != STDIN_FILENO)
 		{
@@ -115,21 +87,8 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 		}
 		exit(pipe_router(head, envp_dict));
 	}
-	else
-	{
-		redirect_close(head->cmd_stack);
-		if (next_cmd)
-		{
-			close(fd_pipe[WRITE]);
-			next_cmd = exec_pipe(next_cmd, envp_dict, fd_pipe[READ]);
-			close(fd_pipe[READ]);
-		}
-		waitpid(pid, &return_value, 0);
-		g_return_value = WEXITSTATUS(return_value);
-		return (next_cmd);
-	}
+	return (pid);
 }
-
 
 static void	close_pipe(int fd_pipe[2])
 {
@@ -166,4 +125,22 @@ static int	pipe_router(t_token *head, t_hashtable *envp_dict)
 		cmd_router(head, envp_dict);
 	}
 	return (g_return_value);
+}
+
+static t_token	*after_pipe(t_token *head)
+{
+	size_t	count_parenthesis;
+
+	count_parenthesis = 0;
+	while (head)
+	{
+		if (head->type == OPERATOR && count_parenthesis == 0)
+			return (head);
+		else if (head->type == OPEN_PARENTHESIS)
+			count_parenthesis++;
+		else if (head->type == CLOSE_PARENTHESIS)
+			count_parenthesis--;
+		head = head->next;
+	}
+	return (NULL);
 }

@@ -22,14 +22,14 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	pid_t	pid;
 	int		fd_io[2];
 	int		return_value;
-	t_token	*next_token;
+	t_token	*redirect_token;
 
-	next_token = subshell_get_next_token(head->next);
-	if (subshell_set_fd_io(next_token, fd_io, envp_dict) == EXIT_FAILURE)
+	redirect_token = subshell_get_next_token(head->next);
+	if (subshell_set_fd_io(redirect_token, fd_io, envp_dict) == EXIT_FAILURE)
 	{
-		if (next_token && next_token->type == COMMAND)
-			return (next_token->next);
-		return (next_token);
+		if (redirect_token && redirect_token->type == COMMAND)
+			return (redirect_token->next);
+		return (redirect_token);
 	}
 	pid = fork();
 	if (pid == -1)
@@ -64,10 +64,48 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 		redirect_close(head->cmd_stack);
 		waitpid(pid, &return_value, 0);
 		g_return_value = WEXITSTATUS(return_value);
-		if (next_token && next_token->type == COMMAND)
-			return (next_token->next);
-		return (next_token);
+		if (redirect_token && redirect_token->type == COMMAND)
+			return (redirect_token->next);
+		return (redirect_token);
 	}
+}
+
+pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2])
+{
+	pid_t	pid;
+	int		fd_io[2];
+	t_token	*redirect_token;
+
+	redirect_token = subshell_get_next_token(head);
+	if (subshell_set_fd_io(redirect_token, fd_io, envp_dict) == EXIT_FAILURE)
+		return (-1);
+	if (fd_io[READ] == STDIN_FILENO)
+		fd_io[READ] = fd_in;
+	if (fd_io[WRITE] == STDOUT_FILENO && fd_pipe[WRITE] != -1)
+		fd_io[WRITE] = fd_pipe[WRITE];
+	pid = fork();
+	if (pid == -1)
+		g_return_value = errno;
+	else if (pid == 0)
+	{
+		if (fd_pipe[WRITE] != -1)
+			close(fd_pipe[READ]);
+		if (fd_io[READ] != STDIN_FILENO)
+		{
+			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
+				exit(errno);
+			close(fd_io[READ]);
+		}
+		if (fd_io[WRITE] != STDOUT_FILENO)
+		{
+			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
+				exit(errno);
+			close(fd_io[WRITE]);
+		}
+		exec(head->next, envp_dict);
+		exit(g_return_value);
+	}
+	return (pid);
 }
 
 static t_token	*subshell_get_next_token(t_token *head)
@@ -97,7 +135,7 @@ static int	subshell_set_fd_io(t_token *head, int fd_io[2], t_hashtable *envp_dic
 	else
 	{
 		fd_io[READ] = STDIN_FILENO;
-		fd_io[WRITE] = STDIN_FILENO;
+		fd_io[WRITE] = STDOUT_FILENO;
 	}
 	return (EXIT_SUCCESS);
 }
