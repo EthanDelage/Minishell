@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 #include "lexer.h"
 #include "parser.h"
+#include <stdio.h>
 
 static int	cmd_analyser(t_token *token);
 
@@ -46,7 +47,7 @@ static int	cmd_analyser(t_token *token)
 	cmd_lexer(token);
 	if (errno)
 		return (FAILURE);
-	if (cmd_parser(token->cmd_stack) == FAILURE)
+	if (cmd_parser(token) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
 }

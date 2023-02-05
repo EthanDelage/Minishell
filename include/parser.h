@@ -24,7 +24,7 @@ enum
 
 int	error_syntax(char *value);
 int	line_parser(t_token *head);
-int	cmd_parser(t_cmd_token *head);
+int	cmd_parser(t_token *head);
 t_token	*analyser(char *line);
 
 #endif

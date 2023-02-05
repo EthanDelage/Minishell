@@ -11,18 +11,24 @@
 /* ************************************************************************** */
 #include "parser.h"
 
-int	cmd_parser(t_cmd_token *head)
+int	cmd_parser(t_token *head)
 {
-	while (head != NULL)
+	t_cmd_token	*cmd_token;
+
+	cmd_token = head->cmd_stack;
+	while (cmd_token != NULL)
 	{
-		if (head->type != COMMAND && ((t_redirect_param *) head->body)->body[0] == '\0')
+		if (cmd_token->type != COMMAND
+			&& ((t_redirect_param *) cmd_token->body)->body[0] == '\0')
 		{
-			if (head->next != NULL)
-				return (error_syntax(head->next->head));
+			if (cmd_token->next != NULL)
+				return (error_syntax(cmd_token->next->head));
+			else if (head->next)
+				return (error_syntax(head->next->value));
 			else
 				return (error_syntax("newline"));
 		}
-		head = head->next;
+		cmd_token = cmd_token->next;
 	}
 	return (SUCCESS);
 }

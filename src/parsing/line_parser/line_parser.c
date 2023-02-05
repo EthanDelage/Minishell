@@ -64,8 +64,7 @@ static int	check_error(t_token *head)
 		&& head->next->type != COMMAND && head->next->type != OPEN_PARENTHESIS)
 		return (FAILURE);
 	else if (head->type == CLOSE_PARENTHESIS
-		&& (head->next->type == COMMAND
-			|| head->next->type == OPEN_PARENTHESIS))
+		&& head->next->type == OPEN_PARENTHESIS)
 		return (FAILURE);
 	return (SUCCESS);
 }

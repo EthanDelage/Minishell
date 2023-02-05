@@ -43,9 +43,9 @@ int	main(int argc, char **argv, char **envp)
 		add_history(line);
 		line_token = analyser(line);
 		if (line_token == NULL)
-			return (1);
+			return (2);
 		if (here_doc_get(line_token) != 0)
-			return (1);
+			return (errno);
 		exec(line_token, envp_dict);
 		token_clear(&line_token);
 		free(line);
