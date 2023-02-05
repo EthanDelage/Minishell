@@ -70,7 +70,8 @@ static int	verify_only_redirection(t_token *redirect_token)
 		return (FAILURE);
 	if (redirect_token->cmd_stack->type == COMMAND)
 	{
-		return (error_syntax(last_cmd_arg((t_cmd_arg *) redirect_token->cmd_stack->body)));
+		return (error_syntax(last_cmd_arg(
+					(t_cmd_arg *) redirect_token->cmd_stack->body)));
 	}
 	return (SUCCESS);
 }

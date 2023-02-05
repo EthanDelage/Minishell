@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirect_out.c                                     :+:      :+:    :+:   */
+/*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: ethan <ethan@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/23 08:55:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/23 08:55:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/02/06 00:42:00 by ethan             #+#    #+#             */
+/*   Updated: 2023/02/06 00:42:00 by ethan            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 #include "redirect.h"
 
-int	redirect_out_open(t_redirect_param *redirect_param)
+void	here_doc_close(t_redirect_param *redirect_param)
 {
-	redirect_param->fd[WRITE] = open(redirect_param->body,
-			O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (errno)
-	{
-		redirect_print_error(redirect_param->body);
-		perror(NULL);
-		return (return_errno_error());
-	}
-	return (0);
+	if (redirect_param->fd[READ] > 0)
+		close(redirect_param->fd[READ]);
 }
 
-void	redirect_out_close(t_redirect_param *redirect_param)
+void	here_doc_close_error(t_redirect_param *redirect_param)
 {
+	here_doc_close(redirect_param);
 	if (redirect_param->fd[WRITE] > 0)
 		close(redirect_param->fd[WRITE]);
 }

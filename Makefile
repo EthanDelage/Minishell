@@ -51,9 +51,12 @@ SRCS		=		main.c \
 					exec/redirect/redirect_out/redirect_out.c \
 					exec/redirect/append_out/append_out.c \
 					exec/redirect/here_doc/here_doc.c \
+					exec/redirect/here_doc/here_doc_utils.c \
 					exec/redirect/redirect.c \
+					exec/redirect/redirect_utils.c \
 					exec/redirect/here_doc/replace_here_doc.c \
 					exec/router/router.c \
+					exec/router/router_utils.c \
 					parsing/replace/replace.c \
 					parsing/replace/replace_cmd_utils.c \
 					parsing/replace/split_arg_utils.c \
@@ -75,7 +78,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra -g3
+CFLAGS		=		-Wall -Werror -Wextra
 
 DFLAGS		=		-MMD -MP
 
@@ -93,7 +96,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
+					$(CC) $(OBJS) $(LFLAGS) -o $@
 
 
 $(LIBFT):			FORCE

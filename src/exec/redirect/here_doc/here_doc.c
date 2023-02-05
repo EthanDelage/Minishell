@@ -37,26 +37,14 @@ int	here_doc_open(t_redirect_param *param)
 
 int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 {
-	redirect_param->body = here_doc_replace_env(envp_dict, redirect_param->body);
+	redirect_param->body = here_doc_replace_env(envp_dict,
+			redirect_param->body);
 	if (redirect_param->body == NULL)
 		return (return_errno_error());
 	if (*redirect_param->body != 0)
 		ft_putendl_fd(redirect_param->body, redirect_param->fd[WRITE]);
 	close(redirect_param->fd[WRITE]);
 	return (0);
-}
-
-void	here_doc_close(t_redirect_param *redirect_param)
-{
-	if (redirect_param->fd[READ] > 0)
-		close(redirect_param->fd[READ]);
-}
-
-void	here_doc_close_error(t_redirect_param *redirect_param)
-{
-	here_doc_close(redirect_param);
-	if (redirect_param->fd[WRITE] > 0)
-		close(redirect_param->fd[WRITE]);
 }
 
 static int	here_doc(t_redirect_param *param)

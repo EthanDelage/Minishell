@@ -105,21 +105,3 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	}
 	return (NULL);
 }
-
-int	is_builtin(t_cmd_token *cmd_token)
-{
-	const char	*builtin[] = {"pwd", "cd", "env", "unset",
-		"export", "exit", "echo", NULL};
-	size_t		index;
-
-	index = 0;
-	if (ft_strchr(cmd_token->head, '/') != NULL)
-		return (0);
-	while (builtin[index] != NULL)
-	{
-		if (ft_strcmp(cmd_token->head, builtin[index]) == 0)
-			return (1);
-		index++;
-	}
-	return (0);
-}

@@ -22,9 +22,9 @@ enum
 	FAILURE		=		1,
 };
 
-int	error_syntax(char *value);
-int	line_parser(t_token *head);
-int	cmd_parser(t_token *head);
+int		error_syntax(char *value);
+int		line_parser(t_token *head);
+int		cmd_parser(t_token *head);
 t_token	*analyser(char *line);
 
 #endif
