@@ -31,4 +31,5 @@ void	token_clear(t_token **token_stack)
 		token_free_elem(*token_stack);
 		*token_stack = next;
 	}
+	*token_stack = NULL;
 }
