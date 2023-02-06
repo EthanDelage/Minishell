@@ -29,7 +29,7 @@ int	builtin_echo(char **args)
 
 static int	echo_handle_option(char **args)
 {
-	while (is_endl_option(*args))
+	while (*args && is_endl_option(*args))
 		args++;
 	return (echo_put_args(args));
 }
