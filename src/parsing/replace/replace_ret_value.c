@@ -30,7 +30,7 @@ char	*replace_ret_value(char *line, size_t *index)
 	}
 	ft_memcpy((void *) new, (void *) line, *index);
 	fill_number(new + *index, g_return_value, len_ret);
-	ft_strcpy(new + *index + len_ret, line + *index);
+	ft_strcpy(new + *index + len_ret, line + *index + 2);
 	*index = *index + len_ret;
 	free(line);
 	return (new);

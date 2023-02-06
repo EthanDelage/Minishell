@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "lexer.h"
 #include "parser.h"
-#include <stdio.h>
 
 static int	cmd_analyser(t_token *token);
 static int	verify_only_redirection(t_token *redirect_token);
