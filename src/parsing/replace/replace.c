@@ -15,10 +15,11 @@
 #include "envp.h"
 #include "redirect.h"
 
-static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
-static int	replace_redirect(t_hashtable *envp_dict,
-				t_cmd_token *redirect_token);
-static int	is_ambiguous_redirect(char *file_name);
+static int			replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
+static int			replace_redirect(t_hashtable *envp_dict,
+						t_cmd_token *redirect_token);
+static int			is_ambiguous_redirect(char *file_name);
+static t_cmd_arg	*replace_split_wildcard(t_cmd_arg *head, t_cmd_arg *delimiter);
 
 int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 {
@@ -45,6 +46,7 @@ int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 {
 	t_cmd_arg	*args;
+	t_cmd_arg	*tmp;
 
 	args = (t_cmd_arg *) cmd_token->body;
 	while (args)
@@ -52,7 +54,11 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 		args->arg = replace_env(envp_dict, args->arg);
 		if (errno)
 			return (1);
+		tmp = args;
 		args = split_arg(args);
+		if (errno)
+			return (1);
+		args = replace_split_wildcard(tmp, args);
 		if (errno)
 			return (1);
 	}
@@ -67,6 +73,20 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 	return (0);
 }
 
+static t_cmd_arg	*replace_split_wildcard(t_cmd_arg *head, t_cmd_arg *delimiter)
+{
+	while (head && head != delimiter)
+	{
+		head->arg = wildcard_replace(head->arg);
+		if (errno)
+			return (NULL);
+		head = split_arg(head);
+		if (errno)
+			return (NULL);
+	}
+	return (head);
+}
+
 static int	replace_redirect(t_hashtable *envp_dict,
 				t_cmd_token *redirect_token)
 {
@@ -74,6 +94,7 @@ static int	replace_redirect(t_hashtable *envp_dict,
 
 	param = (t_redirect_param *) redirect_token->body;
 	param->body = replace_env(envp_dict, param->body);
+	param->body = wildcard_replace(param->body);
 	if (param->body == NULL)
 	{
 		perror("minishell");

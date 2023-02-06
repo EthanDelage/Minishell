@@ -38,7 +38,7 @@ t_cmd_arg	*get_return_cmd_arg(t_cmd_arg *current, size_t nb_new_arg);
 
 /* ---------- WILDCARDS FUNCTIONS	---------- */
 
-char	*wildcard_replace(char *template);
+char		*wildcard_replace(char *template);
 
 /* ---------- WILDCARDS_UTILS FUNCTIONS	---------- */
 
