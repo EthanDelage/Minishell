@@ -124,4 +124,4 @@ add_executable(Minishell
         src/parsing/replace/replace_quotes.c
         src/parsing/replace/replace_ret_value.c
         src/parsing/replace/split_arg_utils.c
-        src/main.c)
+        src/main.c src/signal/signal.c include/mini_signal.h)

@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+        /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
@@ -19,6 +19,7 @@
 #include "replace.h"
 #include "router.h"
 #include "exec.h"
+#include "mini_signal.h"
 
 void	print_cmd_body(t_token *token);
 void	print_redirect(t_token *token);
@@ -36,9 +37,11 @@ int	main(int argc, char **argv, char **envp)
 	envp_dict = envp_to_dict(envp);
 	while (1)
 	{
+		init_sigaction(sig_prompt_handler);
 		line = readline("> ");
+		init_sigaction(sig_cmd_handler);
 		if (line == NULL)
-			return (errno);
+			builtin_exit(envp_dict, NULL, NULL);
 		errno = 0;
 		add_history(line);
 		line_token = analyser(line);

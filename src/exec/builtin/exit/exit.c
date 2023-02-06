@@ -19,7 +19,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 {
 	char	*arg;
 
-	if (args[1] && args[2] != NULL)
+	if (args && args[1] && args[2] != NULL)
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		return (1);
@@ -57,7 +57,7 @@ static char	*exit_get_arg(char **args)
 	char	*arg;
 	size_t	size;
 
-	if (args[1])
+	if (args && args[1])
 	{
 		size = ft_strlen(args[1]);
 		arg = (char *) malloc((size + 1) * sizeof (char));
