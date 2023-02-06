@@ -43,8 +43,4 @@ int		redirect_get_output_fd(t_cmd_token *head);
 int		return_errno_error(void);
 void	redirect_print_error(char *file_name);
 
-/* ---------- WILDCARDS FUNCTIONS	---------- */
-
-bool	wildcard_is_valid(char *filename, char *template);
-
 #endif

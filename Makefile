@@ -64,6 +64,7 @@ SRCS		=		main.c \
 					parsing/replace/replace_ret_value.c \
 					parsing/replace/replace_quotes.c \
 					parsing/replace/wildcards/wildcards.c \
+					parsing/replace/wildcards/wildcards_utils.c \
 					parsing/analyser/analyser.c \
 					exec/exec.c \
 					exec/exec_pipe.c \

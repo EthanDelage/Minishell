@@ -11,9 +11,44 @@
 /* ************************************************************************** */
 #include "replace.h"
 
-static char	*wildcard_skip(char *str);
+extern unsigned char	g_return_value;
 
-bool	wildcard_is_valid(char *filename, char *template)
+static bool	wildcard_is_valid(char *filename, char *template);
+
+char	*wildcard_replace(char *template)
+{
+	DIR				*dir;
+	struct dirent	*entry;
+	char			*result;
+
+	result = NULL;
+	dir = opendir(".");
+	if (errno)
+		return (error(template, result));
+	entry = readdir(dir);
+	if (errno)
+		return (error(template, result));
+	while (entry)
+	{
+		if (wildcard_is_valid(entry->d_name, template))
+		{
+			result = strjoin_space(result, entry->d_name);
+			if (errno)
+				return (error(template, result));
+		}
+		entry = readdir(dir);
+		if (errno)
+			return (error(template, result));
+	}
+	if (closedir(dir) == -1)
+		return (error(template, result));
+	if (result == NULL)
+		return (template);
+	free(template);
+	return (result);
+}
+
+static bool	wildcard_is_valid(char *filename, char *template)
 {
 	while (*template)
 	{
@@ -31,12 +66,7 @@ bool	wildcard_is_valid(char *filename, char *template)
 		filename++;
 		template++;
 	}
+	if (*filename != '\0')
+		return (false);
 	return (true);
-}
-
-static char	*wildcard_skip(char *str)
-{
-	while (*str && *str == '*')
-		str++;
-	return (str);
 }

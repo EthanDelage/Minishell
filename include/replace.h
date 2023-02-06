@@ -13,6 +13,7 @@
 # define REPLACE_H
 
 # include <stdio.h>
+# include <dirent.h>
 # include <stdlib.h>
 # include "envp.h"
 # include "token.h"
@@ -34,5 +35,15 @@ void		line_skip_isspace(char *line, size_t *i);
 void		get_end_index(char *arg, size_t *index);
 int			add_new_arg(char *arg, size_t *index, t_cmd_arg *current);
 t_cmd_arg	*get_return_cmd_arg(t_cmd_arg *current, size_t nb_new_arg);
+
+/* ---------- WILDCARDS FUNCTIONS	---------- */
+
+char	*wildcard_replace(char *template);
+
+/* ---------- WILDCARDS_UTILS FUNCTIONS	---------- */
+
+char		*strjoin_space(char *s1, char *s2);
+char		*wildcard_skip(char *str);
+char		*error(char *template, char *result);
 
 #endif
