@@ -124,4 +124,4 @@ add_executable(Minishell
         src/parsing/replace/replace_quotes.c
         src/parsing/replace/replace_ret_value.c
         src/parsing/replace/split_arg_utils.c
-        src/main.c src/exec/exec_subshell.c src/exec/exec_utils.c src/exec/redirect/redirect_utils.c src/exec/redirect/here_doc/here_doc_utils.c src/exec/router/router_utils.c)
+        src/main.c src/exec/exec_subshell.c src/exec/exec_utils.c src/exec/redirect/redirect_utils.c src/exec/redirect/here_doc/here_doc_utils.c src/exec/router/router_utils.c src/parsing/replace/wildcards/wildcards.c)
