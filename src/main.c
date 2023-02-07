@@ -28,19 +28,27 @@ unsigned char	g_return_value = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*line;
-	t_token		*line_token;
-	t_hashtable	*envp_dict;
+	char			*line;
+	t_token			*line_token;
+	t_hashtable		*envp_dict;
+	struct termios	term;
 
 	(void) argc;
 	(void) argv;
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
+		return (1);
 	envp_dict = envp_to_dict(envp);
 	//TODO: increment $SHLVL
 	while (1)
 	{
-		init_sigaction(sig_prompt_handler);
+		init_prompt_sigaction();
 		line = readline("> ");
-		init_sigaction(sig_cmd_handler);
+		if (tcsetattr(STDIN_FILENO, 0, &term) == -1)
+		{
+			free(line);
+			return (1);
+		}
+		init_cmd_sigaction();
 		if (line == NULL)
 			builtin_exit(envp_dict, NULL, NULL);
 		errno = 0;

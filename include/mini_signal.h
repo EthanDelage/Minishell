@@ -13,12 +13,12 @@
 # define MINI_SIGNAL_H
 
 # include <signal.h>
+# include <unistd.h>
 # include <stdio.h>
 # include <readline/readline.h>
-# include "libft.h"
+# include <termio.h>
 
-void	init_sigaction(void (*handler) (int, siginfo_t *, void *));
-void	sig_prompt_handler(int sig, siginfo_t *info, void *uap);
-void	sig_cmd_handler(int sig, siginfo_t *info, void *uap);
+int	init_prompt_sigaction(void);
+int init_cmd_sigaction(void);
 
 #endif

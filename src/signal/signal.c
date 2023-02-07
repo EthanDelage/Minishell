@@ -15,16 +15,14 @@ void	sig_prompt_handler(int sig, siginfo_t *info, void *uap)
 {
     (void) info;
     (void) uap;
+
     if (sig == SIGINT)
     {
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		return ;
 	}
-	printf("test\n");
-	printf("%d\n", sig);
 }
 
 void	sig_cmd_handler(int sig, siginfo_t *info, void *uap)
@@ -36,18 +34,38 @@ void	sig_cmd_handler(int sig, siginfo_t *info, void *uap)
 		printf("\n");
 		rl_replace_line("", 0);
 		rl_redisplay();
-		return ;
 	}
-	printf("test\n");
-	printf("%d\n", sig);
+	if (sig == SIGQUIT)
+	{
+		printf("Quit (core dumped)\n");
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
-void	init_sigaction(void (*handler) (int, siginfo_t *, void *))
+int	init_prompt_sigaction(void)
+{
+	struct sigaction sact;
+	struct termios term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_cc[VQUIT] = 0;
+	tcsetattr(STDIN_FILENO, 0, &term);
+	sigemptyset(&sact.sa_mask);
+	sact.sa_flags = SA_SIGINFO;
+	sact.sa_sigaction = sig_prompt_handler;
+	sigaction(SIGINT, &sact, NULL);
+	return (0);
+}
+
+int	init_cmd_sigaction(void)
 {
 	struct sigaction sact;
 
 	sigemptyset(&sact.sa_mask);
 	sact.sa_flags = SA_SIGINFO;
-	sact.sa_sigaction = handler;
+	sact.sa_sigaction = sig_cmd_handler;
 	sigaction(SIGINT, &sact, NULL);
+	sigaction(SIGQUIT, &sact, NULL);
+	return (0);
 }
