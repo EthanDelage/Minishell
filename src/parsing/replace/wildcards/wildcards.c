@@ -47,7 +47,9 @@ static char	*wildcard_get_file(char *template, DIR *dir)
 		return (NULL);
 	while (entry)
 	{
-		if (wildcard_is_valid(entry->d_name, template))
+		if (wildcard_is_valid(entry->d_name, template)
+			&& (entry->d_name[0] != '.'
+			|| (entry->d_name[0] == '.' && template[0] == '.')))
 		{
 			result = strjoin_space(result, entry->d_name);
 			if (errno)
