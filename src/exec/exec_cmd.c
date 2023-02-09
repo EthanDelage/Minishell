@@ -33,7 +33,13 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 		return (head->next);
 	}
 	if (is_builtin(head->cmd_stack) == 0)
+	{
 		g_return_value = exec_cmd_bin(head, fd_io, envp_dict);
+		if (fd_io[WRITE] != STDOUT_FILENO)
+			close(fd_io[WRITE]);
+		if (fd_io[READ])
+			close(fd_io[READ]);
+	}
 	else
 		exec_cmd_builtin(head, fd_io, envp_dict);
 	return (head->next);
