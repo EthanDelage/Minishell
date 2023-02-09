@@ -89,6 +89,10 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict, int fd_in, int
 		}
 		exit(pipe_router(head, envp_dict));
 	}
+	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
+		close(fd_io[READ]);
+	if (fd_io[WRITE] != fd_pipe[WRITE] && fd_io[WRITE] != STDOUT_FILENO)
+		close(fd_io[WRITE]);
 	return (pid);
 }
 

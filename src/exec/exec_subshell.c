@@ -97,6 +97,10 @@ pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in,
 		exec(head->next, envp_dict);
 		exit(g_return_value);
 	}
+	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
+		close(fd_io[READ]);
+	if (fd_io[WRITE] != fd_pipe[WRITE] && fd_io[WRITE] != STDOUT_FILENO)
+		close(fd_io[WRITE]);
 	return (pid);
 }
 
