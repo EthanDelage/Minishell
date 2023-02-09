@@ -56,6 +56,7 @@ int	exec_cmd(t_token *token, t_hashtable *envp_dict)
 		else
 		{
 			waitpid(pid, &return_val, 0);
+//			printf("exit normally: %d, exit with sig: %d\n", WIFEXITED(return_val), WIFSTOPPED(return_val));
 			g_return_value = WEXITSTATUS(return_val);
 		}
 	}

@@ -12,13 +12,16 @@
 #ifndef MINI_SIGNAL_H
 # define MINI_SIGNAL_H
 
-# include <signal.h>
 # include <unistd.h>
-# include <stdio.h>
+# include <signal.h>
 # include <readline/readline.h>
-# include <termio.h>
+# include <stdio.h>
+# include <sys/wait.h>
+# include <termios.h>
 
-int	init_prompt_sigaction(void);
-int init_cmd_sigaction(void);
+# define E_SIGINT 33280
+
+int	init_sigaction(void);
+struct termios init_termios(void);
 
 #endif

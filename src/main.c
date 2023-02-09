@@ -33,21 +33,19 @@ int	main(int argc, char **argv, char **envp)
 	t_hashtable		*envp_dict;
 	struct termios	term;
 
+	init_sigaction();
+	if (errno)
+		return (errno);
 	(void) argc;
 	(void) argv;
-	if (tcgetattr(STDIN_FILENO, &term) == -1)
-		return (1);
 	envp_dict = envp_to_dict(envp);
 	while (1)
 	{
-		init_prompt_sigaction();
+		term = init_termios();
 		line = readline("> ");
-		if (tcsetattr(STDIN_FILENO, 0, &term) == -1)
-		{
-			free(line);
-			return (1);
-		}
-		init_cmd_sigaction();
+		tcsetattr(STDIN_FILENO, 0, &term);
+		if (errno)
+			builtin_exit(envp_dict, NULL, NULL);
 		if (line == NULL)
 			builtin_exit(envp_dict, NULL, NULL);
 		errno = 0;
