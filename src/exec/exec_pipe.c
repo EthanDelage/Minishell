@@ -39,10 +39,7 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 	else
 		pid = exec_pipe_cmd(head, envp_dict, fd_in, fd_pipe);
 	if (pid == -1)
-	{
 		return (NULL);
-	}
-	redirect_close(head->cmd_stack);
 	if (next_cmd)
 	{
 		close(fd_pipe[WRITE]);
@@ -70,7 +67,6 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict, int fd_in, int
 	{
 		if (fd_pipe[WRITE] != -1)
 			close_pipe(fd_pipe);
-		redirect_close(head->cmd_stack);
 		g_return_value = errno;
 	}
 	else if (pid == 0)
@@ -79,13 +75,13 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict, int fd_in, int
 			close(fd_pipe[READ]);
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
+			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(errno);
 			close(fd_io[READ]);
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
+			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(errno);
 			close(fd_io[WRITE]);
 		}

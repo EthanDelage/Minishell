@@ -41,27 +41,19 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	{
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
-			{
-				redirect_close(head->cmd_stack);
+			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
-			}
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
-			{
-				redirect_close(head->cmd_stack);
+			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
-			}
 		}
-		redirect_close(head->cmd_stack);
 		exec(head->next, envp_dict);
 		exit(g_return_value);
 	}
 	else
 	{
-		redirect_close(head->cmd_stack);
 		waitpid(pid, &return_value, 0);
 		g_return_value = WEXITSTATUS(return_value);
 		if (redirect_token && redirect_token->type == COMMAND)
@@ -92,13 +84,13 @@ pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in,
 			close(fd_pipe[READ]);
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
+			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(errno);
 			close(fd_io[READ]);
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
+			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(errno);
 			close(fd_io[WRITE]);
 		}
@@ -131,6 +123,7 @@ static int	subshell_set_fd_io(t_token *head, int fd_io[2], t_hashtable *envp_dic
 	{
 		if (exec_set_fd_io(head->cmd_stack, fd_io, envp_dict) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
+		redirect_close_unused(head->cmd_stack, fd_io);
 	}
 	else
 	{

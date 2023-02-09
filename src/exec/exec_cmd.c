@@ -33,7 +33,13 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 		return (head->next);
 	}
 	if (is_builtin(head->cmd_stack) == 0)
+	{
 		g_return_value = exec_cmd_bin(head, fd_io, envp_dict);
+		if (fd_io[READ] != STDIN_FILENO)
+			close(fd_io[READ]);
+		if (fd_io[WRITE] != STDIN_FILENO)
+			close(fd_io[WRITE]);
+	}
 	else
 		exec_cmd_builtin(head, fd_io, envp_dict);
 	return (head->next);
@@ -52,21 +58,14 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 	{
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == -1)
-			{
-				redirect_close(cmd_token->cmd_stack);
+			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
-			}
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == -1)
-			{
-				redirect_close(cmd_token->cmd_stack);
+			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
-			}
 		}
-		redirect_close(cmd_token->cmd_stack);
 		cmd_router(cmd_token, envp_dict);
 	}
 	else
@@ -83,23 +82,24 @@ static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
 	fd_save[WRITE] = -1;
 	if (fd_io[READ] != STDIN_FILENO)
 	{
-		fd_save[READ] = dup2_save_fd(fd_io[READ], STDIN_FILENO);
-		if (fd_save[READ] == -1)
+		fd_save[READ] = dup(STDIN_FILENO);
+		if (fd_save[READ] == -1 || dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 		{
-			redirect_close(cmd_token->cmd_stack);
+			if (fd_save[READ] != -1)
+				close(fd_save[READ]);
 			return ;
 		}
 	}
 	if (fd_io[WRITE] != STDOUT_FILENO)
 	{
-		fd_save[WRITE] = dup2_save_fd(fd_io[WRITE], STDOUT_FILENO);
-		if (fd_save[WRITE] == -1)
+		fd_save[WRITE] = dup(STDOUT_FILENO);
+		if (fd_save[WRITE] == -1 || dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 		{
-			redirect_close(cmd_token->cmd_stack);
+			if (fd_save[WRITE] != -1)
+				close(fd_save[WRITE]);
 			return ;
 		}
 	}
-	redirect_close(cmd_token->cmd_stack);
 	g_return_value = exec_builtin(cmd_token, envp_dict);
 	if (fd_save[READ] != -1 && fd_save[READ] != STDIN_FILENO)
 	{

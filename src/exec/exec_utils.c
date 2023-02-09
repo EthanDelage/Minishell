@@ -25,6 +25,9 @@ int	exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
 	if (redirect_open(envp_dict, head) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	exec_get_fd_io(head, fd_io);
+	redirect_close_unused(head, fd_io);
+	if (errno)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -35,6 +38,9 @@ int	exec_set_fd_io(t_cmd_token *head, int fd_io[2], t_hashtable *envp_dict)
 	if (redirect_open(envp_dict, head) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	exec_get_fd_io(head, fd_io);
+	redirect_close_unused(head, fd_io);
+	if (errno)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -52,14 +58,12 @@ static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2])
 
 int	dup2_save_fd(int new_fd, int old_fd)
 {
-	int	save_fd;
-
-	save_fd = dup(old_fd);
-	if (save_fd == -1 || dup2(new_fd, old_fd) == -1)
+	if (dup2(new_fd, old_fd) == -1)
 	{
 		g_return_value = errno;
 		perror("minishell");
-		return (-1);
+		return (EXIT_FAILURE);
 	}
-	return (save_fd);
+	close(new_fd);
+	return (EXIT_SUCCESS);
 }

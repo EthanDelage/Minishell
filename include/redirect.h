@@ -38,6 +38,7 @@ void	here_doc_close_error(t_redirect_param *redirect_param);
 int		here_doc_get(t_token *head);
 int		redirect_open(t_hashtable *envp_dict, t_cmd_token *cmd_token);
 void	redirect_close(t_cmd_token *cmd_token);
+void	redirect_close_unused(t_cmd_token *cmd_token, int fd_io[2]);
 int		redirect_get_input_fd(t_cmd_token *head);
 int		redirect_get_output_fd(t_cmd_token *head);
 int		return_errno_error(void);

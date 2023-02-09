@@ -18,46 +18,22 @@ void	redirect_print_error(char *file_name)
 	ft_putstr_fd(": ", STDERR_FILENO);
 }
 
-void	redirect_close(t_cmd_token *cmd_token)
+void	redirect_close_unused(t_cmd_token *cmd_token, int fd_io[2])
 {
 	while (cmd_token)
 	{
-		if (cmd_token->type == REDIRECT_OUT)
+		if (cmd_token->type == REDIRECT_OUT
+			&& fd_io[WRITE] != ((t_redirect_param *) cmd_token->body)->fd[WRITE])
 			redirect_out_close((t_redirect_param *) cmd_token->body);
-		if (cmd_token->type == REDIRECT_IN)
+		if (cmd_token->type == REDIRECT_IN
+			&& fd_io[READ] != ((t_redirect_param *) cmd_token->body)->fd[READ])
 			redirect_in_close((t_redirect_param *) cmd_token->body);
-		if (cmd_token->type == APPEND_OUT)
+		if (cmd_token->type == APPEND_OUT
+			&& fd_io[WRITE] != ((t_redirect_param *) cmd_token->body)->fd[WRITE])
 			append_out_close((t_redirect_param *) cmd_token->body);
-		if (cmd_token->type == HERE_DOC)
+		if (cmd_token->type == HERE_DOC
+			&& fd_io[READ] != ((t_redirect_param *) cmd_token->body)->fd[READ])
 			here_doc_close((t_redirect_param *) cmd_token->body);
 		cmd_token = cmd_token->next;
 	}
-}
-
-int	redirect_get_input_fd(t_cmd_token *head)
-{
-	int	fd;
-
-	fd = -1;
-	while (head)
-	{
-		if (head->type == REDIRECT_IN || head->type == HERE_DOC)
-			fd = ((t_redirect_param *) head->body)->fd[READ];
-		head = head->next;
-	}
-	return (fd);
-}
-
-int	redirect_get_output_fd(t_cmd_token *head)
-{
-	int	fd;
-
-	fd = -1;
-	while (head)
-	{
-		if (head->type == REDIRECT_OUT || head->type == APPEND_OUT)
-			fd = ((t_redirect_param *) head->body)->fd[WRITE];
-		head = head->next;
-	}
-	return (fd);
 }

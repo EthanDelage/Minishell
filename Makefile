@@ -81,7 +81,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra #-fsanitize=address
+CFLAGS		=		-Wall -Werror -Wextra
 
 DFLAGS		=		-MMD -MP
 
@@ -99,7 +99,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3 #-fsanitize=address
+					$(CC) $(OBJS) $(LFLAGS) -o $@
 
 
 $(LIBFT):			FORCE
@@ -109,7 +109,7 @@ FORCE:
 
 $(BUILD_DIR)%.o:	$(SRC_DIR)%.c
 					mkdir -p $(shell dirname $@)
-					$(CC) $(CFLAGS) $(DFLAGS) $(IFLAGS) -c $< -o $@ -g3
+					$(CC) $(CFLAGS) $(DFLAGS) $(IFLAGS) -c $< -o $@
 
 clean:
 					$(MAKE) clean -C $(LIBFT_DIR)
