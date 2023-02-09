@@ -18,7 +18,7 @@ static void	cmd_here_doc_close_error(t_token *head, t_cmd_token *node_error);
 int	redirect_open(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 {
 	t_cmd_token	*head;
-// TODO: close all not use redirect before exec_cmd
+
 	head = cmd_token;
 	while (cmd_token)
 	{
