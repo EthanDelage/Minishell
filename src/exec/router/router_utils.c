@@ -18,7 +18,6 @@ int	is_builtin(t_cmd_token *cmd_token)
 	size_t		index;
 
 	index = 0;
-	printf("head: %s\n", cmd_token->head);
 	if (ft_strchr(cmd_token->head, '/') != NULL)
 		return (0);
 	while (builtin[index] != NULL)

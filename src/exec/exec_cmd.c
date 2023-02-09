@@ -29,17 +29,11 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 	}
 	if (exec_set_fd_io(head->cmd_stack, fd_io, envp_dict) == EXIT_FAILURE)
 	{
-		g_return_value = 1;
+		g_return_value = errno;
 		return (head->next);
 	}
 	if (is_builtin(head->cmd_stack) == 0)
-	{
 		g_return_value = exec_cmd_bin(head, fd_io, envp_dict);
-		if (fd_io[READ] != STDIN_FILENO)
-			close(fd_io[READ]);
-		if (fd_io[WRITE] != STDIN_FILENO)
-			close(fd_io[WRITE]);
-	}
 	else
 		exec_cmd_builtin(head, fd_io, envp_dict);
 	return (head->next);
@@ -95,6 +89,8 @@ static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
 		fd_save[WRITE] = dup(STDOUT_FILENO);
 		if (fd_save[WRITE] == -1 || dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 		{
+			if (fd_save[READ] != -1)
+				close(fd_save[READ]);
 			if (fd_save[WRITE] != -1)
 				close(fd_save[WRITE]);
 			return ;
@@ -105,12 +101,10 @@ static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
 	{
 		if (dup2_save_fd(fd_save[READ], STDIN_FILENO) == -1)
 			return ;
-		close(fd_save[READ]);
 	}
 	if (fd_save[WRITE] != -1 && fd_save[WRITE] != STDOUT_FILENO)
 	{
 		if (dup2_save_fd(fd_save[WRITE], STDOUT_FILENO) == -1)
 			return ;
-		close(fd_save[WRITE]);
 	}
 }

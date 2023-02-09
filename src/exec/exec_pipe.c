@@ -26,6 +26,8 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 	int		return_value;
 	t_token	*next_cmd;
 
+	if (replace(envp_dict, head->cmd_stack) == EXIT_FAILURE)
+		return (NULL);
 	next_cmd = exec_pipe_get_next_cmd(head);
 	if (next_cmd)
 	{
