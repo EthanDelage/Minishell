@@ -55,6 +55,10 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	else
 	{
 		waitpid(pid, &return_value, 0);
+		if (fd_io[WRITE] != STDOUT_FILENO)
+			close(fd_io[WRITE]);
+		if (fd_io[READ] != STDIN_FILENO)
+			close(fd_io[READ]);
 		g_return_value = WEXITSTATUS(return_value);
 		if (redirect_token && redirect_token->type == COMMAND)
 			return (redirect_token->next);
