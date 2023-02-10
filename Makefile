@@ -81,7 +81,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra
+CFLAGS		=		-Wall -Werror -Wextra -g3
 
 DFLAGS		=		-MMD -MP
 
@@ -99,7 +99,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@
+					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
 
 
 $(LIBFT):			FORCE

@@ -62,7 +62,8 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 		if (errno)
 			return (1);
 	}
-	cmd_arg_remove_quote((t_cmd_arg *) cmd_token->body);
+	if (cmd_arg_remove_quote((t_cmd_arg *) cmd_token->body) == EXIT_FAILURE)
+		return (1);
 	cmd_arg_reverse((t_cmd_arg **) &cmd_token->body);
 	free(cmd_token->head);
 	cmd_token->head = ft_strdup(((char **) cmd_token->body)[0]);
