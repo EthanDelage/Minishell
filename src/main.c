@@ -38,6 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 		return (1);
 	envp_dict = envp_to_dict(envp);
+	//TODO: Fix export when don't contains '='
 	if (errno)
 		return (errno);
 	if (shlvl_increment(envp_dict) == EXIT_FAILURE)
