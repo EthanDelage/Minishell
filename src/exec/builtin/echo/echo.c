@@ -22,7 +22,7 @@ int	builtin_echo(char **args)
 		return (echo_handle_option(args));
 	if (echo_put_args(args) == 1)
 		return (1);
-	if (printf("\n") <= 0)
+	if (printf("\n") < 0)
 		return (1);
 	return (0);
 }
@@ -38,11 +38,11 @@ static int	echo_put_args(char **args)
 {
 	while (*args)
 	{
-		if (printf("%s", *args) <= 0)
+		if (printf("%s", *args) < 0)
 			return (1);
 		args++;
 		if (*args)
-			if (printf(" ") <= 0)
+			if (printf(" ") < 0)
 				return (1);
 	}
 	return (0);
