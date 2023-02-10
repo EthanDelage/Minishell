@@ -40,6 +40,8 @@ enum
 	NOT_FOUND	=	1,
 };
 
+int				shlvl_increment(t_hashtable *envp_dict);
+
 /* ----------	HASHTABLE FUNCTIONS	---------- */
 
 t_hashtable		*hashtable_init(size_t size);

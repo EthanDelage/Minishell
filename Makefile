@@ -20,11 +20,12 @@ LIBFT		=		$(LIBFT_DIR)libft.a
 
 SRCS		=		main.c \
 					envp/dict.c \
-					envp/hashtable.c \
 					envp/dict_utils.c \
+					envp/hashtable.c \
 					envp/hashtable_utils.c \
 					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
+					envp/shlvl.c \
 					parsing/line_lexer/line_lexer.c \
 					parsing/line_lexer/token/token_add.c \
 					parsing/line_lexer/token/token_clear.c \

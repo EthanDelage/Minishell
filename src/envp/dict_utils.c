@@ -27,7 +27,8 @@ t_dict	*dict_free_elem(t_dict **elem)
 	t_dict	*tmp;
 
 	free((*elem)->name);
-	free((*elem)->value);
+	if ((*elem)->value)
+		free((*elem)->value);
 	tmp = (*elem)->next;
 	free(*elem);
 	return (tmp);
