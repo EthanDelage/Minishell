@@ -15,8 +15,11 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
 static int	replace_cmd_arg(t_hashtable *envp_dict, t_cmd_arg *args);
 static int	replace_redirect(t_hashtable *envp_dict,
 						t_cmd_token *redirect_token);
-static int	is_ambiguous_redirect(char *file_name);
+static bool	is_ambiguous_redirect(char *file_name);
 
+/**
+ * Replace env variables by their value.
+ */
 int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 {
 	t_cmd_token	*token;
@@ -93,7 +96,7 @@ static int	replace_redirect(t_hashtable *envp_dict,
 	return (SUCCESS);
 }
 
-static int	is_ambiguous_redirect(char *file_name)
+static bool	is_ambiguous_redirect(char *file_name)
 {
 	size_t	index;
 
@@ -107,9 +110,9 @@ static int	is_ambiguous_redirect(char *file_name)
 			ft_putstr_fd("minishell: `", STDERR_FILENO);
 			ft_putstr_fd(file_name, STDERR_FILENO);
 			ft_putstr_fd("': ambiguous redirect\n", STDERR_FILENO);
-			return (FAILURE);
+			return (true);
 		}
 		index++;
 	}
-	return (SUCCESS);
+	return (false);
 }

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "replace.h"
-#include "token.h"
 
 static t_cmd_arg	*create_new_node(char *value, t_cmd_arg *next);
 

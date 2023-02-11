@@ -9,7 +9,6 @@
 /*   Updated: 2023/01/30 22:47:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "token.h"
 #include "replace.h"
 
 int	cmd_arg_remove_quote(t_cmd_arg *head)

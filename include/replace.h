@@ -15,6 +15,7 @@
 # include <stdio.h>
 # include <dirent.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include "envp.h"
 # include "token.h"
 # include "cmd_token.h"
