@@ -16,6 +16,8 @@
 char		*here_doc_replace_env(t_hashtable *envp_dict, char *line);
 static int	here_doc(t_redirect_param *param);
 static char	*ft_strjoin_endl(char *s1, char *s2);
+static int	clear_here_doc_param(int ret_value, char *prompt, char *delimiter,
+				char *tmp);
 
 int	here_doc_open(t_redirect_param *param)
 {
@@ -59,19 +61,14 @@ static int	here_doc(t_redirect_param *param)
 	end = false;
 	prompt = ft_strjoin(delimiter, " > ");
 	if (errno)
-	{
-		free(delimiter);
-		return (return_errno_error());
-	}
+		return (clear_here_doc_param(return_errno_error(), delimiter,
+				NULL, NULL));
 	while (end == false)
 	{
 		tmp = readline(prompt);
-		if (tmp == NULL)
-		{
-			free(prompt);
-			free(delimiter);
-			return (return_errno_error());
-		}
+		if (errno)
+			return (clear_here_doc_param(return_errno_error(), prompt,
+					delimiter, NULL));
 		errno = 0;
 		if (ft_strcmp(tmp, delimiter) == 0)
 			end = true;
@@ -79,17 +76,12 @@ static int	here_doc(t_redirect_param *param)
 		{
 			param->body = ft_strjoin_endl(param->body, tmp);
 			if (errno)
-			{
-				free(prompt);
-				free(delimiter);
-				return (return_errno_error());
-			}
+				return (clear_here_doc_param(return_errno_error(), prompt,
+						delimiter, tmp));
 		}
 		free(tmp);
 	}
-	free(prompt);
-	free(delimiter);
-	return (SUCCESS);
+	return (clear_here_doc_param(SUCCESS, prompt, delimiter, NULL));
 }
 
 static char	*ft_strjoin_endl(char *s1, char *s2)
@@ -110,4 +102,16 @@ static char	*ft_strjoin_endl(char *s1, char *s2)
 	ft_strlcpy(&(new[len_s1 + 1]), s2, len_s2 + 1);
 	free(s1);
 	return (new);
+}
+
+static int	clear_here_doc_param(int ret_value, char *prompt, char *delimiter,
+				char *tmp)
+{
+	if (prompt)
+		free(prompt);
+	if (delimiter)
+		free(delimiter);
+	if (tmp)
+		free(tmp);
+	return (ret_value);
 }
