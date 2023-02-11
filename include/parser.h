@@ -16,12 +16,6 @@
 # include "token.h"
 # include "cmd_token.h"
 
-enum
-{
-	SUCCESS		=		0,
-	FAILURE		=		1,
-};
-
 int		error_syntax(char *value);
 int		line_parser(t_token *head);
 int		cmd_parser(t_token *head);

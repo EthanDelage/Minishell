@@ -32,7 +32,7 @@ int	here_doc_open(t_redirect_param *param)
 		close(param->fd[READ]);
 		return (return_errno_error());
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
@@ -44,7 +44,7 @@ int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 	if (*redirect_param->body != 0)
 		ft_putendl_fd(redirect_param->body, redirect_param->fd[WRITE]);
 	close(redirect_param->fd[WRITE]);
-	return (0);
+	return (SUCCESS);
 }
 
 static int	here_doc(t_redirect_param *param)
@@ -89,7 +89,7 @@ static int	here_doc(t_redirect_param *param)
 	}
 	free(prompt);
 	free(delimiter);
-	return (0);
+	return (SUCCESS);
 }
 
 static char	*ft_strjoin_endl(char *s1, char *s2)

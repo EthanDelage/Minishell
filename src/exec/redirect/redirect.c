@@ -47,17 +47,15 @@ int	here_doc_get(t_token *head)
 	current = head;
 	while (current)
 	{
-		if (current->type == COMMAND)
+		if (current->type == COMMAND
+			&& cmd_here_doc_open(current->cmd_stack) == FAILURE)
 		{
-			if (cmd_here_doc_open(current->cmd_stack) == 1)
-			{
-				cmd_here_doc_close_error(head, current->cmd_stack);
-				return (1);
-			}
+			cmd_here_doc_close_error(head, current->cmd_stack);
+			return (FAILURE);
 		}
 		current = current->next;
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 static int	cmd_here_doc_open(t_cmd_token *cmd_token)
@@ -66,10 +64,10 @@ static int	cmd_here_doc_open(t_cmd_token *cmd_token)
 	{
 		if (cmd_token->type == HERE_DOC)
 			if (here_doc_open((t_redirect_param *) cmd_token->body) != 0)
-				return (1);
+				return (FAILURE);
 		cmd_token = cmd_token->next;
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 static void	cmd_here_doc_close_error(t_token *head, t_cmd_token *node_error)
@@ -110,5 +108,5 @@ static int	redirect_close_error(t_cmd_token *head, t_cmd_token *node_error)
 			here_doc_close((t_redirect_param *) head->body);
 		head = head->next;
 	}
-	return (EXIT_FAILURE);
+	return (FAILURE);
 }
