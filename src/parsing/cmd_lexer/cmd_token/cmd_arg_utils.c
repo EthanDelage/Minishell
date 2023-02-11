@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
+static int	cmd_arg_size(t_cmd_arg *cmd_arg_stack);
+
 void	cmd_arg_reverse(t_cmd_arg **cmd_arg)
 {
 	t_cmd_arg	*next;
@@ -28,21 +30,6 @@ void	cmd_arg_reverse(t_cmd_arg **cmd_arg)
 		curr = next;
 	}
 	*cmd_arg = prev;
-}
-
-int	cmd_arg_size(t_cmd_arg *cmd_arg_stack)
-{
-	t_cmd_arg	*iterator;
-	int			count;
-
-	count = 0;
-	iterator = cmd_arg_stack;
-	while (iterator)
-	{
-		count++;
-		iterator = iterator->next;
-	}
-	return (count);
 }
 
 char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
@@ -76,4 +63,19 @@ void	cmd_arg_clear(t_cmd_arg **head)
 		free(*head);
 		*head = next;
 	}
+}
+
+static int	cmd_arg_size(t_cmd_arg *cmd_arg_stack)
+{
+	t_cmd_arg	*iterator;
+	int			count;
+
+	count = 0;
+	iterator = cmd_arg_stack;
+	while (iterator)
+	{
+		count++;
+		iterator = iterator->next;
+	}
+	return (count);
 }

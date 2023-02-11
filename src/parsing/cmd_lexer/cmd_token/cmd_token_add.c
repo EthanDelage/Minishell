@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
-static t_cmd_token	*cmd_token_new(int type, char *head, void *body);
+static t_cmd_token	*cmd_token_new(t_type type, char *head, void *body);
 
-void	cmd_token_add(t_cmd_token **cmd_stack, int type, char *head, void *body)
+void	cmd_token_add(t_cmd_token **cmd_stack, t_type type, char *head, void *body)
 {
 	t_cmd_token	*new;
 
@@ -24,7 +24,7 @@ void	cmd_token_add(t_cmd_token **cmd_stack, int type, char *head, void *body)
 	*cmd_stack = new;
 }
 
-static t_cmd_token	*cmd_token_new(int type, char *head, void *body)
+static t_cmd_token	*cmd_token_new(t_type type, char *head, void *body)
 {
 	t_cmd_token	*cmd_token;
 
@@ -39,7 +39,11 @@ static t_cmd_token	*cmd_token_new(int type, char *head, void *body)
 	return (cmd_token);
 }
 
-void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
+/**
+ * @brief
+ * Add a redirect type token from the value field of token to the cmd_token stack.
+ */
+void	cmd_token_add_redirect(t_token *token, t_type type, size_t *i)
 {
 	t_redirect_param	*body;
 	char				*head;
@@ -63,10 +67,14 @@ void	cmd_token_add_redirect(t_token *token, int type, size_t *i)
 	cmd_token_add(&token->cmd_stack, type, head, body);
 }
 
+/**
+ * @brief
+ * Add a cmd_arg token from the value field of token to the cmd_arg stack.
+ */
 void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 {
 	size_t	last_i;
-	int		current_type;
+	t_type		current_type;
 
 	line_skip_space(token->value, i);
 	last_i = *i;
@@ -89,6 +97,11 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 			ft_substr(token->value, last_i, *i - last_i));
 }
 
+/**
+ * @brief
+ * Add a command type token from the value field of token to the cmd_token stack.
+ * Body is a cmd_arg stack and head is set to NULL
+ */
 void	cmd_token_add_command(t_token *token, t_cmd_arg *cmd_arg_stack)
 {
 	cmd_token_add(&token->cmd_stack, COMMAND, NULL, cmd_arg_stack);
