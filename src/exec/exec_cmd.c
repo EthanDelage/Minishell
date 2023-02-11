@@ -54,7 +54,7 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 	return_value = 0;
 	pid = fork();
 	if (pid == -1)
-		return (2);
+		return (errno);
 	else if (pid == 0)
 	{
 		if (fd_io[READ] != STDIN_FILENO)

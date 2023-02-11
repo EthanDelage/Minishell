@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "router.h"
 
-int	is_builtin(t_cmd_token *cmd_token)
+bool	is_builtin(t_cmd_token *cmd_token)
 {
 	const char	*builtin[] = {"pwd", "cd", "env", "unset",
 		"export", "exit", "echo", NULL};
@@ -19,12 +19,12 @@ int	is_builtin(t_cmd_token *cmd_token)
 
 	index = 0;
 	if (ft_strchr(cmd_token->head, '/') != NULL)
-		return (0);
+		return (false);
 	while (builtin[index] != NULL)
 	{
 		if (ft_strcmp(cmd_token->head, builtin[index]) == 0)
-			return (1);
+			return (true);
 		index++;
 	}
-	return (0);
+	return (false);
 }
