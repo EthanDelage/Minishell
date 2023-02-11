@@ -21,7 +21,7 @@ int	append_out_open(t_redirect_param *redirect_param)
 		perror(NULL);
 		return (return_errno_error());
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 void	append_out_close(t_redirect_param *redirect_param)

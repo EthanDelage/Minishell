@@ -16,6 +16,10 @@ static char	*elem_to_str_quote(t_dict *elem);
 static void	dict_to_array(char **array, t_dict *head, size_t *index,
 				bool quote);
 
+/**
+ * @brief Convert an hashtable into string array
+ * @param quote: Boolean that determines whether values are enclosed in quotes
+ */
 char	**hashtable_get_array(t_hashtable *hashtable, bool quote)
 {
 	size_t	index;
@@ -53,6 +57,12 @@ void	hashtable_array_clear(char **array)
 	free(array);
 }
 
+/**
+ * @brief Convert a part of the hashtable into string array
+ * @param head: Part of the hashtable to convert
+ * @param index: Start index to fill the string array
+ * @param quote: Boolean that determines whether values are enclosed in quotes
+ */
 static void	dict_to_array(char **array, t_dict *head, size_t *index, bool quote)
 {
 	while (head != NULL)
@@ -68,6 +78,9 @@ static void	dict_to_array(char **array, t_dict *head, size_t *index, bool quote)
 	}
 }
 
+/**
+ * @brief Convert an hashtable element to string without quote
+ */
 static char	*elem_to_str(t_dict *elem)
 {
 	char			*str;
@@ -83,6 +96,9 @@ static char	*elem_to_str(t_dict *elem)
 	return (str);
 }
 
+/**
+ * @brief Convert an hashtable element to string with quote
+ */
 static char	*elem_to_str_quote(t_dict *elem)
 {
 	char			*str;

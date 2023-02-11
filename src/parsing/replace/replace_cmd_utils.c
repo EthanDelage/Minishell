@@ -18,10 +18,10 @@ int	cmd_arg_remove_quote(t_cmd_arg *head)
 	{
 		head->arg = trim_quotes(head->arg);
 		if (errno)
-			return (EXIT_FAILURE);
+			return (FAILURE);
 		head = head->next;
 	}
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
 
 t_cmd_arg	*split_arg(t_cmd_arg *current)

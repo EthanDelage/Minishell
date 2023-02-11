@@ -21,7 +21,7 @@ int	redirect_out_open(t_redirect_param *redirect_param)
 		perror(NULL);
 		return (return_errno_error());
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 void	redirect_out_close(t_redirect_param *redirect_param)

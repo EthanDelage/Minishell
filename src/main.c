@@ -68,8 +68,9 @@ int	main(int argc, char **argv, char **envp)
 		line_token = analyser(line);
 		if (line_token == NULL)
 			return (2);
-		if (here_doc_get(line_token) != 0)
+		if (here_doc_get(line_token) == FAILURE)
 			return (errno);
+		//TODO: if absolute path, check if it's a directory
 		exec(line_token, envp_dict);
 		token_clear(&line_token);
 		free(line);

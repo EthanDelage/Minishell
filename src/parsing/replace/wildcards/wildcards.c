@@ -36,6 +36,20 @@ char	*wildcard_replace(char *template)
 	return (result);
 }
 
+t_cmd_arg	*replace_split_wildcard(t_cmd_arg *head, t_cmd_arg *delimiter)
+{
+	while (head && head != delimiter)
+	{
+		head->arg = wildcard_replace(head->arg);
+		if (errno)
+			return (NULL);
+		head = split_arg(head);
+		if (errno)
+			return (NULL);
+	}
+	return (head);
+}
+
 static char	*wildcard_get_file(char *template, DIR *dir)
 {
 	struct dirent	*entry;
@@ -49,7 +63,7 @@ static char	*wildcard_get_file(char *template, DIR *dir)
 	{
 		if (wildcard_is_valid(entry->d_name, template)
 			&& (entry->d_name[0] != '.'
-			|| (entry->d_name[0] == '.' && template[0] == '.')))
+				|| (entry->d_name[0] == '.' && template[0] == '.')))
 		{
 			result = strjoin_space(result, entry->d_name);
 			if (errno)
