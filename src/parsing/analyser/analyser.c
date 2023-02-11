@@ -11,10 +11,16 @@
 /* ************************************************************************** */
 #include "analyser.h"
 
-static int	cmd_analyser(t_token *token);
-static int	verify_redirection(t_token *redirect_token);
-static char	*get_last_cmd_arg(t_cmd_arg *cmd_arg_stack);
+static int		cmd_analyser(t_token *token);
+static t_token	*token_analyser(t_token *token);
+static int		verify_redirection(t_token *redirect_token);
+static char		*get_last_cmd_arg(t_cmd_arg *cmd_arg_stack);
 
+/**
+ * @brief Lex and parse line parameter.
+ * @return Return a t_token stack representing the line.
+ * Return NULL if an error occurred.
+ */
 t_token	*analyser(char *line)
 {
 	t_token	*token_stack;
@@ -29,27 +35,30 @@ t_token	*analyser(char *line)
 	token_iterator = token_stack;
 	while (token_iterator)
 	{
-		if (token_iterator->type == CLOSE_PARENTHESIS
-			&& token_iterator->next && token_iterator->next->type == COMMAND)
+		token_iterator = token_analyser(token_iterator);
+		if (token_iterator == NULL)
 		{
-			if (verify_redirection(token_iterator->next) == FAILURE)
-			{
-				token_clear(&token_stack);
-				return (NULL);
-			}
-			token_iterator = token_iterator->next;
-		}
-		else if (token_iterator->type == COMMAND)
-		{
-			if (cmd_analyser(token_iterator) == FAILURE)
-			{
-				token_clear(&token_stack);
-				return (NULL);
-			}
+			token_clear(&token_stack);
+			return (NULL);
 		}
 		token_iterator = token_iterator->next;
 	}
 	return (token_stack);
+}
+
+static t_token	*token_analyser(t_token *token)
+{
+	if (token->type == CLOSE_PARENTHESIS
+		&& token->next && token->next->type == COMMAND)
+	{
+		if (verify_redirection(token->next) == FAILURE)
+			return (NULL);
+		token = token->next;
+	}
+	else if (token->type == COMMAND)
+		if (cmd_analyser(token) == FAILURE)
+			return (NULL);
+	return (token);
 }
 
 static int	cmd_analyser(t_token *token)
