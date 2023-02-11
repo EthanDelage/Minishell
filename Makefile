@@ -26,6 +26,7 @@ SRCS		=		main.c \
 					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
 					envp/shlvl.c \
+					envp/pwd.c \
 					parsing/line_lexer/line_lexer.c \
 					parsing/line_lexer/token/token_add.c \
 					parsing/line_lexer/token/token_clear.c \

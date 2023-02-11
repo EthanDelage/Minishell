@@ -48,7 +48,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	while (1)
 	{
-		if (pwd_update(envp_dict) == EXIT_FAILURE)
+		if (pwd_set(envp_dict) == EXIT_FAILURE)
 		{
 			hashtable_clear(envp_dict);
 			return (errno);

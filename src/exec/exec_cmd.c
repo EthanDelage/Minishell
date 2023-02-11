@@ -51,6 +51,7 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 	pid_t	pid;
 	int		return_value;
 
+	return_value = 0;
 	pid = fork();
 	if (pid == -1)
 		return (2);

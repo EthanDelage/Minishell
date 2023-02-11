@@ -40,7 +40,7 @@ enum
 	NOT_FOUND	=	1,
 };
 
-int				pwd_update(t_hashtable *envp_dict);
+int				pwd_set(t_hashtable *envp_dict);
 int				shlvl_increment(t_hashtable *envp_dict);
 
 /* ----------	HASHTABLE FUNCTIONS	---------- */

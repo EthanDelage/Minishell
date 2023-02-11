@@ -11,13 +11,18 @@
 /* ************************************************************************** */
 #include "envp.h"
 
-int	pwd_update(t_hashtable *envp_dict)
+static int	pwd_init(t_hashtable *envp_dict);
+static int	pwd_update(t_dict *pwd_node);
+
+int	pwd_set(t_hashtable *envp_dict)
 {
 	t_dict	*pwd_node;
 
 	pwd_node = hashtable_search(envp_dict, "PWD");
 	if (pwd_node == NULL)
-
+		return (pwd_init(envp_dict));
+	else
+		return (pwd_update(pwd_node));
 }
 
 static int	pwd_init(t_hashtable *envp_dict)
@@ -41,5 +46,15 @@ static int	pwd_init(t_hashtable *envp_dict)
 		return (EXIT_FAILURE);
 	}
 	hashtable_push(envp_dict, pwd_node);
+	return (EXIT_SUCCESS);
+}
+
+static int	pwd_update(t_dict *pwd_node)
+{
+	if (pwd_node->value)
+		free(pwd_node->value);
+	pwd_node->value = getcwd(NULL, 0);
+	if (errno)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
