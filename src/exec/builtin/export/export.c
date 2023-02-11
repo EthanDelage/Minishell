@@ -12,8 +12,9 @@
 #include "builtin.h"
 
 int			builtin_export_no_args(t_hashtable *envp_dict);
-static int	valid_env(const char *env);
 static void	export_one(t_hashtable *envp_dict, const char *env);
+static int	valid_env(const char *env);
+static int	non_export_env(char *env);
 
 int	builtin_export(t_hashtable *envp_dict, char **args)
 {
@@ -26,7 +27,9 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 	return_value = 0;
 	while (args[index])
 	{
-		if (valid_env(args[index]) == false)
+		if (non_export_env(args[index]) == true)
+			;
+		else if (valid_env(args[index]) == false)
 		{
 			builtin_print_error("export", args[index]);
 			ft_putstr_fd("not a valid identifier\n", STDERR_FILENO);
@@ -67,6 +70,15 @@ static int	valid_env(const char *env)
 	while (valid_char(env[index]))
 		index++;
 	if (index == 0 || env[index] != '=')
+		return (false);
+	return (true);
+}
+
+static int	non_export_env(char *env)
+{
+	while (valid_char(*env))
+		env++;
+	if (*env != 0)
 		return (false);
 	return (true);
 }

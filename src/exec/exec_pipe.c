@@ -76,17 +76,11 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict, int fd_in, int
 		if (fd_pipe[WRITE] != -1)
 			close(fd_pipe[READ]);
 		if (fd_io[READ] != STDIN_FILENO)
-		{
 			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(errno);
-			close(fd_io[READ]);
-		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
-		{
 			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(errno);
-			close(fd_io[WRITE]);
-		}
 		exit(pipe_router(head, envp_dict));
 	}
 	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
