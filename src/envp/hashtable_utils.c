@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 #include "envp.h"
 
+/**
+ * @brief Search if an element exists in an hashtable from a name
+ * @return Returns the element if it exists or null if it does not exist
+ */
 t_dict	*hashtable_search(t_hashtable *hashtable, const char *name)
 {
 	size_t	key;
@@ -47,6 +51,9 @@ size_t	hashtable_get_key(const char *name, size_t size)
 	return (key % size);
 }
 
+/**
+ * @brief Add new element in the hashtable
+ */
 void	hashtable_push(t_hashtable *hashtable, t_dict *elem)
 {
 	t_dict	*head;
