@@ -13,7 +13,7 @@
 
 static int		cmd_analyser(t_token *token);
 static t_token	*token_analyser(t_token *token);
-static int		verify_redirection(t_token *redirect_token);
+static int		analyse_subshell_redirect(t_token *redirect_token);
 static char		*get_last_cmd_arg(t_cmd_arg *cmd_arg_stack);
 
 /**
@@ -51,7 +51,7 @@ static t_token	*token_analyser(t_token *token)
 	if (token->type == CLOSE_PARENTHESIS
 		&& token->next && token->next->type == COMMAND)
 	{
-		if (verify_redirection(token->next) == FAILURE)
+		if (analyse_subshell_redirect(token->next) == FAILURE)
 			return (NULL);
 		token = token->next;
 	}
@@ -71,7 +71,13 @@ static int	cmd_analyser(t_token *token)
 	return (SUCCESS);
 }
 
-static int	verify_redirection(t_token *redirect_token)
+/**
+ * @brief Lex and parse the token next to a closed parenthesis.
+ * @return
+ * Return 1	if an error occurred or if cmd_token is not a redirection.
+ * Return 0 otherwise.
+ */
+static int	analyse_subshell_redirect(t_token *redirect_token)
 {
 	t_cmd_arg	*cmd_arg_stack;
 
