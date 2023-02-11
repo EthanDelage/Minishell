@@ -36,7 +36,7 @@ void	token_add_command(t_token **token_stack, char *line, size_t *i)
 		ft_substr(line, last_i, *i - last_i));
 }
 
-void	token_add_parenthesis(t_token **token_stack, int type, size_t *i)
+void	token_add_parenthesis(t_token **token_stack, t_type	type, size_t *i)
 {
 	if (type == OPEN_PARENTHESIS)
 		token_add(token_stack, type, "(");

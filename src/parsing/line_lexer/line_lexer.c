@@ -11,6 +11,11 @@
 /* ************************************************************************** */
 #include "lexer.h"
 
+/**
+ * @brief Take a prompt line and return a t_token list representing the lexed line.
+ * @param line Usually a line form a terminal.
+ * @return t_token list of command, operator, parenthesis and pipes in the same order they appear in line.
+ */
 t_token	*line_lexer(char *line)
 {
 	t_token	*token_stack;
@@ -23,7 +28,7 @@ t_token	*line_lexer(char *line)
 	i = 0;
 	while (line[i])
 	{
-		line_trim_space(line, &i);
+		line_skip_space(line, &i);
 		token = token_get_type(line + i);
 		if (token == COMMAND)
 			token_add_command(&token_stack, line, &i);

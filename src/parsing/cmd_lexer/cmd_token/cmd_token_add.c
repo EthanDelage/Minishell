@@ -68,7 +68,7 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 	size_t	last_i;
 	int		current_type;
 
-	line_trim_space(token->value, i);
+	line_skip_space(token->value, i);
 	last_i = *i;
 	while (token->value[*i] && !ft_isspace(token->value[*i]))
 	{
