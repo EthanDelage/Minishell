@@ -14,7 +14,7 @@
 static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
 static int	replace_cmd_arg(t_hashtable *envp_dict, t_cmd_arg *args);
 static int	replace_redirect(t_hashtable *envp_dict,
-						t_cmd_token *redirect_token);
+				t_cmd_token *redirect_token);
 static bool	is_ambiguous_redirect(char *file_name);
 
 /**

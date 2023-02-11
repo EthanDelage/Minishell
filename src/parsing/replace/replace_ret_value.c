@@ -44,6 +44,9 @@ static size_t	len_ret_value(unsigned char nb)
 		return (1);
 }
 
+/**
+ * @brief Add the return value in a string
+ */
 static void	fill_number(char *dest, unsigned char nb, size_t size_nb)
 {
 	while (size_nb != 0)

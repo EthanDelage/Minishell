@@ -23,6 +23,9 @@ int	cmd_arg_remove_quote(t_cmd_arg *head)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Split the arguments after replacing the environment variables
+ */
 t_cmd_arg	*split_arg(t_cmd_arg *current)
 {
 	size_t	start;
