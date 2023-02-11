@@ -24,12 +24,12 @@ char	*wildcard_replace(char *template)
 	result = NULL;
 	dir = opendir(".");
 	if (errno)
-		return (error(template, result));
+		return (wildcard_error(template, result));
 	result = wildcard_get_file(template, dir);
 	if (errno)
-		return (error(template, result));
+		return (wildcard_error(template, result));
 	if (closedir(dir) == -1)
-		return (error(template, result));
+		return (wildcard_error(template, result));
 	if (result == NULL)
 		return (template);
 	free(template);

@@ -9,19 +9,13 @@
 /*   Updated: 2023/01/28 00:47:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "cmd_token.h"
-#include "token.h"
 #include "replace.h"
-#include "envp.h"
-#include "redirect.h"
 
-t_cmd_arg			*replace_split_wildcard(t_cmd_arg *head,
-						t_cmd_arg *delimiter);
-static int			replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
-static int			replace_cmd_arg(t_hashtable *envp_dict, t_cmd_arg *args);
-static int			replace_redirect(t_hashtable *envp_dict,
+static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token);
+static int	replace_cmd_arg(t_hashtable *envp_dict, t_cmd_arg *args);
+static int	replace_redirect(t_hashtable *envp_dict,
 						t_cmd_token *redirect_token);
-static int			is_ambiguous_redirect(char *file_name);
+static int	is_ambiguous_redirect(char *file_name);
 
 int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 {

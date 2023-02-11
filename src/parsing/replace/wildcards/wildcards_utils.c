@@ -47,7 +47,7 @@ char	*wildcard_skip(char *str)
 	return (str);
 }
 
-char	*error(char *template, char *result)
+char	*wildcard_error(char *template, char *result)
 {
 	if (template)
 		free(template);
