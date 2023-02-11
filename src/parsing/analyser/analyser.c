@@ -12,8 +12,8 @@
 #include "analyser.h"
 
 static int	cmd_analyser(t_token *token);
-static int	verify_only_redirection(t_token *redirect_token);
-static char	*last_cmd_arg(t_cmd_arg *cmd_arg_stack);
+static int	verify_redirection(t_token *redirect_token);
+static char	*get_last_cmd_arg(t_cmd_arg *cmd_arg_stack);
 
 t_token	*analyser(char *line)
 {
@@ -32,7 +32,7 @@ t_token	*analyser(char *line)
 		if (token_iterator->type == CLOSE_PARENTHESIS
 			&& token_iterator->next && token_iterator->next->type == COMMAND)
 		{
-			if (verify_only_redirection(token_iterator->next) == FAILURE)
+			if (verify_redirection(token_iterator->next) == FAILURE)
 			{
 				token_clear(&token_stack);
 				return (NULL);
@@ -62,19 +62,21 @@ static int	cmd_analyser(t_token *token)
 	return (SUCCESS);
 }
 
-static int	verify_only_redirection(t_token *redirect_token)
+static int	verify_redirection(t_token *redirect_token)
 {
+	t_cmd_arg	*cmd_arg_stack;
+
 	if (cmd_analyser(redirect_token) == FAILURE)
 		return (FAILURE);
 	if (redirect_token->cmd_stack->type == COMMAND)
 	{
-		return (error_syntax(last_cmd_arg(
-					(t_cmd_arg *) redirect_token->cmd_stack->body)));
+		cmd_arg_stack = (t_cmd_arg *) redirect_token->cmd_stack->body;
+		return (error_syntax(get_last_cmd_arg(cmd_arg_stack)));
 	}
 	return (SUCCESS);
 }
 
-static char	*last_cmd_arg(t_cmd_arg *cmd_arg_stack)
+static char	*get_last_cmd_arg(t_cmd_arg *cmd_arg_stack)
 {
 	if (cmd_arg_stack == NULL)
 		return (NULL);

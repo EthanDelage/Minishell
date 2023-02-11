@@ -13,8 +13,8 @@
 
 /**
  * @brief
- * Initialize a cmd_stack token list in a command type t_token from the value field.\n
- * cmd_stack always start with the command if theres one and end with the redirects.\n
+ * Initialize a cmd_stack token list in a command type t_token.\n
+ * cmd_stack always start with the command and end with the redirects.\n
  * If an error occurred the stack is freed and errno is set.
  */
 void	cmd_lexer(t_token *token)
