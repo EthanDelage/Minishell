@@ -9,8 +9,7 @@
 /*   Updated: 2023/01/25 14:26:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "lexer.h"
-#include "parser.h"
+#include "analyser.h"
 
 static int	cmd_analyser(t_token *token);
 static int	verify_only_redirection(t_token *redirect_token);

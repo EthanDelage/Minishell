@@ -13,8 +13,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "envp.h"
-#include "parser.h"
 #include "lexer.h"
+#include "analyser.h"
 #include "redirect.h"
 #include "replace.h"
 #include "router.h"

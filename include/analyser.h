@@ -1,29 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   analyser.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/16 22:31:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/16 22:31:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/02/11 19:23:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/02/11 19:23:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef PARSER_H
-# define PARSER_H
+#ifndef ANALYSER_H
+# define ANALYSER_H
 
-# include <stdbool.h>
-# include "token.h"
-# include "cmd_token.h"
+# include "lexer.h"
+# include "parser.h"
 
-enum
-{
-	SUCCESS		=		0,
-	FAILURE		=		1,
-};
-
-int		error_syntax(char *value);
-int		line_parser(t_token *head);
-int		cmd_parser(t_token *head);
+t_token	*analyser(char *line);
 
 #endif
