@@ -13,6 +13,9 @@
 
 extern unsigned char	g_return_value;
 
+/**
+ * @brief Join two string with space between the two
+ */
 char	*strjoin_space(char *s1, char *s2)
 {
 	size_t	len_s1;

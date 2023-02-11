@@ -70,6 +70,7 @@ int	main(int argc, char **argv, char **envp)
 			return (2);
 		if (here_doc_get(line_token) == FAILURE)
 			return (errno);
+		//TODO: if absolute path, check if it's a directory
 		exec(line_token, envp_dict);
 		token_clear(&line_token);
 		free(line);
