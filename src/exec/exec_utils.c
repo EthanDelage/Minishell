@@ -56,7 +56,7 @@ static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2])
 	}
 }
 
-int	dup2_save_fd(int new_fd, int old_fd)
+int	dup2_fd(int new_fd, int old_fd)
 {
 	if (dup2(new_fd, old_fd) == -1)
 	{

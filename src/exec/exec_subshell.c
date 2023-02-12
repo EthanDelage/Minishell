@@ -41,12 +41,12 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	{
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
+			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
+			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
 		}
 		exec(head->next, envp_dict);
@@ -88,13 +88,13 @@ pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in,
 			close(fd_pipe[READ]);
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
+			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(errno);
 			close(fd_io[READ]);
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
+			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(errno);
 			close(fd_io[WRITE]);
 		}

@@ -17,6 +17,8 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 				t_hashtable *envp_dict);
 static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
 				t_hashtable *envp_dict);
+static int	builtin_set_fd(int new_fd, int old_fd);
+static void	reset_stdio(int fd_save[2]);
 
 t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 {
@@ -59,12 +61,12 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 	{
 		if (fd_io[READ] != STDIN_FILENO)
 		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
+			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
+			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
 		}
 		cmd_router(cmd_token, envp_dict);
@@ -83,35 +85,50 @@ static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
 	fd_save[WRITE] = -1;
 	if (fd_io[READ] != STDIN_FILENO)
 	{
-		fd_save[READ] = dup(STDIN_FILENO);
-		if (fd_save[READ] == -1 || dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
-		{
-			if (fd_save[READ] != -1)
-				close(fd_save[READ]);
+		fd_save[READ] = builtin_set_fd(fd_io[READ], STDIN_FILENO);
+		if (fd_save[READ] == -1)
 			return ;
-		}
 	}
 	if (fd_io[WRITE] != STDOUT_FILENO)
 	{
-		fd_save[WRITE] = dup(STDOUT_FILENO);
-		if (fd_save[WRITE] == -1 || dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
+		fd_save[WRITE] = builtin_set_fd(fd_io[WRITE], STDOUT_FILENO);
+		if (fd_save[WRITE] == -1)
 		{
 			if (fd_save[READ] != -1)
-				close(fd_save[READ]);
-			if (fd_save[WRITE] != -1)
-				close(fd_save[WRITE]);
+				if (dup2_fd(fd_save[READ], STDIN_FILENO) == EXIT_FAILURE)
+					close(fd_save[READ]);
 			return ;
 		}
 	}
 	g_return_value = exec_builtin(cmd_token, envp_dict);
+	reset_stdio(fd_save);
+}
+
+static int	builtin_set_fd(int new_fd, int old_fd)
+{
+	int	save_fd;
+
+	save_fd = dup(old_fd);
+	if (save_fd == -1)
+	{
+		close(new_fd);
+		return (-1);
+	}
+	if (dup2_fd(new_fd, old_fd) == EXIT_FAILURE)
+	{
+		close(new_fd);
+		close(save_fd);
+		return (-1);
+	}
+	return (save_fd);
+}
+
+static void	reset_stdio(int fd_save[2])
+{
 	if (fd_save[READ] != -1 && fd_save[READ] != STDIN_FILENO)
-	{
-		if (dup2_save_fd(fd_save[READ], STDIN_FILENO) == -1)
+		if (dup2_fd(fd_save[READ], STDIN_FILENO) == EXIT_FAILURE)
 			return ;
-	}
 	if (fd_save[WRITE] != -1 && fd_save[WRITE] != STDOUT_FILENO)
-	{
-		if (dup2_save_fd(fd_save[WRITE], STDOUT_FILENO) == -1)
+		if (dup2_fd(fd_save[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 			return ;
-	}
 }
