@@ -66,13 +66,13 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	}
 }
 
-pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2])
+pid_t	exec_pipe_subshell(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2])
 {
 	pid_t	pid;
 	int		fd_io[2];
 	t_token	*redirect_token;
 
-	redirect_token = subshell_get_next_token(head);
+	redirect_token = subshell_get_next_token(head->next);
 	if (subshell_set_fd_io(redirect_token, fd_io, envp_dict) == EXIT_FAILURE)
 		return (-1);
 	if (fd_io[READ] == STDIN_FILENO)

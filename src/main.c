@@ -53,7 +53,6 @@ int	main(int argc, char **argv, char **envp)
 			return (errno);
 		}
 		init_prompt_sigaction();
-//		TODO: create a colored prompt
 		line = readline("> ");
 		if (tcsetattr(STDIN_FILENO, 0, &term) == -1)
 		{

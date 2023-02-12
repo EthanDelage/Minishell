@@ -70,6 +70,7 @@ SRCS		=		main.c \
 					parsing/analyser/analyser.c \
 					exec/exec.c \
 					exec/exec_pipe.c \
+					exec/exec_pipe_utils.c \
 					exec/exec_cmd.c \
 					exec/exec_utils.c \
 					exec/exec_subshell.c \

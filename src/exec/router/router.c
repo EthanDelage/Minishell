@@ -17,7 +17,7 @@ int	cmd_router(t_token *token, t_hashtable *envp_dict)
 {
 	if (ft_strchr(token->cmd_stack->head, '/') != NULL)
 		return (exec_path(token->cmd_stack, envp_dict));
-	else if (is_builtin(token->cmd_stack) == 1)
+	else if (is_builtin(token->cmd_stack) == true)
 		return (exec_builtin(token, envp_dict));
 	else
 		exec_bin(token->cmd_stack, envp_dict);
