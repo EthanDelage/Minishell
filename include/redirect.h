@@ -15,9 +15,14 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdbool.h>
-# include "libft.h"
+# include <sys/wait.h>
+# include <readline/readline.h>
+# include "replace.h"
+# include "get_next_line.h"
 # include "token.h"
 # include "envp.h"
+
+extern unsigned char	g_return_value;
 
 /* ----------	REDIRECT FUNCTIONS	---------- */
 
@@ -36,8 +41,7 @@ void	here_doc_close_error(t_redirect_param *redirect_param);
 /* ----------	REDIRECT_UTILS FUNCTIONS	---------- */
 
 int		here_doc_get(t_token *head);
-char	*here_doc_warning(char *result, char *delimiter);
-char	*ft_strjoin_endl(char *s1, char *s2);
+void	here_doc_warning(char *delimiter);
 int		redirect_open(t_hashtable *envp_dict, t_cmd_token *cmd_token);
 void	redirect_close(t_cmd_token *cmd_token);
 void	redirect_close_unused(t_cmd_token *cmd_token, int fd_io[2]);

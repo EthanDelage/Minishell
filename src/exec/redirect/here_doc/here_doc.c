@@ -9,13 +9,11 @@
 /*   Updated: 2023/01/23 09:23:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include <readline/readline.h>
-#include <stdbool.h>
 #include "redirect.h"
 
 char		*here_doc_replace_env(t_hashtable *envp_dict, char *line);
 static int	here_doc(t_redirect_param *param);
-static char	*here_doc_get_input(char *delimiter, char *prompt);
+static void	here_doc_get_input(t_redirect_param *param);
 
 int	here_doc_open(t_redirect_param *param)
 {
@@ -30,72 +28,84 @@ int	here_doc_open(t_redirect_param *param)
 		perror("minishell: `<<'");
 		close(param->fd[WRITE]);
 		close(param->fd[READ]);
-		return (return_errno_error());
+		return (g_return_value);
 	}
+	close(param->fd[WRITE]);
 	return (SUCCESS);
 }
 
 int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 {
-	redirect_param->body = here_doc_replace_env(envp_dict,
-			redirect_param->body);
-	if (redirect_param->body == NULL)
-		return (return_errno_error());
-	if (*redirect_param->body != 0)
-		ft_putendl_fd(redirect_param->body, redirect_param->fd[WRITE]);
-	close(redirect_param->fd[WRITE]);
+	int		fd_pipe[2];
+	char	*tmp;
+
+	pipe(fd_pipe);
+	if (errno)
+	{
+		close(redirect_param->fd[READ]);
+		redirect_param->fd[READ] = -1;
+		return (errno);
+	}
+	tmp = get_next_line(redirect_param->fd[READ]);
+	while (tmp)
+	{
+		tmp = here_doc_replace_env(envp_dict, tmp);
+		if (tmp == NULL)
+		{
+			g_return_value = errno;
+			close(redirect_param->fd[READ]);
+			close(fd_pipe[READ]);
+			close(fd_pipe[WRITE]);
+			return (FAILURE);
+		}
+		ft_putstr_fd(tmp, fd_pipe[WRITE]);
+		free(tmp);
+		tmp = get_next_line(redirect_param->fd[READ]);
+	}
+	close(redirect_param->fd[READ]);
+	close(fd_pipe[WRITE]);
+	redirect_param->fd[READ] = fd_pipe[READ];
 	return (SUCCESS);
 }
 
 static int	here_doc(t_redirect_param *param)
 {
-	char	*delimiter;
-	char	*prompt;
+	pid_t	pid;
+	int		return_value;
 
-	delimiter = param->body;
-	prompt = ft_strjoin(delimiter, " > ");
-	if (errno)
-	{
-		free(delimiter);
-		return (return_errno_error());
-	}
-	param->body = here_doc_get_input(delimiter, prompt);
-	free(delimiter);
-	free(prompt);
-	if (!errno && param->body == NULL)
-		param->body = ft_calloc(1, sizeof(char));
-	if (errno)
-		return (return_errno_error());
-	return (SUCCESS);
+	pid = fork();
+	if (pid == -1)
+		return (errno);
+	else if (pid == 0)
+		here_doc_get_input(param);
+	waitpid(pid, &return_value, 0);
+	g_return_value = WEXITSTATUS(return_value);
+	return (g_return_value);
 }
 
-static char	*here_doc_get_input(char *delimiter, char *prompt)
+static void	here_doc_get_input(t_redirect_param *param)
 {
-	bool	end;
 	char	*tmp;
-	char	*result;
 
-	result = NULL;
-	end = false;
-	while (end == false)
+	close(param->fd[READ]);
+	while (1)
 	{
-		tmp = readline(prompt);
-		if (errno)
-			return (NULL);
-		else if (tmp == NULL)
-			return (here_doc_warning(result, delimiter));
-		if (ft_strcmp(tmp, delimiter) == 0)
-			end = true;
+		tmp = readline("here-doc > ");
+		if (tmp == NULL)
+		{
+			here_doc_warning(param->body);
+			close(param->fd[WRITE]);
+			exit(0);
+		}
+		else if (ft_strcmp(tmp, param->body) == 0)
+		{
+			close(param->fd[WRITE]);
+			exit(0);
+		}
 		else
 		{
-			result = ft_strjoin_endl(result, tmp);
-			if (errno)
-			{
-				free(tmp);
-				return (NULL);
-			}
+			ft_putendl_fd(tmp, param->fd[WRITE]);
+			free(tmp);
 		}
-		free(tmp);
 	}
-	return (result);
 }

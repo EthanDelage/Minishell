@@ -15,6 +15,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <limits.h>
+# include "libft.h"
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE	10
@@ -30,10 +31,7 @@
 # endif
 
 int		strichr(const char *str, int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	init_str(char *str, size_t size);
-size_t	ft_strlen(const char *str);
-size_t	ft_strlcpy(char *dest, const char *src, size_t size);
 char	*get_next_line(int fd);
 
 #endif
