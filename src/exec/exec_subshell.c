@@ -23,24 +23,19 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	t_token	*redirect_token;
 
 	redirect_token = subshell_get_next_token(head->next);
-	if (subshell_set_fd_io(redirect_token, fd_io, envp_dict) == EXIT_FAILURE)
-	{
-		if (redirect_token && redirect_token->type == COMMAND)
-			return (redirect_token->next);
-		return (redirect_token);
-	}
 	pid = fork();
 	if (pid == -1)
 		return (NULL);
 	else if (pid == 0)
+	{
+		if (subshell_set_fd_io(redirect_token, fd_io, envp_dict)
+			== EXIT_FAILURE)
+			exit(1);
 		exit(exec_subshell_fork(envp_dict, head, fd_io));
+	}
 	else
 	{
 		waitpid(pid, &return_value, 0);
-		if (fd_io[WRITE] != STDOUT_FILENO)
-			close(fd_io[WRITE]);
-		if (fd_io[READ] != STDIN_FILENO)
-			close(fd_io[READ]);
 		g_return_value = WEXITSTATUS(return_value);
 		if (redirect_token && redirect_token->type == COMMAND)
 			return (redirect_token->next);
