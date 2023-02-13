@@ -90,13 +90,11 @@ pid_t	exec_pipe_subshell(t_token *head, t_hashtable *envp_dict, int fd_in, int f
 		{
 			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 				exit(errno);
-			close(fd_io[READ]);
 		}
 		if (fd_io[WRITE] != STDOUT_FILENO)
 		{
 			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(errno);
-			close(fd_io[WRITE]);
 		}
 		exec(head->next, envp_dict);
 		exit(g_return_value);

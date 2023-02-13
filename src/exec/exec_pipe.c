@@ -17,7 +17,6 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 					int fd_in, int fd_pipe[2]);
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 					int fd_io[2], int fd_pipe[2]);
-static int		pipe_router(t_token *head, t_hashtable *envp_dict);
 
 t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 {
@@ -86,24 +85,13 @@ static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 {
 	if (fd_pipe[WRITE] != -1)
 		close(fd_pipe[READ]);
+	if (replace(envp_dict, head->cmd_stack) == FAILURE)
+		exit(errno);
 	if (fd_io[READ] != STDIN_FILENO)
 		if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 			exit(errno);
 	if (fd_io[WRITE] != STDOUT_FILENO)
 		if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 			exit(errno);
-	exit(pipe_router(head, envp_dict));
-}
-
-static int	pipe_router(t_token *head, t_hashtable *envp_dict)
-{
-	if (head->type == OPEN_PARENTHESIS)
-		exec_subshell(head, envp_dict);
-	else
-	{
-		if (replace(envp_dict, head->cmd_stack) == FAILURE)
-			return (errno);
-		cmd_router(head, envp_dict);
-	}
-	return (g_return_value);
+	exit(cmd_router(head, envp_dict));
 }

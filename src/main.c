@@ -52,6 +52,8 @@ int	main(int argc, char **argv, char **envp)
 			hashtable_clear(envp_dict);
 			return (errno);
 		}
+		//TODO: manage here_doc without command
+		//TODO: manage signal with here_doc
 		init_prompt_sigaction();
 		line = readline("> ");
 		if (tcsetattr(STDIN_FILENO, 0, &term) == -1)
