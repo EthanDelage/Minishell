@@ -15,9 +15,7 @@
 
 char		*here_doc_replace_env(t_hashtable *envp_dict, char *line);
 static int	here_doc(t_redirect_param *param);
-static char	*ft_strjoin_endl(char *s1, char *s2);
-static int	clear_here_doc_param(int ret_value, char *prompt, char *delimiter,
-				char *tmp);
+static char	*here_doc_get_input(char *delimiter, char *prompt);
 
 int	here_doc_open(t_redirect_param *param)
 {
@@ -53,65 +51,51 @@ static int	here_doc(t_redirect_param *param)
 {
 	char	*delimiter;
 	char	*prompt;
-	char	*tmp;
-	bool	end;
 
 	delimiter = param->body;
-	param->body = NULL;
-	end = false;
 	prompt = ft_strjoin(delimiter, " > ");
 	if (errno)
-		return (clear_here_doc_param(return_errno_error(), delimiter,
-				NULL, NULL));
+	{
+		free(delimiter);
+		return (return_errno_error());
+	}
+	param->body = here_doc_get_input(delimiter, prompt);
+	free(delimiter);
+	free(prompt);
+	if (!errno && param->body == NULL)
+		param->body = ft_calloc(1, sizeof(char));
+	if (errno)
+		return (return_errno_error());
+	return (SUCCESS);
+}
+
+static char	*here_doc_get_input(char *delimiter, char *prompt)
+{
+	bool	end;
+	char	*tmp;
+	char	*result;
+
+	result = NULL;
+	end = false;
 	while (end == false)
 	{
 		tmp = readline(prompt);
 		if (errno)
-			return (clear_here_doc_param(return_errno_error(), prompt,
-					delimiter, NULL));
-		errno = 0;
+			return (NULL);
+		else if (tmp == NULL)
+			return (here_doc_warning(result, delimiter));
 		if (ft_strcmp(tmp, delimiter) == 0)
 			end = true;
 		else
 		{
-			param->body = ft_strjoin_endl(param->body, tmp);
+			result = ft_strjoin_endl(result, tmp);
 			if (errno)
-				return (clear_here_doc_param(return_errno_error(), prompt,
-						delimiter, tmp));
+			{
+				free(tmp);
+				return (NULL);
+			}
 		}
 		free(tmp);
 	}
-	return (clear_here_doc_param(SUCCESS, prompt, delimiter, NULL));
-}
-
-static char	*ft_strjoin_endl(char *s1, char *s2)
-{
-	char	*new;
-	size_t	len_s1;
-	size_t	len_s2;
-
-	len_s2 = ft_strlen(s2);
-	if (s1 == NULL)
-		return (ft_strdup(s2));
-	len_s1 = ft_strlen(s1);
-	new = (char *) malloc(sizeof(char) * (len_s1 + len_s2 + 2));
-	if (new == NULL)
-		return (NULL);
-	ft_memcpy((void *) new, (void *) s1, len_s1);
-	new[len_s1] = '\n';
-	ft_strlcpy(&(new[len_s1 + 1]), s2, len_s2 + 1);
-	free(s1);
-	return (new);
-}
-
-static int	clear_here_doc_param(int ret_value, char *prompt, char *delimiter,
-				char *tmp)
-{
-	if (prompt)
-		free(prompt);
-	if (delimiter)
-		free(delimiter);
-	if (tmp)
-		free(tmp);
-	return (ret_value);
+	return (result);
 }
