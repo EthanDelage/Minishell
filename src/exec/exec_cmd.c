@@ -34,7 +34,9 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 		g_return_value = errno;
 		return (head->next);
 	}
-	if (is_builtin(head->cmd_stack) == 0)
+	if (head->cmd_stack->type != COMMAND)
+		g_return_value = 0;
+	else if (is_builtin(head->cmd_stack) == 0)
 	{
 		g_return_value = exec_cmd_bin(head, fd_io, envp_dict);
 		if (fd_io[WRITE] != STDOUT_FILENO)
@@ -69,7 +71,7 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 				exit(g_return_value);
 		}
-		cmd_router(cmd_token, envp_dict);
+		exit(cmd_router(cmd_token, envp_dict));
 	}
 	else
 		waitpid(pid, &return_value, 0);

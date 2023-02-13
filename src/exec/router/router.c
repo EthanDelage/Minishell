@@ -15,6 +15,8 @@ static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 
 int	cmd_router(t_token *token, t_hashtable *envp_dict)
 {
+	if (token->cmd_stack->type != COMMAND)
+		return (0);
 	if (ft_strchr(token->cmd_stack->head, '/') != NULL)
 		return (exec_path(token->cmd_stack, envp_dict));
 	else if (is_builtin(token->cmd_stack) == true)
@@ -26,6 +28,7 @@ int	cmd_router(t_token *token, t_hashtable *envp_dict)
 
 int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
+	int		fd;
 	char	**envp;
 	char	**args;
 
@@ -33,6 +36,15 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	envp = hashtable_get_array(envp_dict, 0);
 	if (errno)
 		return (errno);
+	fd = open(cmd_token->head, O_DIRECTORY);
+	if (fd != -1)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd_token->head, STDERR_FILENO);
+		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		close(fd);
+		return (126);
+	}
 	if (access(cmd_token->head, X_OK) != 0)
 	{
 		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);

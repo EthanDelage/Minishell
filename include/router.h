@@ -16,6 +16,7 @@
 # include "token.h"
 # include "envp.h"
 # include "libft.h"
+# include <fcntl.h>
 
 int		cmd_router(t_token *token, t_hashtable *envp_dict);
 int		exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
