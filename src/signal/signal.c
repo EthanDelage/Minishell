@@ -18,9 +18,8 @@ void sig_handler(int sig)
 	pid_t	pid;
 	int		exit_status;
 
-	pid = waitpid(-1, &exit_status, WUNTRACED);
-	printf("pid: %d sig: %d test: %d\n", pid, sig, exit_status);
-	if (exit_status == E_SIGINT)
+	pid = waitpid(-1, &exit_status, 0);
+	if (WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) == 32)
 		return ;
 	if (pid == -1)
 	{
