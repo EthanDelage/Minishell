@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static t_token	*exec_router(t_token *head, t_hashtable *envp_dict);
 static int		is_piped(t_token *head);
 static t_token	*get_next_operator(t_token *head);
@@ -39,6 +37,8 @@ static t_token	*exec_router(t_token *head, t_hashtable *envp_dict)
 		head = exec_subshell(head, envp_dict);
 	else
 		head = exec_cmd(head, envp_dict);
+	if (errno)
+		g_return_value = errno;
 	return (head);
 }
 

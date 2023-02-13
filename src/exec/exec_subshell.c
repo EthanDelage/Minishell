@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static t_token	*subshell_get_next_token(t_token *head);
 static int		subshell_set_fd_io(t_token *head, int fd_io[2],
 					t_hashtable *envp_dict);
@@ -33,25 +31,9 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	}
 	pid = fork();
 	if (pid == -1)
-	{
-		g_return_value = errno;
 		return (NULL);
-	}
 	else if (pid == 0)
-	{
-		if (fd_io[READ] != STDIN_FILENO)
-		{
-			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
-				exit(g_return_value);
-		}
-		if (fd_io[WRITE] != STDOUT_FILENO)
-		{
-			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
-				exit(g_return_value);
-		}
-		exec(head->next, envp_dict);
-		exit(g_return_value);
-	}
+		exit(exec_subshell_fork(envp_dict, head, fd_io));
 	else
 	{
 		waitpid(pid, &return_value, 0);
@@ -66,7 +48,8 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	}
 }
 
-pid_t	exec_pipe_subshell(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2])
+pid_t	exec_pipe_subshell(t_token *head, t_hashtable *envp_dict, int fd_in,
+			int fd_pipe[2])
 {
 	pid_t	pid;
 	int		fd_io[2];
@@ -86,18 +69,7 @@ pid_t	exec_pipe_subshell(t_token *head, t_hashtable *envp_dict, int fd_in, int f
 	{
 		if (fd_pipe[WRITE] != -1)
 			close(fd_pipe[READ]);
-		if (fd_io[READ] != STDIN_FILENO)
-		{
-			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
-				exit(errno);
-		}
-		if (fd_io[WRITE] != STDOUT_FILENO)
-		{
-			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
-				exit(errno);
-		}
-		exec(head->next, envp_dict);
-		exit(g_return_value);
+		exit(exec_subshell_fork(envp_dict, head, fd_io));
 	}
 	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
 		close(fd_io[READ]);
@@ -122,7 +94,8 @@ static t_token	*subshell_get_next_token(t_token *head)
 	return (head);
 }
 
-static int	subshell_set_fd_io(t_token *head, int fd_io[2], t_hashtable *envp_dict)
+static int	subshell_set_fd_io(t_token *head, int fd_io[2],
+				t_hashtable *envp_dict)
 {
 	if (head && head->type == COMMAND
 		&& head->cmd_stack->type != COMMAND)

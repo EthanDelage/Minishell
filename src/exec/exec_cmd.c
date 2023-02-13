@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 				t_hashtable *envp_dict);
 static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
@@ -61,16 +59,7 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 		return (errno);
 	else if (pid == 0)
 	{
-		if (fd_io[READ] != STDIN_FILENO)
-		{
-			if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
-				exit(g_return_value);
-		}
-		if (fd_io[WRITE] != STDOUT_FILENO)
-		{
-			if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
-				exit(g_return_value);
-		}
+		exec_fork_set_fd_io(fd_io);
 		exit(cmd_router(cmd_token, envp_dict));
 	}
 	else

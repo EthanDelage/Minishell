@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2]);
 
 int	exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
@@ -42,6 +40,20 @@ int	exec_set_fd_io(t_cmd_token *head, int fd_io[2], t_hashtable *envp_dict)
 	if (errno)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
+}
+
+void	exec_fork_set_fd_io(int fd_io[2])
+{
+	if (fd_io[READ] != STDIN_FILENO)
+	{
+		if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
+			exit(g_return_value);
+	}
+	if (fd_io[WRITE] != STDOUT_FILENO)
+	{
+		if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
+			exit(g_return_value);
+	}
 }
 
 static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2])

@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 					int fd_in, int fd_pipe[2]);
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
@@ -26,12 +24,9 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 	t_token	*next_cmd;
 
 	next_cmd = get_next_pipe(head);
-	if (next_cmd)
-	{
-		if (pipe(fd_pipe) == -1)
-			return (NULL);
-	}
-	else
+	if (next_cmd && pipe(fd_pipe) == -1)
+		return (NULL);
+	else if (next_cmd == NULL)
 		fd_pipe[WRITE] = -1;
 	if (head->type == OPEN_PARENTHESIS)
 		pid = exec_pipe_subshell(head, envp_dict, fd_in, fd_pipe);
