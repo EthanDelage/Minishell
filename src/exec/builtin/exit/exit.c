@@ -46,7 +46,7 @@ static void	exit_handle_arg(char *arg)
 		ft_putstr_fd(arg, STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		free(arg);
-		exit (255);
+		exit (2);
 	}
 	free(arg);
 	exit((unsigned char)return_value);
