@@ -22,6 +22,7 @@
 #define E_SIGINT 1024
 
 int	init_sigaction(void);
+int empty_sigaction(void);
 struct termios init_termios(void);
 
 #endif

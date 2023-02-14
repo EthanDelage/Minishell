@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
+#include <errno.h>
+
 extern unsigned char g_return_value;
 
 void sig_handler(int sig)
@@ -18,17 +20,24 @@ void sig_handler(int sig)
 	pid_t	pid;
 	int		exit_status;
 
+	if (errno == EINTR)
+		errno = 0;
 	pid = waitpid(-1, &exit_status, 0);
+	if (errno == ECHILD)
+	{
+		pid = -1;
+		errno = 0;
+	}
 	if (exit_status == E_SIGINT || WTERMSIG(exit_status) % 16 == 0)
 		return ;
-	printf("pid: %d sig: %d status: %d\n", pid, sig, exit_status);
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WEXITSTATUS(exit_status));
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFCONTINUED(exit_status));
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFEXITED(exit_status));
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSIGNALED(exit_status));
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSTOPPED(exit_status));
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WSTOPSIG(exit_status));
-	printf("pid: %d sig: %d status: %d\n", pid, sig, WTERMSIG(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, exit_status);
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WEXITSTATUS(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFCONTINUED(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFEXITED(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSIGNALED(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSTOPPED(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WSTOPSIG(exit_status));
+//	printf("pid: %d sig: %d status: %d\n", pid, sig, WTERMSIG(exit_status));
 	if (pid == -1)
 	{
 		if (sig == SIGINT)
@@ -53,6 +62,17 @@ void sig_handler(int sig)
 			g_return_value = 131;
 		}
 	}
+}
+
+int empty_sigaction(void)
+{
+	struct sigaction sact;
+
+	sigemptyset(&sact.sa_mask);
+	sact.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &sact, NULL);
+	sigaction(SIGQUIT, &sact, NULL);
+	return (0);
 }
 
 int	init_sigaction(void)

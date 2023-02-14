@@ -33,8 +33,8 @@ int	main(int argc, char **argv, char **envp)
 	t_hashtable		*envp_dict;
 	struct termios	term;
 
+	empty_sigaction();
 	init_sigaction();
-	printf("%d\n", getpid());
 	if (errno)
 		return (errno);
 	(void) argc;

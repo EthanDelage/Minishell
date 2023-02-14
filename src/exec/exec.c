@@ -37,8 +37,9 @@ static t_token	*exec_router(t_token *head, t_hashtable *envp_dict)
 		head = exec_subshell(head, envp_dict);
 	else
 		head = exec_cmd(head, envp_dict);
-	if (errno)
+	if (errno && errno != EINTR)
 		g_return_value = errno;
+	errno = 0;
 	return (head);
 }
 
