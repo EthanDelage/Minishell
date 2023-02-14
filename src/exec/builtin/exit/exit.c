@@ -19,8 +19,8 @@ static char	*exit_get_arg(char **args);
 
 int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 {
-	char	*arg;
-	struct sigaction sact;
+	char				*arg;
+	struct sigaction	sact;
 
 	if (args && args[1] && args[2] != NULL)
 	{

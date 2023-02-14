@@ -27,5 +27,5 @@ void	here_doc_close_error(t_redirect_param *redirect_param)
 void	here_doc_warning(char *delimiter)
 {
 	printf("minishell: warning: here-document delimited by "
-		   "end-of-file (wanted `%s')\n", delimiter);
+		"end-of-file (wanted `%s')\n", delimiter);
 }
