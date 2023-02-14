@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "replace.h"
 
-extern unsigned char	g_return_value;
-
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote);
 static void	change_quote_value(char *quote, char c);

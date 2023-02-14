@@ -15,12 +15,7 @@
 # include <stdlib.h>
 # include <errno.h>
 # include "libft.h"
-
-enum
-{
-	SUCCESS		=		0,
-	FAILURE		=		1,
-};
+# include "minishell.h"
 
 enum
 {

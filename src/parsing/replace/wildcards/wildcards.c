@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "replace.h"
 
-extern unsigned char	g_return_value;
-
 static char	*wildcard_get_file(char *template, DIR *dir);
 static bool	wildcard_is_valid(char *filename, char *template);
 

@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
-extern unsigned char	g_return_value;
-
 int	return_errno_error(void)
 {
 	g_return_value = errno;

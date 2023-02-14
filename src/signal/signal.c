@@ -11,11 +11,7 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
-#include <errno.h>
-
-extern unsigned char g_return_value;
-
-void sig_handler(int sig)
+static void sig_handler(int sig)
 {
 	pid_t	pid;
 	int		exit_status;
@@ -28,16 +24,8 @@ void sig_handler(int sig)
 		pid = -1;
 		errno = 0;
 	}
-	if (exit_status == E_SIGINT || WTERMSIG(exit_status) % 16 == 0)
+	if (exit_status == E_SIGINT || WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) % 16 == 0)
 		return ;
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, exit_status);
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WEXITSTATUS(exit_status));
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFCONTINUED(exit_status));
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFEXITED(exit_status));
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSIGNALED(exit_status));
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSTOPPED(exit_status));
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WSTOPSIG(exit_status));
-//	printf("pid: %d sig: %d status: %d\n", pid, sig, WTERMSIG(exit_status));
 	if (pid == -1)
 	{
 		if (sig == SIGINT)
@@ -64,37 +52,36 @@ void sig_handler(int sig)
 	}
 }
 
-int empty_sigaction(void)
+static void sig_handler_heredoc(int sig)
 {
-	struct sigaction sact;
-
-	sigemptyset(&sact.sa_mask);
-	sact.sa_handler = SIG_DFL;
-	sigaction(SIGINT, &sact, NULL);
-	sigaction(SIGQUIT, &sact, NULL);
-	return (0);
+	if (sig == SIGINT)
+		exit(130);
 }
 
 int	init_sigaction(void)
 {
 	struct sigaction sact;
 
-	sigemptyset(&sact.sa_mask);
+	if (sigemptyset(&sact.sa_mask) == -1)
+		return (FAILURE);
 	sact.sa_handler = sig_handler;
-	sigaction(SIGINT, &sact, NULL);
-	sigaction(SIGQUIT, &sact, NULL);
+	if (sigaction(SIGINT, &sact, NULL) == -1)
+		return (-1);
+	if (sigaction(SIGQUIT, &sact, NULL) == -1)
+		return (-1);
 	return (0);
 }
 
-struct termios init_termios(void)
+int init_sigaction_heredoc(void)
 {
-	struct termios old_term;
-	struct termios new_term;
+	struct sigaction sact;
 
-	if (tcgetattr(STDIN_FILENO, &old_term) == -1)
-		return old_term;
-	new_term = old_term;
-	new_term.c_cc[VQUIT] = 0;
-	tcsetattr(STDIN_FILENO, 0, &new_term);
-	return (old_term);
+	if (sigemptyset(&sact.sa_mask) == -1)
+		return (FAILURE);
+	sact.sa_handler = sig_handler_heredoc;
+	if (sigaction(SIGINT, &sact, NULL) == -1)
+		return (-1);
+	if (sigaction(SIGQUIT, &sact, NULL) == -1)
+		return (-1);
+	return (0);
 }

@@ -13,8 +13,6 @@
 #include "envp.h"
 #include "replace.h"
 
-extern unsigned char	g_return_value;
-
 static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
 				size_t *index);
 static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);

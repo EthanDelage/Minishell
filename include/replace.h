@@ -20,6 +20,7 @@
 # include "token.h"
 # include "cmd_token.h"
 # include "builtin.h"
+# include "minishell.h"
 
 int			replace(t_hashtable *envp_dict, t_cmd_token *head);
 char		*replace_env(t_hashtable *envp_dict, char *line);

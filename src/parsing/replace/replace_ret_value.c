@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "replace.h"
 
-extern unsigned char	g_return_value;
-
 static size_t	len_ret_value(unsigned char nb);
 static void		fill_number(char *dest, unsigned char nb, size_t size_nb);
 

@@ -79,6 +79,8 @@ static int	here_doc(t_redirect_param *param)
 	else if (pid == 0)
 		here_doc_get_input(param);
 	waitpid(pid, &return_value, 0);
+	if (errno == EINTR)
+		errno = 0;
 	g_return_value = WEXITSTATUS(return_value);
 	return (g_return_value);
 }
@@ -88,6 +90,8 @@ static void	here_doc_get_input(t_redirect_param *param)
 	char	*tmp;
 
 	close(param->fd[READ]);
+	if (init_sigaction_heredoc() == -1)
+		exit (errno);
 	while (1)
 	{
 		tmp = readline("here-doc > ");

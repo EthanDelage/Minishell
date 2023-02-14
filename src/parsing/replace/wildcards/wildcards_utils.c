@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "replace.h"
 
-extern unsigned char	g_return_value;
-
 /**
  * @brief Join two string with space between the two
  */

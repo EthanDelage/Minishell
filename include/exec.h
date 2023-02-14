@@ -17,9 +17,8 @@
 # include "envp.h"
 # include "router.h"
 # include "replace.h"
+# include "minishell.h"
 # include <wait.h>
-
-extern unsigned char	g_return_value;
 
 /* ---------------	EXEC FUNCTIONS	--------------- */
 

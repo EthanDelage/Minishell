@@ -21,8 +21,8 @@
 # include "get_next_line.h"
 # include "token.h"
 # include "envp.h"
-
-extern unsigned char	g_return_value;
+# include "mini_signal.h"
+# include "minishell.h"
 
 /* ----------	REDIRECT FUNCTIONS	---------- */
 
