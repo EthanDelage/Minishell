@@ -19,7 +19,7 @@ void sig_handler(int sig)
 	int		exit_status;
 
 	pid = waitpid(-1, &exit_status, 0);
-	if (WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) == 32)
+	if (WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) % 16 == 0)
 		return ;
 	if (pid == -1)
 	{
