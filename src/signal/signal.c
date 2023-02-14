@@ -54,6 +54,7 @@ static void sig_handler(int sig)
 
 static void sig_handler_heredoc(int sig)
 {
+	// TODO: no '\n' when ctrl-C
 	if (sig == SIGINT)
 		exit(130);
 }
