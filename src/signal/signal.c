@@ -11,61 +11,62 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
-void	sig_prompt_handler(int sig, siginfo_t *info, void *uap)
-{
-    (void) info;
-    (void) uap;
+extern unsigned char g_return_value;
 
-    if (sig == SIGINT)
-    {
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-}
-
-void	sig_cmd_handler(int sig, siginfo_t *info, void *uap)
+void sig_handler(int sig)
 {
-	(void) info;
-	(void) uap;
-	if (sig == SIGINT)
+	pid_t	pid;
+	int		exit_status;
+
+	pid = waitpid(-1, &exit_status, 0);
+	if (WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) == 32)
+		return ;
+	if (pid == -1)
 	{
-		printf("\n");
-		rl_replace_line("", 0);
-		rl_redisplay();
+		if (sig == SIGINT)
+		{
+			printf("\n");
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+			g_return_value = 130;
+		}
 	}
-	if (sig == SIGQUIT)
+	else
 	{
-		printf("Quit (core dumped)\n");
-		rl_replace_line("", 0);
-		rl_redisplay();
+		if (sig == SIGINT)
+		{
+			printf("\n");
+			g_return_value = 130;
+		}
+		else if (sig == SIGQUIT)
+		{
+			printf("Quit (core dumped)\n");
+			g_return_value = 131;
+		}
 	}
 }
 
-int	init_prompt_sigaction(void)
-{
-	struct sigaction sact;
-	struct termios term;
-
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_cc[VQUIT] = 0;
-	tcsetattr(STDIN_FILENO, 0, &term);
-	sigemptyset(&sact.sa_mask);
-	sact.sa_flags = SA_SIGINFO;
-	sact.sa_sigaction = sig_prompt_handler;
-	sigaction(SIGINT, &sact, NULL);
-	return (0);
-}
-
-int	init_cmd_sigaction(void)
+int	init_sigaction(void)
 {
 	struct sigaction sact;
 
 	sigemptyset(&sact.sa_mask);
-	sact.sa_flags = SA_SIGINFO;
-	sact.sa_sigaction = sig_cmd_handler;
+	sact.sa_handler = sig_handler;
 	sigaction(SIGINT, &sact, NULL);
 	sigaction(SIGQUIT, &sact, NULL);
 	return (0);
+}
+
+struct termios init_termios(void)
+{
+	struct termios old_term;
+	struct termios new_term;
+
+	if (tcgetattr(STDIN_FILENO, &old_term) == -1)
+		return old_term;
+	new_term = old_term;
+	new_term.c_cc[VQUIT] = 0;
+	tcsetattr(STDIN_FILENO, 0, &new_term);
+	return (old_term);
 }
