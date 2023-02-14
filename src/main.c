@@ -34,6 +34,7 @@ int	main(int argc, char **argv, char **envp)
 	struct termios	term;
 
 	init_sigaction();
+	printf("%d\n", getpid());
 	if (errno)
 		return (errno);
 	(void) argc;

@@ -19,8 +19,16 @@ void sig_handler(int sig)
 	int		exit_status;
 
 	pid = waitpid(-1, &exit_status, 0);
-	if (WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) % 16 == 0)
+	if (exit_status == E_SIGINT || WTERMSIG(exit_status) % 16 == 0)
 		return ;
+	printf("pid: %d sig: %d status: %d\n", pid, sig, exit_status);
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WEXITSTATUS(exit_status));
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFCONTINUED(exit_status));
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFEXITED(exit_status));
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSIGNALED(exit_status));
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WIFSTOPPED(exit_status));
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WSTOPSIG(exit_status));
+	printf("pid: %d sig: %d status: %d\n", pid, sig, WTERMSIG(exit_status));
 	if (pid == -1)
 	{
 		if (sig == SIGINT)

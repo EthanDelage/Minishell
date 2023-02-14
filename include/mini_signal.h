@@ -19,6 +19,8 @@
 # include <sys/wait.h>
 # include <termios.h>
 
+#define E_SIGINT 1024
+
 int	init_sigaction(void);
 struct termios init_termios(void);
 
