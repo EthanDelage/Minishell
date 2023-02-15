@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "lexer.h"
 
+#include <stdio.h>
+
 static void	token_add_router(t_token **token_stack, t_type type,
 				char *line, size_t *i);
 
@@ -32,12 +34,15 @@ t_token	*line_lexer(char *line)
 	while (line[i])
 	{
 		line_skip_space(line, &i);
-		type = token_get_type(line + i);
-		token_add_router(&token_stack, type, line, &i);
-		if (errno)
+		if (line[i])
 		{
-			token_clear(&token_stack);
-			return (NULL);
+			type = token_get_type(line + i);
+			token_add_router(&token_stack, type, line, &i);
+			if (errno)
+			{
+				token_clear(&token_stack);
+				return (NULL);
+			}
 		}
 	}
 	token_reverse(&token_stack);
