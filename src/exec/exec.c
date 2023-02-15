@@ -20,9 +20,8 @@ void	exec(t_token *head, t_hashtable *envp_dict)
 	head = exec_router(head, envp_dict);
 	while (head && head->type == OPERATOR)
 	{
-		if (*head->value == '&' && g_return_value == 0)
-			head = exec_router(head->next, envp_dict);
-		else if (*head->value == '|' && g_return_value != 0)
+		if ((*head->value == '&' && g_return_value == 0)
+			|| (*head->value == '|' && g_return_value != 0))
 			head = exec_router(head->next, envp_dict);
 		else
 			head = get_next_operator(head->next);

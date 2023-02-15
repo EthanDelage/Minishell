@@ -64,6 +64,8 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 	}
 	else
 		waitpid(pid, &return_value, 0);
+	if (errno == EINTR)
+		return (g_return_value);
 	return (WEXITSTATUS(return_value));
 }
 

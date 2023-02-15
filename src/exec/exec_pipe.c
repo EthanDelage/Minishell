@@ -21,8 +21,15 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 	pid_t	pid;
 	int		fd_pipe[2];
 	int		return_value;
+	static int	save_last_ret_val;
+	static bool	last_cmd_sig;
 	t_token	*next_cmd;
 
+	if (fd_in == STDIN_FILENO)
+	{
+		save_last_ret_val = -1;
+		last_cmd_sig = false;
+	}
 	next_cmd = get_next_pipe(head);
 	if (next_cmd && pipe(fd_pipe) == -1)
 		return (NULL);
@@ -41,7 +48,18 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 		close(fd_pipe[READ]);
 	}
 	waitpid(pid, &return_value, 0);
-	g_return_value = WEXITSTATUS(return_value);
+	if (errno == ECHILD)
+		errno = 0;
+	if (next_cmd == NULL)
+	{
+		save_last_ret_val = WEXITSTATUS(return_value);
+		if (errno == EINTR)
+			last_cmd_sig = true;
+	}
+	if (next_cmd == NULL && errno != EINTR)
+		g_return_value = WEXITSTATUS(return_value);
+	if (last_cmd_sig == false && save_last_ret_val != -1)
+		g_return_value = save_last_ret_val;
 	return (get_next_cmd(head));
 }
 
