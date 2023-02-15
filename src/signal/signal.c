@@ -54,9 +54,11 @@ static void sig_handler(int sig)
 
 static void sig_handler_heredoc(int sig)
 {
-	// TODO: no '\n' when ctrl-C
 	if (sig == SIGINT)
+	{
+		printf("\n");
 		exit(130);
+	}
 }
 
 int	init_sigaction(void)
