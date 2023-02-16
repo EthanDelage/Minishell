@@ -63,7 +63,7 @@ void	cmd_token_clear(t_cmd_token **head)
 			if ((*head)->body_type == ARRRAY)
 				free_string_array((char **)(*head)->body);
 			else
-				cmd_arg_clear((t_cmd_arg *) (*head)->body);
+				cmd_arg_clear((t_cmd_arg *)(*head)->body);
 		}
 		else
 			cmd_token_clear_redirect_param((t_redirect_param *)(*head)->body);

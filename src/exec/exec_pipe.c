@@ -18,12 +18,12 @@ static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 
 t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 {
-	pid_t	pid;
-	int		fd_pipe[2];
-	int		return_value;
+	pid_t		pid;
+	int			fd_pipe[2];
+	int			return_value;
+	t_token		*next_cmd;
 	static int	save_last_ret_val;
 	static bool	last_cmd_sig;
-	t_token	*next_cmd;
 
 	if (fd_in == STDIN_FILENO)
 	{
