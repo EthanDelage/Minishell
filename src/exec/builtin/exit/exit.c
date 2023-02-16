@@ -20,16 +20,12 @@ static char	*exit_get_arg(char **args);
 int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 {
 	char				*arg;
-	struct sigaction	sact;
 
 	if (args && args[1] && args[2] != NULL)
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		return (1);
 	}
-	sigemptyset(&sact.sa_mask);
-	sact.sa_handler = SIG_DFL;
-	sigaction(SIGINT, &sact, NULL);
 	if (envp_dict)
 		hashtable_clear(envp_dict);
 	arg = exit_get_arg(args);
@@ -38,7 +34,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 	printf("exit\n");
 	if (arg)
 		exit_handle_arg(arg);
-	exit(130);
+	exit(0);
 }
 
 static void	exit_handle_arg(char *arg)

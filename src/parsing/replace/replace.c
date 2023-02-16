@@ -44,6 +44,8 @@ int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 
 static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 {
+	t_cmd_arg	*arg_stack;
+
 	if (replace_cmd_arg(envp_dict, (t_cmd_arg *) cmd_token->body) == FAILURE)
 		return (FAILURE);
 	if (cmd_arg_remove_quote((t_cmd_arg *) cmd_token->body) == FAILURE)
@@ -51,7 +53,9 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 	cmd_arg_reverse((t_cmd_arg **) &cmd_token->body);
 	free(cmd_token->head);
 	cmd_token->head = ft_strdup(((char **) cmd_token->body)[0]);
+	arg_stack = (t_cmd_arg *) cmd_token->body;
 	cmd_token->body = cmd_arg_stack_to_array((t_cmd_arg *) cmd_token->body);
+	cmd_arg_clear(arg_stack);
 	cmd_token->body_type = ARRRAY;
 	if (errno)
 		return (FAILURE);

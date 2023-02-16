@@ -51,17 +51,17 @@ char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
 	return (args);
 }
 
-void	cmd_arg_clear(t_cmd_arg **head)
+void	cmd_arg_clear(t_cmd_arg *head)
 {
 	t_cmd_arg	*next;
 
-	while (*head)
+	while (head)
 	{
-		next = (*head)->next;
-		if ((*head)->arg)
-			free((*head)->arg);
-		free(*head);
-		*head = next;
+		next = head->next;
+		if (head->arg)
+			free(head->arg);
+		free(head);
+		head = next;
 	}
 }
 
