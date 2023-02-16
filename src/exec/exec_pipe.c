@@ -16,7 +16,7 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 					int fd_io[2], int fd_pipe[2]);
 
-t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
+t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 {
 	pid_t	pid;
 	int		fd_pipe[2];
@@ -30,21 +30,21 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 		save_last_ret_val = -1;
 		last_cmd_sig = false;
 	}
-	next_cmd = get_next_pipe(head);
+	next_cmd = get_next_pipe(*head);
 	if (next_cmd && pipe(fd_pipe) == -1)
 		return (NULL);
 	else if (next_cmd == NULL)
 		fd_pipe[WRITE] = -1;
-	if (head->type == OPEN_PARENTHESIS)
+	if ((*head)->type == OPEN_PARENTHESIS)
 		pid = exec_pipe_subshell(head, envp_dict, fd_in, fd_pipe);
 	else
-		pid = exec_pipe_cmd(head, envp_dict, fd_in, fd_pipe);
+		pid = exec_pipe_cmd(*head, envp_dict, fd_in, fd_pipe);
 	if (pid == -1)
 		return (NULL);
 	if (next_cmd)
 	{
 		close(fd_pipe[WRITE]);
-		exec_pipe(next_cmd, envp_dict, fd_pipe[READ]);
+		exec_pipe(&next_cmd, envp_dict, fd_pipe[READ]);
 		close(fd_pipe[READ]);
 	}
 	waitpid(pid, &return_value, 0);
@@ -60,7 +60,7 @@ t_token	*exec_pipe(t_token *head, t_hashtable *envp_dict, int fd_in)
 		g_return_value = WEXITSTATUS(return_value);
 	if (last_cmd_sig == false && save_last_ret_val != -1)
 		g_return_value = save_last_ret_val;
-	return (get_next_cmd(head));
+	return (get_next_cmd(*head));
 }
 
 static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,

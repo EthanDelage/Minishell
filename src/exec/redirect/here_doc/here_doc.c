@@ -44,7 +44,8 @@ int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 	{
 		close(redirect_param->fd[READ]);
 		redirect_param->fd[READ] = -1;
-		return (errno);
+		g_return_value = errno;
+		return (FAILURE);
 	}
 	tmp = get_next_line(redirect_param->fd[READ]);
 	while (tmp)
@@ -56,6 +57,7 @@ int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 			close(redirect_param->fd[READ]);
 			close(fd_pipe[READ]);
 			close(fd_pipe[WRITE]);
+			g_return_value = 1;
 			return (FAILURE);
 		}
 		ft_putstr_fd(tmp, fd_pipe[WRITE]);

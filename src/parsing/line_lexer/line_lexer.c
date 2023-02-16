@@ -40,7 +40,7 @@ t_token	*line_lexer(char *line)
 			token_add_router(&token_stack, type, line, &i);
 			if (errno)
 			{
-				token_clear(&token_stack);
+				token_clear(token_stack);
 				return (NULL);
 			}
 		}

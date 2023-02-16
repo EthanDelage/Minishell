@@ -30,7 +30,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 		hashtable_clear(envp_dict);
 	arg = exit_get_arg(args);
 	if (token_stack)
-		token_clear(&token_stack);
+		token_clear(token_stack);
 	printf("exit\n");
 	if (arg)
 		exit_handle_arg(arg);

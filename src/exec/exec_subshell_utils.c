@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-int	exec_subshell_fork(t_hashtable *envp_dict, t_token *head, int fd_io[2])
+int	exec_subshell_fork(t_hashtable *envp_dict, t_token **head, int fd_io[2])
 {
 	exec_fork_set_fd_io(fd_io);
-	exec(head->next, envp_dict);
+	exec(&(*head)->next, envp_dict);
 	return (g_return_value);
 }

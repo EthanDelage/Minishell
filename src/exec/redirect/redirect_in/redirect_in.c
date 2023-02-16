@@ -17,8 +17,10 @@ int	redirect_in_open(t_redirect_param *redirect_param)
 	if (errno)
 	{
 		redirect_print_error(redirect_param->body);
+		g_return_value = 1;
 		perror(NULL);
-		return (return_errno_error());
+		errno = 0;
+		return (FAILURE);
 	}
 	return (0);
 }

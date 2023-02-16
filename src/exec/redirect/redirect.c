@@ -108,5 +108,6 @@ static int	redirect_close_error(t_cmd_token *head, t_cmd_token *node_error)
 			here_doc_close((t_redirect_param *) head->body);
 		head = head->next;
 	}
+	printf("%d\n", g_return_value);
 	return (FAILURE);
 }

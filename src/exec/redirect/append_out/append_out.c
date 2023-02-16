@@ -18,8 +18,10 @@ int	append_out_open(t_redirect_param *redirect_param)
 	if (errno)
 	{
 		redirect_print_error(redirect_param->body);
+		g_return_value = 1;
+		errno = 0;
 		perror(NULL);
-		return (return_errno_error());
+		return (FAILURE);
 	}
 	return (SUCCESS);
 }
