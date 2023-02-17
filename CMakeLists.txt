@@ -116,7 +116,7 @@ add_executable(Minishell
         src/parsing/line_lexer/token/token_clear.c
         src/parsing/line_lexer/token/token_utils.c
         src/parsing/line_lexer/line_lexer.c
-        src/parsing/line_parser/error_line_parser.c
+        src/parsing/error_syntax.c
         src/parsing/line_parser/line_parser.c
         src/parsing/replace/replace.c
         src/parsing/replace/replace_cmd_utils.c

@@ -46,6 +46,12 @@ t_token	*analyser(char *line)
 	return (token_stack);
 }
 
+/**
+ * @brief Lex and parse a line to a token_stack
+ * @return
+ * Return NULL if an error occurred or if the line doesn't have a good syntax.
+ * Return the head of the token_stack otherwise.
+ */
 static t_token	*token_analyser(t_token *token)
 {
 	if (token->type == CLOSE_PARENTHESIS
@@ -61,6 +67,12 @@ static t_token	*token_analyser(t_token *token)
 	return (token);
 }
 
+/**
+ * @brief Lex and parse a command t_token
+ * @return
+ * Return FAILURE	if an error occurred or if cmd_token is not a redirection.
+ * Return SUCCESS otherwise.
+ */
 static int	cmd_analyser(t_token *token)
 {
 	cmd_lexer(token);
@@ -74,8 +86,8 @@ static int	cmd_analyser(t_token *token)
 /**
  * @brief Lex and parse the token next to a closed parenthesis.
  * @return
- * Return 1	if an error occurred or if cmd_token is not a redirection.
- * Return 0 otherwise.
+ * Return FAILURE	if an error occurred or if cmd_token is not a redirection.
+ * Return SUCCESS otherwise.
  */
 static int	analyse_subshell_redirect(t_token *redirect_token)
 {

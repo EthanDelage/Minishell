@@ -38,7 +38,7 @@ SRCS		=		main.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
 					parsing/cmd_parser/cmd_parser.c \
 					parsing/line_parser/line_parser.c \
-					parsing/line_parser/error_line_parser.c \
+					parsing/error_syntax.c \
 					exec/builtin/builtin_error.c \
 					exec/builtin/env/env.c \
 					exec/builtin/unset/unset.c \

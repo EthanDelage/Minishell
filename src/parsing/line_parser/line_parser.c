@@ -15,6 +15,12 @@
 static int	check_parenthesis(t_token *token, int *count);
 static int	check_error(t_token *head);
 
+/**
+ * @brief Parse the token_stack created by the line_lexer
+ * @return
+ * Return FAILURE if the line doesn't have a good syntax.
+ * Return SUCCESS otherwise.
+ */
 int	line_parser(t_token *head)
 {
 	int	count_parenthesis;
@@ -39,6 +45,12 @@ int	line_parser(t_token *head)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Update parenthesis counter
+ * @return
+ * Return FAILURE if there are too many closed parenthesis
+ * Return SUCCESS otherwise.
+ */
 static int	check_parenthesis(t_token *token, int *count)
 {
 	if (token->type == OPEN_PARENTHESIS)
