@@ -73,7 +73,8 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	if (exec_pipe_set_fd_io(head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict)
 		== EXIT_FAILURE)
 	{
-		close_pipe(fd_pipe);
+		if (fd_pipe[WRITE] != -1)
+			close_pipe(fd_pipe);
 		return (-1);
 	}
 	pid = fork();

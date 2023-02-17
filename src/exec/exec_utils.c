@@ -20,8 +20,8 @@ int	exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
 		fd_io[WRITE] = fd_out_pipe;
 	else
 		fd_io[WRITE] = STDOUT_FILENO;
-	if (redirect_open(envp_dict, head) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
+	if (redirect_open(envp_dict, head) == FAILURE)
+		return (FAILURE);
 	exec_get_fd_io(head, fd_io);
 	redirect_close_unused(head, fd_io);
 	if (errno)

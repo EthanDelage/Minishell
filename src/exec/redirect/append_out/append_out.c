@@ -19,8 +19,8 @@ int	append_out_open(t_redirect_param *redirect_param)
 	{
 		redirect_print_error(redirect_param->body);
 		g_return_value = 1;
-		errno = 0;
 		perror(NULL);
+		errno = 0;
 		return (FAILURE);
 	}
 	return (SUCCESS);

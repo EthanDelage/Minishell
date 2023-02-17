@@ -47,8 +47,10 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	}
 	if (access(cmd_token->head, X_OK) != 0)
 	{
-		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
-		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		perror(cmd_token->head);
+		if (errno == EACCES)
+			return (126);
 		return (127);
 	}
 	return (execve(cmd_token->head, args, envp));
@@ -86,8 +88,9 @@ void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	cmd_path = cmd_find_path(cmd_token, envp_dict);
 	if (cmd_path == NULL)
 	{
-		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
-		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd_token->head, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		exit(127);
 	}
 	envp = hashtable_get_array(envp_dict, 0);
