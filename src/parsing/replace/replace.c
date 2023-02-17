@@ -18,7 +18,7 @@ static int	replace_redirect(t_hashtable *envp_dict,
 static bool	is_ambiguous_redirect(char *file_name);
 
 /**
- * Replace env variables by their value.
+ * @brief Replace env variables by their value.
  */
 int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 {
@@ -62,6 +62,9 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Replace env var in each argument of a command
+ */
 static int	replace_cmd_arg(t_hashtable *envp_dict, t_cmd_arg *args)
 {
 	t_cmd_arg	*tmp;
@@ -82,6 +85,12 @@ static int	replace_cmd_arg(t_hashtable *envp_dict, t_cmd_arg *args)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Replace env var in a redirect
+ * @return
+ * Return FAILURE if an error occurred or if the filename is ambiguous
+ * Return SUCCESS otherwise
+ */
 static int	replace_redirect(t_hashtable *envp_dict,
 				t_cmd_token *redirect_token)
 {

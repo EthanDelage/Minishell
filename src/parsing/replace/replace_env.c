@@ -18,6 +18,9 @@ static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);
 static char	*add_env_var(char *line, char *value, size_t *index,
 				size_t end_index);
 
+/**
+ * @brief Replace env variable in line
+ */
 char	*replace_env(t_hashtable *envp_dict, char *line)
 {
 	size_t	index;
@@ -46,10 +49,13 @@ char	*replace_env(t_hashtable *envp_dict, char *line)
 	return (line);
 }
 
+/**
+ * @brief Replace env var if it's a good syntax
+ */
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote)
 {
-	if (*quote == '"' && !valid_char(line[*index + 1]))
+	if ((*quote == '"' || *quote == '\0') && !valid_char(line[*index + 1]))
 		(*index)++;
 	else
 	{

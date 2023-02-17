@@ -14,6 +14,9 @@
 static size_t	len_ret_value(unsigned char nb);
 static void		fill_number(char *dest, unsigned char nb, size_t size_nb);
 
+/**
+ * @brief Replace "$?" by the g_return_value
+ */
 char	*replace_ret_value(char *line, size_t *index)
 {
 	const size_t	len_ret = len_ret_value(g_return_value);
