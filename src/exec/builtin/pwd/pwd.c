@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
+/**
+ * @brief Print name of current/working directory
+ */
 int	builtin_pwd(void)
 {
 	char	*buf;

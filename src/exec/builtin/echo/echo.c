@@ -11,15 +11,18 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
-static int	echo_handle_option(char **args);
+static int	echo_endl_option(char **args);
 static int	echo_put_args(char **args);
 static int	is_endl_option(char *arg);
 
+/**
+ * @brief Display a line of text
+ */
 int	builtin_echo(char **args)
 {
 	args++;
 	if (*args && is_endl_option(*args))
-		return (echo_handle_option(args));
+		return (echo_endl_option(args));
 	if (echo_put_args(args) == 1)
 		return (1);
 	if (printf("\n") < 0)
@@ -27,7 +30,7 @@ int	builtin_echo(char **args)
 	return (0);
 }
 
-static int	echo_handle_option(char **args)
+static int	echo_endl_option(char **args)
 {
 	while (*args && is_endl_option(*args))
 		args++;

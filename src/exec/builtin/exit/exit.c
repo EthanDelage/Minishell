@@ -17,6 +17,9 @@ static int	is_numeric_arg(char *arg);
 static void	exit_handle_arg(char *arg);
 static char	*exit_get_arg(char **args);
 
+/**
+ * @brief Cause the shell to exit
+ */
 int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 {
 	char				*arg;

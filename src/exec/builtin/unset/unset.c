@@ -13,6 +13,9 @@
 
 static int	valid_name(const char *name);
 
+/**
+ * @brief Unset values and attributes of variables
+ */
 int	builtin_unset(t_hashtable *envp_dict, char **args)
 {
 	size_t	index;

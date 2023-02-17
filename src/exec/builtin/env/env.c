@@ -13,6 +13,9 @@
 
 static void	display_env(char **envp);
 
+/**
+ * @brief Display environment variable
+ */
 int	builtin_env(t_hashtable *envp_dict, char **args)
 {
 	char	**envp;

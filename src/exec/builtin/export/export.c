@@ -16,6 +16,9 @@ static void	export_one(t_hashtable *envp_dict, const char *env);
 static int	valid_env(const char *env);
 static int	non_export_env(char *env);
 
+/**
+ * @brief Set the export attribute for variables
+ */
 int	builtin_export(t_hashtable *envp_dict, char **args)
 {
 	size_t	index;
