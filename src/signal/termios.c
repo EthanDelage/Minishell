@@ -11,37 +11,28 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
-struct termios	termios_get(int fd)
+int termios_save(struct termios *termios_save)
 {
-	struct termios	term;
-
-	if (tcgetattr(fd, &term) == -1)
-	{
-		perror("minishell: termios");
-		return (term);
-	}
-	return (term);
+	if (isatty(STDERR_FILENO) == 0)
+		return (0);
+	return (tcgetattr(STDERR_FILENO, termios_save));
 }
 
-struct termios termios_init_rl(struct termios old_term)
+int termios_restore(const struct termios termios_save)
 {
-	struct termios new_term;
-
-	new_term = old_term;
-	new_term.c_cc[VQUIT] = 0;
-	if (tcsetattr(STDIN_FILENO, 0, &new_term) == -1)
-		perror("minishell: termios");
-	return (old_term);
+	if (isatty(STDERR_FILENO) == 0)
+		return (0);
+	return (tcsetattr(STDERR_FILENO, 0, &termios_save));
 }
 
-
-struct termios termios_init_heredoc(struct termios old_term)
+int termios_disable_vquit(void)
 {
-	struct termios new_term;
+	struct termios	termios_tmp;
 
-	new_term = old_term;
-	new_term.c_cc[VQUIT] = 0;
-	if (tcsetattr(STDIN_FILENO, 0, &new_term) == -1)
-		perror("minishell: termios");
-	return (old_term);
+	if (isatty(STDERR_FILENO) == 0)
+		return (0);
+	if (tcgetattr(STDERR_FILENO, &termios_tmp) == -1)
+		return (-1);
+	termios_tmp.c_cc[VQUIT] = 0;
+	return (tcsetattr(STDERR_FILENO, 0, &termios_tmp));
 }
