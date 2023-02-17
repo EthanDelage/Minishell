@@ -18,6 +18,9 @@ void	redirect_print_error(char *file_name)
 	ft_putstr_fd(": ", STDERR_FILENO);
 }
 
+/**
+ * @brief Close unused fd before executing command
+ */
 void	redirect_close_unused(t_cmd_token *cmd_token, int fd_io[2])
 {
 	while (cmd_token)

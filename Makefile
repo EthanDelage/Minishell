@@ -52,6 +52,7 @@ SRCS		=		main.c \
 					exec/redirect/redirect_out/redirect_out.c \
 					exec/redirect/append_out/append_out.c \
 					exec/redirect/here_doc/here_doc.c \
+					exec/redirect/here_doc/here_doc_get.c \
 					exec/redirect/here_doc/here_doc_utils.c \
 					exec/redirect/redirect.c \
 					exec/redirect/redirect_utils.c \
