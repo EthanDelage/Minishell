@@ -86,7 +86,7 @@ void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 
 	args = (char **) cmd_token->body;
 	cmd_path = cmd_find_path(cmd_token, envp_dict);
-	if (cmd_path == NULL)
+	if (cmd_path == NULL || *cmd_token->head == '\0')
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd_token->head, STDERR_FILENO);
