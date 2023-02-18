@@ -42,12 +42,16 @@ int	replace(t_hashtable *envp_dict, t_cmd_token *head)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Convert cmd_arg_stack to an array of string while overriding  env var
+ */
 static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 {
 	t_cmd_arg	*arg_stack;
 
 	if (replace_cmd_arg(envp_dict, (t_cmd_arg *) cmd_token->body) == FAILURE)
 		return (FAILURE);
+	remove_void_arg((t_cmd_arg **) &(cmd_token->body));
 	if (cmd_arg_remove_quote((t_cmd_arg *) cmd_token->body) == FAILURE)
 		return (FAILURE);
 	cmd_arg_reverse((t_cmd_arg **) &cmd_token->body);

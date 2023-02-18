@@ -31,6 +31,7 @@ int			valid_char(char c);
 /* ----------	REPLACE_UTILS FUNCTIONS	---------- */
 
 t_cmd_arg	*split_arg(t_cmd_arg *current);
+void		remove_void_arg(t_cmd_arg **head);
 int			cmd_arg_remove_quote(t_cmd_arg *head);
 
 /* ----------	SPLIT_ARG_UTILS FUNCTIONS	---------- */

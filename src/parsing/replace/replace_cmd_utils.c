@@ -51,3 +51,34 @@ t_cmd_arg	*split_arg(t_cmd_arg *current)
 	}
 	return (get_return_cmd_arg(current, nb_args));
 }
+
+void	remove_void_arg(t_cmd_arg **head)
+{
+	t_cmd_arg	*current;
+	t_cmd_arg	*previous;
+
+	if (*head == NULL)
+		return ;
+	previous = *head;
+	current = (*head)->next;
+	while (current)
+	{
+		if (current->arg[0] == '\0')
+		{
+			previous->next = current->next;
+			cmd_arg_clear_node(current);
+			current = previous->next;
+		}
+		else
+		{
+			previous = current;
+			current = current->next;
+		}
+	}
+	current = *head;
+	if (current->arg[0] == '\0')
+	{
+		(*head) = current->next;
+		cmd_arg_clear_node(current);
+	}
+}

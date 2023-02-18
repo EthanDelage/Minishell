@@ -30,6 +30,7 @@ void	cmd_token_clear(t_cmd_token **head);
 
 void	cmd_arg_add(t_cmd_arg **cmd_arg_stack, char *arg);
 char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack);
+void	cmd_arg_clear_node(t_cmd_arg *node);
 void	cmd_arg_clear(t_cmd_arg *head);
 void	cmd_arg_reverse(t_cmd_arg **cmd_arg);
 

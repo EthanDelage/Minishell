@@ -51,6 +51,13 @@ char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
 	return (args);
 }
 
+void	cmd_arg_clear_node(t_cmd_arg *node)
+{
+	if (node->arg)
+		free(node->arg);
+	free(node);
+}
+
 void	cmd_arg_clear(t_cmd_arg *head)
 {
 	t_cmd_arg	*next;
@@ -58,9 +65,7 @@ void	cmd_arg_clear(t_cmd_arg *head)
 	while (head)
 	{
 		next = head->next;
-		if (head->arg)
-			free(head->arg);
-		free(head);
+		cmd_arg_clear_node(head);
 		head = next;
 	}
 }
