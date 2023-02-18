@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "builtin.h"
 
-static int	valid_name(const char *name);
+static bool	valid_name(const char *name);
 
 /**
  * @brief Unset values and attributes of variables
@@ -28,7 +28,7 @@ int	builtin_unset(t_hashtable *envp_dict, char **args)
 		if (valid_name(args[index]) == false)
 		{
 			builtin_print_error("unset", args[index]);
-			perror(NULL);
+			ft_putstr_fd("not a valid identifier\n", STDERR_FILENO);
 			return_value = 1;
 		}
 		else
@@ -38,11 +38,13 @@ int	builtin_unset(t_hashtable *envp_dict, char **args)
 	return (return_value);
 }
 
-static int	valid_name(const char *name)
+static bool	valid_name(const char *name)
 {
 	size_t	index;
 
 	index = 0;
+	if (ft_isdigit(name[index]))
+		return (false);
 	while (name[index] != '\0')
 	{
 		if (!valid_char(name[index]))

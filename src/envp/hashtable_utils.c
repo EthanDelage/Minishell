@@ -72,6 +72,9 @@ void	hashtable_push(t_hashtable *hashtable, t_dict *elem)
 	head->next = elem;
 }
 
+/**
+ * @return REMOVE if elem is removed NOT_FOUND otherwise.
+ */
 int	hashtable_remove_one(t_hashtable *hashtable, const char *name)
 {
 	size_t	key;
