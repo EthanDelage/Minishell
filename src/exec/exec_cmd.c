@@ -27,6 +27,11 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 		g_return_value = 2;
 		return (NULL);
 	}
+	if (head->cmd_stack->body == NULL)
+	{
+		g_return_value = 0;
+		return (head->next);
+	}
 	if (exec_set_fd_io(head->cmd_stack, fd_io, envp_dict) == EXIT_FAILURE)
 		return (head->next);
 	if (head->cmd_stack->type != COMMAND)

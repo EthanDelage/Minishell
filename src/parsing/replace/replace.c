@@ -56,7 +56,9 @@ static int	replace_cmd(t_hashtable *envp_dict, t_cmd_token *cmd_token)
 		return (FAILURE);
 	cmd_arg_reverse((t_cmd_arg **) &cmd_token->body);
 	free(cmd_token->head);
-	cmd_token->head = ft_strdup(((char **) cmd_token->body)[0]);
+	if (cmd_token->body == NULL)
+		return (SUCCESS);
+	cmd_token->head = ft_strdup(((t_cmd_arg *) cmd_token->body)->arg);
 	arg_stack = (t_cmd_arg *) cmd_token->body;
 	cmd_token->body = cmd_arg_stack_to_array((t_cmd_arg *) cmd_token->body);
 	cmd_arg_clear(arg_stack);
