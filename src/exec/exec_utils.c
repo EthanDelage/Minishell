@@ -25,8 +25,8 @@ int	exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
 	exec_get_fd_io(head, fd_io);
 	redirect_close_unused(head, fd_io);
 	if (errno)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 int	exec_set_fd_io(t_cmd_token *head, int fd_io[2], t_hashtable *envp_dict)
