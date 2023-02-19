@@ -30,4 +30,5 @@ void	append_out_close(t_redirect_param *redirect_param)
 {
 	if (redirect_param->fd[WRITE] > 0)
 		close(redirect_param->fd[WRITE]);
+	redirect_param->fd[WRITE] = -1;
 }

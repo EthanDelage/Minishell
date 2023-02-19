@@ -17,8 +17,8 @@ int	redirect_in_open(t_redirect_param *redirect_param)
 	if (errno)
 	{
 		redirect_print_error(redirect_param->body);
-		g_return_value = 1;
 		perror(NULL);
+		g_return_value = 1;
 		errno = 0;
 		return (FAILURE);
 	}
@@ -29,4 +29,5 @@ void	redirect_in_close(t_redirect_param *redirect_param)
 {
 	if (redirect_param->fd[READ] > 0)
 		close(redirect_param->fd[READ]);
+	redirect_param->fd[WRITE] = -1;
 }
