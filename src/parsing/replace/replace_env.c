@@ -95,9 +95,14 @@ static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index)
 	size_t	end_index;
 
 	end_index = *index;
-	while (line[end_index] && !ft_isspace(line[end_index])
-		&& line[end_index] != '"' && line[end_index] != '\''
-		&& line[end_index] != '$' && valid_char(line[end_index]))
+	if (!ft_isdigit(line[end_index]))
+	{
+		while (line[end_index] && !ft_isspace(line[end_index])
+			   && line[end_index] != '"' && line[end_index] != '\''
+			   && line[end_index] != '$' && valid_char(line[end_index]))
+			end_index++;
+	}
+	else
 		end_index++;
 	name = ft_substr(line, *index, end_index - *index);
 	if (errno)
