@@ -14,62 +14,46 @@
 #include "mini_signal.h"
 
 static int	is_numeric_arg(char *arg);
-static void	exit_handle_arg(char *arg);
-static char	*exit_get_arg(char **args);
+static void	exit_properly(long long return_value, t_hashtable *envp_dict, t_token *token_stack, char **args);
 
 /**
  * @brief Cause the shell to exit
  */
 int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 {
-	char				*arg;
+	long long	return_value;
 
-	if (args && args[1] && args[2] != NULL)
+	errno = 0;
+	return_value = 0;
+	if (*args && args[1])
 	{
-		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		return (1);
+		return_value = ft_atoll(args[1]);
+		if (!is_numeric_arg(args[1]) || errno)
+			exit_properly(2, envp_dict, token_stack, args);
+		else if (args[2])
+		{
+			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+			return (1);
+		}
+	}
+	exit_properly(return_value, envp_dict, token_stack, NULL);
+	return (0);
+}
+
+static void	exit_properly(long long return_value, t_hashtable *envp_dict, t_token *token_stack, char **args)
+{
+	printf("exit\n");
+	if (return_value == 2 && errno)
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 	}
 	if (envp_dict)
 		hashtable_clear(envp_dict);
-	arg = exit_get_arg(args);
 	if (token_stack)
 		token_clear(token_stack);
-	printf("exit\n");
-	if (arg)
-		exit_handle_arg(arg);
-	exit(0);
-}
-
-static void	exit_handle_arg(char *arg)
-{
-	long long	return_value;
-
-	return_value = ft_atoll((arg));
-	if (!is_numeric_arg(arg) || errno)
-	{
-		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-		ft_putstr_fd(arg, STDERR_FILENO);
-		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-		free(arg);
-		exit (2);
-	}
-	free(arg);
-	exit((unsigned char)return_value);
-}
-
-static char	*exit_get_arg(char **args)
-{
-	char	*arg;
-	size_t	size;
-
-	if (args && args[1])
-	{
-		size = ft_strlen(args[1]);
-		arg = (char *) malloc((size + 1) * sizeof (char));
-		ft_memcpy(arg, args[1], size + 1);
-		return (arg);
-	}
-	return (NULL);
+	exit((unsigned char) return_value);
 }
 
 static int	is_numeric_arg(char *arg)
@@ -81,8 +65,11 @@ static int	is_numeric_arg(char *arg)
 	while (*arg)
 	{
 		if (!ft_isdigit(*arg))
-			return (0);
+		{
+			errno = EINVAL;
+			return (false);
+		}
 		arg++;
 	}
-	return (1);
+	return (true);
 }
