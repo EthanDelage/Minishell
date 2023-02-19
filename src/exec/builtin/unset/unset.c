@@ -43,7 +43,7 @@ static bool	valid_name(const char *name)
 	size_t	index;
 
 	index = 0;
-	if (ft_isdigit(name[index]))
+	if (ft_isdigit(name[index]) || name[index] == '\0')
 		return (false);
 	while (name[index] != '\0')
 	{

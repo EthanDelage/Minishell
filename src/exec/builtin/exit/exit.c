@@ -25,7 +25,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 
 	errno = 0;
 	return_value = 0;
-	if (*args && args[1])
+	if (args && *args && args[1])
 	{
 		return_value = ft_atoll(args[1]);
 		if (!is_numeric_arg(args[1]) || errno)

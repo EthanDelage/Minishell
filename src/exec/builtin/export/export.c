@@ -71,7 +71,7 @@ static int	valid_env(const char *env)
 	size_t	index;
 
 	index = 0;
-	if (ft_isdigit(env[index]))
+	if (ft_isdigit(env[index]) || env[0] == '\0')
 		return (false);
 	while (valid_char(env[index]))
 		index++;
@@ -82,6 +82,8 @@ static int	valid_env(const char *env)
 
 static int	non_export_env(char *env)
 {
+	if (*env == 0)
+		return (false);
 	while (valid_char(*env))
 		env++;
 	if (*env != 0)
