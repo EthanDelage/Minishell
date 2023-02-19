@@ -12,7 +12,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-unsigned char	g_return_value;
+extern unsigned char	g_return_value;
 
 enum
 {

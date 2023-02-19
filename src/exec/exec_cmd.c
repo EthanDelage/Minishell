@@ -24,7 +24,7 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 
 	if (replace(envp_dict, head->cmd_stack) == EXIT_FAILURE)
 	{
-		g_return_value = 2;
+		g_return_value = 1;
 		return (NULL);
 	}
 	if (head->cmd_stack->body == NULL)

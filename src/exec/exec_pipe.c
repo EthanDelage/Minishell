@@ -80,8 +80,9 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	else if (pid == 0)
 	{
 		fd_io[READ] = fd_in;
-		if (exec_pipe_set_fd_io(head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict)
-			== FAILURE)
+		if (replace(envp_dict, head->cmd_stack) == FAILURE
+			|| exec_pipe_set_fd_io(head->cmd_stack, fd_io, fd_pipe[WRITE],
+				envp_dict) == FAILURE)
 		{
 			if (fd_pipe[WRITE] != -1)
 				close_pipe(fd_pipe);
@@ -97,8 +98,6 @@ static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 {
 	if (fd_pipe[WRITE] != -1)
 		close(fd_pipe[READ]);
-	if (replace(envp_dict, head->cmd_stack) == FAILURE)
-		exit(errno);
 	if (fd_io[READ] != STDIN_FILENO)
 		if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 			exit(errno);

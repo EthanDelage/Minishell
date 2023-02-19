@@ -20,6 +20,8 @@
 #include "exec.h"
 #include "mini_signal.h"
 
+unsigned char	g_return_value = 0;
+
 int termios_save(struct termios *termios_save);
 int termios_restore(const struct termios termios_save);
 int termios_disable_vquit(void);

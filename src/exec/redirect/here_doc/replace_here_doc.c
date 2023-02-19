@@ -9,9 +9,7 @@
 /*   Updated: 2023/01/23 11:18:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdlib.h>
-#include "envp.h"
-#include "replace.h"
+#include "redirect.h"
 
 static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
 				size_t *index);

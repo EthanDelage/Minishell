@@ -120,6 +120,11 @@ static bool	is_ambiguous_redirect(char *file_name)
 	size_t	index;
 
 	index = 0;
+	if (*file_name == '\0')
+	{
+		ft_putstr_fd("minishell: `(null)': ambiguous redirect\n", STDERR_FILENO);
+		return (true);
+	}
 	while (file_name[index])
 	{
 		if (file_name[index] == '"' || file_name[index] == '\'')

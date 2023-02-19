@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
-static void sig_handler(int sig)
+static void	sig_handler(int sig)
 {
 	pid_t	pid;
 	int		exit_status;
