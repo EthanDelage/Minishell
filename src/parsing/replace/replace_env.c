@@ -55,7 +55,7 @@ char	*replace_env(t_hashtable *envp_dict, char *line)
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote)
 {
-	if ((*quote == '"' || *quote == '\0') && !valid_char(line[*index + 1]))
+	if ((*quote == '"' || *quote == '\0') && !valid_char(line[*index + 1]) && !(*quote == '\0' && (line[*index + 1] == '"' || line[*index + 1] == '\'')))
 		(*index)++;
 	else
 	{
