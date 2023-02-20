@@ -22,7 +22,7 @@
 # include <termios.h>
 # include "minishell.h"
 
-#define E_SIGINT 1024
+# define E_SIGINT 1024
 
 int				init_sigaction(void);
 int				init_sigaction_heredoc(void);
