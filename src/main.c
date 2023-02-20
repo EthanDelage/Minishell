@@ -51,8 +51,9 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (pwd_set(envp_dict) == EXIT_FAILURE)
 		{
-			hashtable_clear(envp_dict);
-			return (errno);
+			perror("minishell: getcwd");
+			g_return_value = errno;
+			builtin_exit(envp_dict, NULL, NULL);
 		}
 		//TODO: manage signal with here_doc
 		//term = termios_get(STDIN_FILENO);
