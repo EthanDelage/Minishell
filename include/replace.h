@@ -31,7 +31,7 @@ int			valid_char(char c);
 /* ----------	REPLACE_UTILS FUNCTIONS	---------- */
 
 t_cmd_arg	*split_arg(t_cmd_arg *current);
-void		remove_void_arg(t_cmd_arg **head);
+void		remove_empty_arg(t_cmd_arg **head);
 int			cmd_arg_remove_quote(t_cmd_arg *head);
 
 /* ----------	SPLIT_ARG_UTILS FUNCTIONS	---------- */
@@ -51,5 +51,7 @@ t_cmd_arg	*replace_split_wildcard(t_cmd_arg *head, t_cmd_arg *delimiter);
 char		*strjoin_space(char *s1, char *s2);
 char		*wildcard_skip(char *str);
 char		*wildcard_error(char *template, char *result);
+
+bool		is_valid(char c);
 
 #endif

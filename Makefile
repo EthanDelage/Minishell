@@ -63,6 +63,7 @@ SRCS		=		main.c \
 					parsing/replace/replace_cmd_utils.c \
 					parsing/replace/split_arg_utils.c \
 					parsing/replace/replace_env.c \
+					parsing/replace/replace_env_utils.c \
 					parsing/replace/replace_ret_value.c \
 					parsing/replace/replace_quotes.c \
 					parsing/replace/wildcards/wildcards.c \

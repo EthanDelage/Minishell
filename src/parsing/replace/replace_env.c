@@ -55,7 +55,9 @@ char	*replace_env(t_hashtable *envp_dict, char *line)
 static char	*check_env_var(t_hashtable *envp_dict, char *line, size_t *index,
 				char *quote)
 {
-	if ((*quote == '"' || *quote == '\0') && !valid_char(line[*index + 1]) && !(*quote == '\0' && (line[*index + 1] == '"' || line[*index + 1] == '\'')))
+	if ((*quote == '"' || *quote == '\0') && !valid_char(line[*index + 1])
+		&& !(*quote == '\0' && (line[*index + 1] == '"'
+				|| line[*index + 1] == '\'')))
 		(*index)++;
 	else
 	{
@@ -96,12 +98,8 @@ static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index)
 
 	end_index = *index;
 	if (!ft_isdigit(line[end_index]))
-	{
-		while (line[end_index] && !ft_isspace(line[end_index])
-			   && line[end_index] != '"' && line[end_index] != '\''
-			   && line[end_index] != '$' && valid_char(line[end_index]))
+		while (is_valid(line[end_index]))
 			end_index++;
-	}
 	else
 		end_index++;
 	name = ft_substr(line, *index, end_index - *index);

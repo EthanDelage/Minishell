@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "replace.h"
 
+static void	check_arg(t_cmd_arg **current, t_cmd_arg **previous);
+
 int	cmd_arg_remove_quote(t_cmd_arg *head)
 {
 	while (head)
@@ -52,7 +54,7 @@ t_cmd_arg	*split_arg(t_cmd_arg *current)
 	return (get_return_cmd_arg(current, nb_args));
 }
 
-void	remove_void_arg(t_cmd_arg **head)
+void	remove_empty_arg(t_cmd_arg **head)
 {
 	t_cmd_arg	*current;
 	t_cmd_arg	*previous;
@@ -62,23 +64,26 @@ void	remove_void_arg(t_cmd_arg **head)
 	previous = *head;
 	current = (*head)->next;
 	while (current)
-	{
-		if (current->arg[0] == '\0')
-		{
-			previous->next = current->next;
-			cmd_arg_clear_node(current);
-			current = previous->next;
-		}
-		else
-		{
-			previous = current;
-			current = current->next;
-		}
-	}
+		check_arg(&current, &previous);
 	current = *head;
 	if (current->arg[0] == '\0')
 	{
 		(*head) = current->next;
 		cmd_arg_clear_node(current);
+	}
+}
+
+static void	check_arg(t_cmd_arg **current, t_cmd_arg **previous)
+{
+	if ((*current)->arg[0] == '\0')
+	{
+		(*previous)->next = (*current)->next;
+		cmd_arg_clear_node(*current);
+		(*current) = (*previous)->next;
+	}
+	else
+	{
+		*previous = *current;
+		*current = (*current)->next;
 	}
 }
