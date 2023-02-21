@@ -12,6 +12,7 @@
 #include "router.h"
 
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+void		print_is_dir(char *name);
 
 int	cmd_router(t_token *token, t_hashtable *envp_dict)
 {
@@ -39,9 +40,7 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	fd = open(cmd_token->head, O_DIRECTORY);
 	if (fd != -1)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(cmd_token->head, STDERR_FILENO);
-		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		print_is_dir(cmd_token->head);
 		close(fd);
 		return (126);
 	}

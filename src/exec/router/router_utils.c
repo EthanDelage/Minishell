@@ -28,3 +28,10 @@ bool	is_builtin(t_cmd_token *cmd_token)
 	}
 	return (false);
 }
+
+void	print_is_dir(char *name)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(name, STDERR_FILENO);
+	ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+}
