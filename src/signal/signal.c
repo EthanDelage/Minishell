@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
+static void	handle_prompt(int sig, pid_t pid);
+
 static void	sig_handler(int sig)
 {
 	pid_t	pid;
@@ -24,8 +26,23 @@ static void	sig_handler(int sig)
 		pid = -1;
 		errno = 0;
 	}
-	if (exit_status == E_SIGINT || WEXITSTATUS(exit_status) == 130 || WTERMSIG(exit_status) % 16 == 0)
+	if (exit_status == E_SIGINT || WEXITSTATUS(exit_status) == 130
+		|| WTERMSIG(exit_status) % 16 == 0)
 		return ;
+	handle_prompt(sig, pid);
+}
+
+static void	sig_handler_heredoc(int sig)
+{
+	if (sig == SIGINT)
+	{
+		printf("\n");
+		exit(130);
+	}
+}
+
+static void	handle_prompt(int sig, pid_t pid)
+{
 	if (pid == -1)
 	{
 		if (sig == SIGINT)
@@ -52,18 +69,9 @@ static void	sig_handler(int sig)
 	}
 }
 
-static void sig_handler_heredoc(int sig)
-{
-	if (sig == SIGINT)
-	{
-		printf("\n");
-		exit(130);
-	}
-}
-
 int	init_sigaction(void)
 {
-	struct sigaction sact;
+	struct sigaction	sact;
 
 	if (sigemptyset(&sact.sa_mask) == -1)
 		return (FAILURE);
@@ -75,9 +83,9 @@ int	init_sigaction(void)
 	return (0);
 }
 
-int init_sigaction_heredoc(void)
+int	init_sigaction_heredoc(void)
 {
-	struct sigaction sact;
+	struct sigaction	sact;
 
 	if (sigemptyset(&sact.sa_mask) == -1)
 		return (FAILURE);
