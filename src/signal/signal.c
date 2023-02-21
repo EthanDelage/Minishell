@@ -77,9 +77,9 @@ int	init_sigaction(void)
 		return (FAILURE);
 	sact.sa_handler = sig_handler;
 	if (sigaction(SIGINT, &sact, NULL) == -1)
-		return (-1);
+		return (FAILURE);
 	if (sigaction(SIGQUIT, &sact, NULL) == -1)
-		return (-1);
+		return (FAILURE);
 	return (0);
 }
 
@@ -91,8 +91,8 @@ int	init_sigaction_heredoc(void)
 		return (FAILURE);
 	sact.sa_handler = sig_handler_heredoc;
 	if (sigaction(SIGINT, &sact, NULL) == -1)
-		return (-1);
+		return (FAILURE);
 	if (sigaction(SIGQUIT, &sact, NULL) == -1)
-		return (-1);
+		return (FAILURE);
 	return (0);
 }
