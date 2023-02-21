@@ -24,10 +24,10 @@
 
 # define E_SIGINT 1024
 
-int				init_sigaction(void);
-int				init_sigaction_heredoc(void);
-struct termios	termios_get(int fd);
-struct termios	termios_init_rl(struct termios old_term);
-struct termios	termios_init_heredoc(struct termios old_term);
+int	init_sigaction(void);
+int	init_sigaction_heredoc(void);
+int	termios_save(struct termios *termios_save);
+int	termios_restore(struct termios termios_save);
+int	termios_disable_vquit(void);
 
 #endif

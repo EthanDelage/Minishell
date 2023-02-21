@@ -22,10 +22,6 @@
 
 unsigned char	g_return_value = 0;
 
-int termios_save(struct termios *termios_save);
-int termios_restore(const struct termios termios_save);
-int termios_disable_vquit(void);
-
 int	main(int argc, char **argv, char **envp)
 {
 	char			*line;
