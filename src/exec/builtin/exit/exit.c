@@ -14,7 +14,8 @@
 #include "mini_signal.h"
 
 static int	is_numeric_arg(char *arg);
-static void	exit_properly(long long return_value, t_hashtable *envp_dict, t_token *token_stack, char **args);
+static void	exit_properly(long long return_value, t_hashtable *envp_dict,
+				t_token *token_stack, char **args);
 
 /**
  * @brief Cause the shell to exit
@@ -40,7 +41,8 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 	return (0);
 }
 
-static void	exit_properly(long long return_value, t_hashtable *envp_dict, t_token *token_stack, char **args)
+static void	exit_properly(long long return_value, t_hashtable *envp_dict,
+				t_token *token_stack, char **args)
 {
 	printf("exit\n");
 	if (return_value == 2 && errno)

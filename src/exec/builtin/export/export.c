@@ -30,8 +30,8 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 	return_value = 0;
 	while (args[index])
 	{
-		if (!ft_isdigit(*args[index]) &&
-			non_export_env(args[index]) == true)
+		if (!ft_isdigit(*args[index])
+			&& non_export_env(args[index]) == true)
 			;
 		else if (valid_env(args[index]) == false)
 		{
