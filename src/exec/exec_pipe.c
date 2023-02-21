@@ -14,22 +14,15 @@
 static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 					int fd_in, int fd_pipe[2]);
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
-					int fd_io[2]);
+					int fd_io[2], int fd_pipe[2]);
+static void		exec_pipe_get_ret_val(int fd_in, int pid, t_token *next_cmd);
 
 t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 {
 	pid_t		pid;
 	int			fd_pipe[2];
-	int			return_value;
 	t_token		*next_cmd;
-	static int	save_last_ret_val;
-	static bool	last_cmd_sig;
 
-	if (fd_in == STDIN_FILENO)
-	{
-		save_last_ret_val = -1;
-		last_cmd_sig = false;
-	}
 	next_cmd = get_next_pipe(*head);
 	if (next_cmd && pipe(fd_pipe) == -1)
 		return (NULL);
@@ -48,21 +41,7 @@ t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 		close(fd_pipe[READ]);
 	}
 	if (pid != -1)
-	{
-		waitpid(pid, &return_value, 0);
-		if (errno == ECHILD)
-			errno = 0;
-		if (next_cmd == NULL)
-		{
-			save_last_ret_val = WEXITSTATUS(return_value);
-			if (errno == EINTR)
-				last_cmd_sig = true;
-		}
-		if (next_cmd == NULL && errno != EINTR)
-			g_return_value = WEXITSTATUS(return_value);
-		if (last_cmd_sig == false && save_last_ret_val != -1)
-			g_return_value = save_last_ret_val;
-	}
+		exec_pipe_get_ret_val(fd_in, pid, next_cmd);
 	return (get_next_cmd(*head));
 }
 
@@ -73,8 +52,8 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	int		fd_io[2];
 
 	fd_io[READ] = fd_in;
-	if (replace(envp_dict, head->cmd_stack) == FAILURE
-		|| exec_pipe_set_fd_io(head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict) == FAILURE)
+	if (replace(envp_dict, head->cmd_stack) == FAILURE || exec_pipe_set_fd_io(
+			head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict) == FAILURE)
 	{
 		g_return_value = 1;
 		return (-1);
@@ -88,15 +67,7 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 		return (-1);
 	}
 	else if (pid == 0)
-	{
-		if (fd_pipe[WRITE] != -1)
-		{
-			close(fd_pipe[READ]);
-			if (fd_io[WRITE] != fd_pipe[WRITE])
-				close(fd_pipe[WRITE]);
-		}
-		exec_pipe_cmd_fork(envp_dict, head, fd_io);
-	}
+		exec_pipe_cmd_fork(envp_dict, head, fd_io, fd_pipe);
 	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
 		close(fd_io[READ]);
 	if (fd_io[WRITE] != fd_pipe[WRITE] && fd_io[WRITE] != STDOUT_FILENO)
@@ -105,8 +76,14 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 }
 
 static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
-				int fd_io[2])
+				int fd_io[2], int fd_pipe[2])
 {
+	if (fd_pipe[WRITE] != -1)
+	{
+		close(fd_pipe[READ]);
+		if (fd_io[WRITE] != fd_pipe[WRITE])
+			close(fd_pipe[WRITE]);
+	}
 	if (fd_io[READ] != STDIN_FILENO)
 		if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
 			exit(errno);
@@ -114,4 +91,30 @@ static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 		if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 			exit(errno);
 	exit(cmd_router(head, envp_dict));
+}
+
+static void	exec_pipe_get_ret_val(int fd_in, int pid, t_token *next_cmd)
+{
+	int			return_value;
+	static int	save_last_ret_val;
+	static bool	last_cmd_sig;
+
+	if (fd_in == STDIN_FILENO)
+	{
+		save_last_ret_val = -1;
+		last_cmd_sig = false;
+	}
+	waitpid(pid, &return_value, 0);
+	if (errno == ECHILD)
+		errno = 0;
+	if (next_cmd == NULL)
+	{
+		save_last_ret_val = WEXITSTATUS(return_value);
+		if (errno == EINTR)
+			last_cmd_sig = true;
+	}
+	if (next_cmd == NULL && errno != EINTR)
+		g_return_value = WEXITSTATUS(return_value);
+	if (last_cmd_sig == false && save_last_ret_val != -1)
+		g_return_value = save_last_ret_val;
 }
