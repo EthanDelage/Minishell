@@ -31,10 +31,14 @@ int	main(int argc, char **argv, char **envp)
 	char			*line;
 	t_token			*line_token;
 	t_hashtable		*envp_dict;
-//	struct termios	termios;
+	struct termios	term_save;
 
-//	termios_save(&termios);
 	init_sigaction();
+	if (termios_save(&term_save) < 0)
+	{
+		perror("minishell");
+		return (1);
+	}
 	if (errno)
 		return (errno);
 	(void) argc;
@@ -55,38 +59,40 @@ int	main(int argc, char **argv, char **envp)
 			g_return_value = errno;
 			builtin_exit(envp_dict, NULL, NULL);
 		}
-		//TODO: manage signal with here_doc
-		//term = termios_get(STDIN_FILENO);
-		//if (errno)
-		//	return (errno);
-//		termios_init_rl(term);
-		//termios_disable_ctrl_backslash();
 		if (errno)
 			return (errno);
+		if (termios_disable_vquit() == FAILURE)
+		{
+			perror("minishell");
+			return (1);
+		}
 		line = readline("minishell: > ");
 		errno = 0;
-		//tcsetattr(STDIN_FILENO, 0, &term);
-//		termios_restore(termios);
-		if (errno || line == NULL)
+		if (line == NULL)
 			builtin_exit(envp_dict, NULL, NULL);
+		if (termios_restore(term_save) < 0)
+		{
+			perror("minishell");
+			return (1);
+		}
 		add_history(line);
 		line_token = analyser(line);
 		if (line_token == NULL)
 			return (2);
-//		termios_init_heredoc(term);
-		//termios_disable_ctrl_backslash();
 		if (errno || here_doc_get(line_token) == FAILURE)
 			return (errno);
-//		tcsetattr(STDIN_FILENO, 0, &term);
-//		termios_restore(termios);
 		if (errno)
 		{
 			perror("");
 			free(line);
 			builtin_exit(envp_dict, NULL, NULL);
 		}
+		if (termios_restore(term_save) == FAILURE)
+		{
+			perror("minishell");
+			return (1);
+		}
 		exec(&line_token, envp_dict);
-//		fflush(stdout);
 		token_clear(line_token);
 		free(line);
 	}
