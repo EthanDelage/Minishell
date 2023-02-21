@@ -37,13 +37,7 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 	if (head->cmd_stack->type != COMMAND)
 		g_return_value = 0;
 	else if (is_builtin(head->cmd_stack) == 0)
-	{
 		g_return_value = exec_cmd_bin(head, fd_io, envp_dict);
-		if (fd_io[WRITE] != STDOUT_FILENO)
-			close(fd_io[WRITE]);
-		if (fd_io[READ])
-			close(fd_io[READ]);
-	}
 	else
 		exec_cmd_builtin(head, fd_io, envp_dict);
 	return (head->next);
@@ -68,6 +62,10 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 		waitpid(pid, &return_value, 0);
 	if (errno == EINTR)
 		return (g_return_value);
+	if (fd_io[WRITE] != STDOUT_FILENO)
+		close(fd_io[WRITE]);
+	if (fd_io[READ] != STDIN_FILENO)
+		close(fd_io[READ]);
 	return (WEXITSTATUS(return_value));
 }
 
