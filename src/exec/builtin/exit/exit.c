@@ -25,7 +25,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 	long long	return_value;
 
 	errno = 0;
-	return_value = 0;
+	return_value = g_return_value;
 	if (args && *args && args[1])
 	{
 		return_value = ft_atoll(args[1]);
