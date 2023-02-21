@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (pwd_set(envp_dict) == EXIT_FAILURE)
 		{
-			perror("minishell: getcwd");
+			perror("minishell: when setting the pwd variable");
 			g_return_value = errno;
 			builtin_exit(envp_dict, NULL, NULL);
 		}
