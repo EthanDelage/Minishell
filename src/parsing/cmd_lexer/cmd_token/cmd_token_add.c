@@ -90,7 +90,8 @@ void	cmd_token_add_cmd_arg(t_token *token, t_cmd_arg **arg_stack, size_t *i)
 			cmd_token_add_redirect(token, current_type, i);
 			return ;
 		}
-		(*i)++;
+		if (token->value[*i] != '\0')
+			(*i)++;
 	}
 	if (last_i != *i)
 		cmd_arg_add(arg_stack,

@@ -85,7 +85,8 @@ static size_t	count_trimmed_quotes(const char *str)
 			if (str[i] == quote)
 				count++;
 		}
-		i++;
+		if (str[i])
+			i++;
 	}
 	return (count);
 }
