@@ -14,8 +14,8 @@
 int	termios_save(struct termios *termios_save)
 {
 	if (isatty(STDERR_FILENO) == 0)
-		return (SUCCESS);
-	if (tcgetattr(STDERR_FILENO, termios_save) != 0)
+		errno = 0;
+	else if (tcgetattr(STDERR_FILENO, termios_save) != 0)
 		return (FAILURE);
 	return (SUCCESS);
 }
@@ -23,8 +23,8 @@ int	termios_save(struct termios *termios_save)
 int	termios_restore(const struct termios termios_save)
 {
 	if (isatty(STDERR_FILENO) == 0)
-		return (SUCCESS);
-	if (tcsetattr(STDERR_FILENO, 0, &termios_save) != 0)
+		errno = 0;
+	else if (tcsetattr(STDERR_FILENO, 0, &termios_save) != 0)
 		return (FAILURE);
 	return (SUCCESS);
 }
@@ -34,7 +34,10 @@ int	termios_disable_vquit(void)
 	struct termios	termios_tmp;
 
 	if (isatty(STDERR_FILENO) == 0)
+	{
+		errno = 0;
 		return (SUCCESS);
+	}
 	if (tcgetattr(STDERR_FILENO, &termios_tmp) != 0)
 		return (FAILURE);
 	termios_tmp.c_cc[VQUIT] = 0;

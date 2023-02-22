@@ -16,80 +16,76 @@
 #include "lexer.h"
 #include "analyser.h"
 #include "redirect.h"
-#include "router.h"
 #include "exec.h"
 #include "mini_signal.h"
 
 unsigned char	g_return_value = 0;
 
+static int	minishell_run(t_hashtable *envp_dict, struct termios term_save);
+static int	minishell_exit(t_hashtable *envp_dict, char *line,
+				t_token *token_stack, int return_value);
+
 int	main(int argc, char **argv, char **envp)
+{
+	t_hashtable		*envp_dict;
+	struct termios	term_save;
+	int				exit_status;
+
+	(void) argc;
+	(void) argv;
+	if (init_sigaction() == FAILURE || termios_save(&term_save) == FAILURE)
+		return (minishell_exit(NULL, NULL, NULL, errno));
+	envp_dict = envp_to_dict(envp);
+	if (errno)
+		return (minishell_exit(NULL, NULL, NULL, errno));
+	if (shlvl_increment(envp_dict) == EXIT_FAILURE)
+		return (minishell_exit(envp_dict, NULL, NULL, errno));
+	while (1)
+	{
+		exit_status = minishell_run(envp_dict, term_save);
+		if (exit_status != SUCCESS)
+			return (exit_status);
+	}
+}
+
+static int	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 {
 	char			*line;
 	t_token			*line_token;
-	t_hashtable		*envp_dict;
-	struct termios	term_save;
 
-	init_sigaction();
-	if (termios_save(&term_save) < 0)
-	{
-		perror("minishell");
-		return (1);
-	}
+	if (pwd_set(envp_dict) == EXIT_FAILURE)
+		return (minishell_exit(envp_dict, NULL, NULL, errno));
+	if (termios_disable_vquit() == FAILURE)
+		return (minishell_exit(envp_dict, NULL, NULL, errno));
+	line = readline("minishell: > ");
+	errno = 0;
+	if (line == NULL || termios_restore(term_save) == FAILURE)
+		return (minishell_exit(envp_dict, line, NULL, errno));
+	add_history(line);
+	line_token = analyser(line);
+	if (line_token == NULL)
+		return (2);
+	if (here_doc_get(line_token) == FAILURE)
+		return (minishell_exit(envp_dict, line, line_token, errno));
+	if (termios_restore(term_save) == FAILURE)
+		return (minishell_exit(envp_dict, line, line_token, errno));
+	exec(&line_token, envp_dict);
 	if (errno)
-		return (errno);
-	(void) argc;
-	(void) argv;
-	envp_dict = envp_to_dict(envp);
-	if (errno)
-		return (errno);
-	if (shlvl_increment(envp_dict) == EXIT_FAILURE)
-	{
+		return (minishell_exit(envp_dict, line, line_token, errno));
+	free(line);
+	token_clear(line_token);
+	return (SUCCESS);
+}
+
+static int	minishell_exit(t_hashtable *envp_dict, char *line,
+				t_token *token_stack, int return_value)
+{
+	if (envp_dict)
 		hashtable_clear(envp_dict);
-		return (errno);
-	}
-	while (1)
-	{
-		if (pwd_set(envp_dict) == EXIT_FAILURE)
-		{
-			perror("minishell: when setting the pwd variable");
-			g_return_value = errno;
-			builtin_exit(envp_dict, NULL, NULL);
-		}
-		if (errno)
-			return (errno);
-		if (termios_disable_vquit() == FAILURE)
-		{
-			perror("minishell");
-			return (1);
-		}
-		line = readline("minishell: > ");
-		errno = 0;
-		if (line == NULL)
-			builtin_exit(envp_dict, NULL, NULL);
-		if (termios_restore(term_save) < 0)
-		{
-			perror("minishell");
-			return (1);
-		}
-		add_history(line);
-		line_token = analyser(line);
-		if (line_token == NULL)
-			return (2);
-		if (errno || here_doc_get(line_token) == FAILURE)
-			return (errno);
-		if (errno)
-		{
-			perror("");
-			free(line);
-			builtin_exit(envp_dict, NULL, NULL);
-		}
-		if (termios_restore(term_save) == FAILURE)
-		{
-			perror("minishell");
-			return (1);
-		}
-		exec(&line_token, envp_dict);
-		token_clear(line_token);
+	if (line)
 		free(line);
-	}
+	if (token_stack)
+		token_clear(token_stack);
+	perror("minishell");
+	return (return_value);
 }

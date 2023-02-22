@@ -80,7 +80,7 @@ int	init_sigaction(void)
 		return (FAILURE);
 	if (sigaction(SIGQUIT, &sact, NULL) == -1)
 		return (FAILURE);
-	return (0);
+	return (SUCCESS);
 }
 
 int	init_sigaction_heredoc(void)
@@ -94,5 +94,5 @@ int	init_sigaction_heredoc(void)
 		return (FAILURE);
 	if (sigaction(SIGQUIT, &sact, NULL) == -1)
 		return (FAILURE);
-	return (0);
+	return (SUCCESS);
 }
