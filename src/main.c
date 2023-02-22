@@ -59,8 +59,10 @@ static int	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 		return (minishell_exit(envp_dict, NULL, NULL, errno));
 	line = readline("minishell: > ");
 	errno = 0;
-	if (line == NULL || termios_restore(term_save) == FAILURE)
-		return (minishell_exit(envp_dict, line, NULL, errno));
+	if (line == NULL)
+		builtin_exit(envp_dict, NULL, NULL);
+	if (termios_restore(term_save) == FAILURE)
+		return (minishell_exit(envp_dict, NULL, NULL, errno));
 	add_history(line);
 	line_token = analyser(line);
 	if (line_token == NULL)
