@@ -30,6 +30,8 @@ int	line_parser(t_token *head)
 		return (SUCCESS);
 	if (head->type != COMMAND && head->type != OPEN_PARENTHESIS)
 		return (error_syntax(head->value));
+	if (head->type == OPEN_PARENTHESIS && head->next == NULL)
+		return (error_syntax("("));
 	while (head->next != NULL)
 	{
 		if (check_parenthesis(head, &count_parenthesis) == FAILURE)
