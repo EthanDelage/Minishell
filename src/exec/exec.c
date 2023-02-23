@@ -17,6 +17,8 @@ static t_token	*get_next_operator(t_token *head);
 
 void	exec(t_token **head, t_hashtable *envp_dict)
 {
+	t_token	*tmp;
+
 	*head = exec_router(head, envp_dict);
 	while (*head && (*head)->type == OPERATOR)
 	{
@@ -24,7 +26,11 @@ void	exec(t_token **head, t_hashtable *envp_dict)
 			return ;
 		if ((*(*head)->value == '&' && g_return_value == 0)
 			|| (*(*head)->value == '|' && g_return_value != 0))
-			*head = exec_router(&(*head)->next, envp_dict);
+		{
+			tmp = (*head)->next;
+			token_clear_until(head, tmp);
+			*head = exec_router(&tmp, envp_dict);
+		}
 		else
 			*head = get_next_operator((*head)->next);
 	}
