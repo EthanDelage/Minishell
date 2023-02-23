@@ -105,10 +105,21 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 		return (NULL);
 	}
 	start = ft_substr(line, 0, *index - 1);
+	if (errno)
+		return (free(line), NULL);
 	end = ft_substr(line, end_index, len_line - end_index);
-	new_line = ft_strjoin(start, value);
-	new_line = ft_strjoin(new_line, end);
-	*index = *index + len_value - 1;
 	free(line);
-	return (new_line);
+	if (errno)
+		return (free(start), NULL);
+	new_line = ft_strjoin(start, value);
+	free(start);
+	if (errno)
+		return (free(end), NULL);
+	line = ft_strjoin(new_line, end);
+	free(end);
+	free(new_line);
+	if (errno)
+		return (NULL);
+	*index = *index + len_value - 1;
+	return (line);
 }

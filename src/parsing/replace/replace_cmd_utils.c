@@ -43,6 +43,8 @@ t_cmd_arg	*split_arg(t_cmd_arg *current)
 	if (arg[index] == '\0' && start == 0)
 		return (current->next);
 	current->arg = ft_substr(arg, start, index - start);
+	if (errno)
+		return (NULL);
 	nb_args = 1;
 	line_skip_isspace(arg, &index);
 	while (arg[index])
