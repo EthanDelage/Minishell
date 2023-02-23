@@ -11,11 +11,30 @@
 /* ************************************************************************** */
 #include "replace.h"
 
-extern unsigned char	g_return_value;
-
 static char	*wildcard_get_file(char *template, DIR *dir);
 static bool	wildcard_is_valid(char *filename, char *template);
 
+/**
+ * @brief Replace template by a stack of matching files
+ * @return Return the next arg to replace
+ */
+t_cmd_arg	*replace_split_wildcard(t_cmd_arg *head, t_cmd_arg *delimiter)
+{
+	while (head && head != delimiter)
+	{
+		head->arg = wildcard_replace(head->arg);
+		if (errno)
+			return (NULL);
+		head = split_arg(head);
+		if (errno)
+			return (NULL);
+	}
+	return (head);
+}
+
+/**
+ * @brief Open current directory and find files corresponding to a template
+ */
 char	*wildcard_replace(char *template)
 {
 	DIR				*dir;
@@ -24,18 +43,24 @@ char	*wildcard_replace(char *template)
 	result = NULL;
 	dir = opendir(".");
 	if (errno)
-		return (error(template, result));
+		return (wildcard_error(template, result));
 	result = wildcard_get_file(template, dir);
 	if (errno)
-		return (error(template, result));
+		return (wildcard_error(template, result));
 	if (closedir(dir) == -1)
-		return (error(template, result));
+		return (wildcard_error(template, result));
 	if (result == NULL)
 		return (template);
 	free(template);
 	return (result);
 }
 
+/**
+ * @brief Check each file int the current directory matches the template
+ * @return
+ * Return a string containing the corresponding files separated by spaces
+ * Return the template if no files match
+ */
 static char	*wildcard_get_file(char *template, DIR *dir)
 {
 	struct dirent	*entry;
@@ -49,7 +74,7 @@ static char	*wildcard_get_file(char *template, DIR *dir)
 	{
 		if (wildcard_is_valid(entry->d_name, template)
 			&& (entry->d_name[0] != '.'
-			|| (entry->d_name[0] == '.' && template[0] == '.')))
+				|| (entry->d_name[0] == '.' && template[0] == '.')))
 		{
 			result = strjoin_space(result, entry->d_name);
 			if (errno)

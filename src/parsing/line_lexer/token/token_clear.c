@@ -21,15 +21,26 @@ static void	token_free_elem(t_token *elem)
 	free(elem);
 }
 
-void	token_clear(t_token **token_stack)
+void	token_clear(t_token *token_stack)
 {
 	t_token	*next;
 
-	while (*token_stack)
+	while (token_stack)
 	{
-		next = (*token_stack)->next;
-		token_free_elem(*token_stack);
-		*token_stack = next;
+		next = (token_stack)->next;
+		token_free_elem(token_stack);
+		token_stack = next;
 	}
-	*token_stack = NULL;
+}
+
+void	token_clear_until(t_token **head, t_token *delimiter)
+{
+	t_token	*next;
+
+	while (*head != delimiter)
+	{
+		next = (*head)->next;
+		token_free_elem(*head);
+		*head = next;
+	}
 }

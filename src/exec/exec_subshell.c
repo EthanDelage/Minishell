@@ -11,54 +11,31 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static t_token	*subshell_get_next_token(t_token *head);
 static int		subshell_set_fd_io(t_token *head, int fd_io[2],
 					t_hashtable *envp_dict);
 
-t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
+t_token	*exec_subshell(t_token **head, t_hashtable *envp_dict)
 {
 	pid_t	pid;
 	int		fd_io[2];
 	int		return_value;
 	t_token	*redirect_token;
 
-	redirect_token = subshell_get_next_token(head->next);
-	if (subshell_set_fd_io(redirect_token, fd_io, envp_dict) == EXIT_FAILURE)
-	{
-		if (redirect_token && redirect_token->type == COMMAND)
-			return (redirect_token->next);
-		return (redirect_token);
-	}
+	redirect_token = subshell_get_next_token((*head)->next);
 	pid = fork();
 	if (pid == -1)
-	{
-		g_return_value = errno;
 		return (NULL);
-	}
 	else if (pid == 0)
 	{
-		if (fd_io[READ] != STDIN_FILENO)
-		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
-				exit(g_return_value);
-		}
-		if (fd_io[WRITE] != STDOUT_FILENO)
-		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
-				exit(g_return_value);
-		}
-		exec(head->next, envp_dict);
-		exit(g_return_value);
+		if (subshell_set_fd_io(redirect_token, fd_io, envp_dict)
+			== EXIT_FAILURE)
+			exit(1);
+		exit(exec_subshell_fork(envp_dict, head, fd_io));
 	}
 	else
 	{
 		waitpid(pid, &return_value, 0);
-		if (fd_io[WRITE] != STDOUT_FILENO)
-			close(fd_io[WRITE]);
-		if (fd_io[READ] != STDIN_FILENO)
-			close(fd_io[READ]);
 		g_return_value = WEXITSTATUS(return_value);
 		if (redirect_token && redirect_token->type == COMMAND)
 			return (redirect_token->next);
@@ -66,13 +43,14 @@ t_token	*exec_subshell(t_token *head, t_hashtable *envp_dict)
 	}
 }
 
-pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in, int fd_pipe[2])
+pid_t	exec_pipe_subshell(t_token **head, t_hashtable *envp_dict, int fd_in,
+			int fd_pipe[2])
 {
 	pid_t	pid;
 	int		fd_io[2];
 	t_token	*redirect_token;
 
-	redirect_token = subshell_get_next_token(head);
+	redirect_token = subshell_get_next_token((*head)->next);
 	if (subshell_set_fd_io(redirect_token, fd_io, envp_dict) == EXIT_FAILURE)
 		return (-1);
 	if (fd_io[READ] == STDIN_FILENO)
@@ -86,20 +64,7 @@ pid_t	exec_pipe_subshell_utils(t_token *head, t_hashtable *envp_dict, int fd_in,
 	{
 		if (fd_pipe[WRITE] != -1)
 			close(fd_pipe[READ]);
-		if (fd_io[READ] != STDIN_FILENO)
-		{
-			if (dup2_save_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
-				exit(errno);
-			close(fd_io[READ]);
-		}
-		if (fd_io[WRITE] != STDOUT_FILENO)
-		{
-			if (dup2_save_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
-				exit(errno);
-			close(fd_io[WRITE]);
-		}
-		exec(head->next, envp_dict);
-		exit(g_return_value);
+		exit(exec_subshell_fork(envp_dict, head, fd_io));
 	}
 	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
 		close(fd_io[READ]);
@@ -124,7 +89,8 @@ static t_token	*subshell_get_next_token(t_token *head)
 	return (head);
 }
 
-static int	subshell_set_fd_io(t_token *head, int fd_io[2], t_hashtable *envp_dict)
+static int	subshell_set_fd_io(t_token *head, int fd_io[2],
+				t_hashtable *envp_dict)
 {
 	if (head && head->type == COMMAND
 		&& head->cmd_stack->type != COMMAND)

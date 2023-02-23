@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
 static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2]);
 
 int	exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
@@ -22,13 +20,13 @@ int	exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
 		fd_io[WRITE] = fd_out_pipe;
 	else
 		fd_io[WRITE] = STDOUT_FILENO;
-	if (redirect_open(envp_dict, head) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
+	if (redirect_open(envp_dict, head) == FAILURE)
+		return (FAILURE);
 	exec_get_fd_io(head, fd_io);
 	redirect_close_unused(head, fd_io);
 	if (errno)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 int	exec_set_fd_io(t_cmd_token *head, int fd_io[2], t_hashtable *envp_dict)
@@ -44,6 +42,20 @@ int	exec_set_fd_io(t_cmd_token *head, int fd_io[2], t_hashtable *envp_dict)
 	return (EXIT_SUCCESS);
 }
 
+void	exec_fork_set_fd_io(int fd_io[2])
+{
+	if (fd_io[READ] != STDIN_FILENO)
+	{
+		if (dup2_fd(fd_io[READ], STDIN_FILENO) == EXIT_FAILURE)
+			exit(g_return_value);
+	}
+	if (fd_io[WRITE] != STDOUT_FILENO)
+	{
+		if (dup2_fd(fd_io[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
+			exit(g_return_value);
+	}
+}
+
 static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2])
 {
 	while (head)
@@ -56,7 +68,7 @@ static void	exec_get_fd_io(t_cmd_token *head, int fd_io[2])
 	}
 }
 
-int	dup2_save_fd(int new_fd, int old_fd)
+int	dup2_fd(int new_fd, int old_fd)
 {
 	if (dup2(new_fd, old_fd) == -1)
 	{

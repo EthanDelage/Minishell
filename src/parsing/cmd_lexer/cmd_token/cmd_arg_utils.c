@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
+static int	cmd_arg_size(t_cmd_arg *cmd_arg_stack);
+
 void	cmd_arg_reverse(t_cmd_arg **cmd_arg)
 {
 	t_cmd_arg	*next;
@@ -30,7 +32,52 @@ void	cmd_arg_reverse(t_cmd_arg **cmd_arg)
 	*cmd_arg = prev;
 }
 
-int	cmd_arg_size(t_cmd_arg *cmd_arg_stack)
+char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
+{
+	char		**args;
+	t_cmd_arg	*iterator;
+	int			i;
+
+	args = malloc((cmd_arg_size(cmd_arg_stack) + 1) * sizeof (*cmd_arg_stack));
+	if (args == NULL)
+		return (NULL);
+	i = 0;
+	iterator = cmd_arg_stack;
+	while (iterator)
+	{
+		args[i] = ft_strdup(iterator->arg);
+		if (args[i] == NULL)
+		{
+			free_string_array(args);
+			return (NULL);
+		}
+		i++;
+		iterator = iterator->next;
+	}
+	args[i] = NULL;
+	return (args);
+}
+
+void	cmd_arg_clear_node(t_cmd_arg *node)
+{
+	if (node->arg)
+		free(node->arg);
+	free(node);
+}
+
+void	cmd_arg_clear(t_cmd_arg *head)
+{
+	t_cmd_arg	*next;
+
+	while (head)
+	{
+		next = head->next;
+		cmd_arg_clear_node(head);
+		head = next;
+	}
+}
+
+static int	cmd_arg_size(t_cmd_arg *cmd_arg_stack)
 {
 	t_cmd_arg	*iterator;
 	int			count;
@@ -43,37 +90,4 @@ int	cmd_arg_size(t_cmd_arg *cmd_arg_stack)
 		iterator = iterator->next;
 	}
 	return (count);
-}
-
-char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
-{
-	char		**args;
-	t_cmd_arg	*iterator;
-	int			i;
-
-	args = malloc((cmd_arg_size(cmd_arg_stack) + 1) * sizeof (*cmd_arg_stack));
-	i = 0;
-	iterator = cmd_arg_stack;
-	while (iterator)
-	{
-		args[i] = ft_strdup(iterator->arg);
-		i++;
-		iterator = iterator->next;
-	}
-	args[i] = NULL;
-	return (args);
-}
-
-void	cmd_arg_clear(t_cmd_arg **head)
-{
-	t_cmd_arg	*next;
-
-	while (*head)
-	{
-		next = (*head)->next;
-		if ((*head)->arg)
-			free((*head)->arg);
-		free(*head);
-		*head = next;
-	}
 }

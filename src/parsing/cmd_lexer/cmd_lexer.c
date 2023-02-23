@@ -11,11 +11,17 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
+/**
+ * @brief
+ * Initialize a cmd_stack token list in a command type t_token.\n
+ * cmd_stack always start with the command and end with the redirects.\n
+ * If an error occurred the stack is freed and errno is set.
+ */
 void	cmd_lexer(t_token *token)
 {
 	size_t		i;
 	t_cmd_arg	*cmd_arg_stack;
-	int			current_type;
+	t_type		current_type;
 
 	i = 0;
 	cmd_arg_stack = NULL;
@@ -27,7 +33,10 @@ void	cmd_lexer(t_token *token)
 		else
 			cmd_token_add_cmd_arg(token, &cmd_arg_stack, &i);
 		if (errno)
+		{
 			cmd_token_clear(&token->cmd_stack);
+			return ;
+		}
 	}
 	cmd_token_reverse(&(token->cmd_stack));
 	if (cmd_arg_stack != NULL)

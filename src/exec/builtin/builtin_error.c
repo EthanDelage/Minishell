@@ -13,8 +13,9 @@
 
 int	return_errno_error(void)
 {
+	g_return_value = errno;
 	errno = 0;
-	return (1);
+	return (FAILURE);
 }
 
 void	builtin_print_error(char *name, char *arg)

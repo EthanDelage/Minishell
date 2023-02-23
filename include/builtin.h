@@ -14,6 +14,7 @@
 
 # include "envp.h"
 # include "token.h"
+# include "minishell.h"
 
 /* ----------	BUILTIN FUNCTIONS	---------- */
 

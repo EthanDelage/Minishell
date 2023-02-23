@@ -9,8 +9,9 @@
 /*   Updated: 2023/01/30 22:47:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "token.h"
 #include "replace.h"
+
+static void	check_arg(t_cmd_arg **current, t_cmd_arg **previous);
 
 int	cmd_arg_remove_quote(t_cmd_arg *head)
 {
@@ -18,12 +19,15 @@ int	cmd_arg_remove_quote(t_cmd_arg *head)
 	{
 		head->arg = trim_quotes(head->arg);
 		if (errno)
-			return (EXIT_FAILURE);
+			return (FAILURE);
 		head = head->next;
 	}
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
 
+/**
+ * @brief Split the arguments after replacing the environment variables
+ */
 t_cmd_arg	*split_arg(t_cmd_arg *current)
 {
 	size_t	start;
@@ -39,6 +43,8 @@ t_cmd_arg	*split_arg(t_cmd_arg *current)
 	if (arg[index] == '\0' && start == 0)
 		return (current->next);
 	current->arg = ft_substr(arg, start, index - start);
+	if (errno)
+		return (NULL);
 	nb_args = 1;
 	line_skip_isspace(arg, &index);
 	while (arg[index])
@@ -47,5 +53,39 @@ t_cmd_arg	*split_arg(t_cmd_arg *current)
 		line_skip_isspace(arg, &index);
 		nb_args++;
 	}
-	return (get_return_cmd_arg(current, nb_args));
+	return (free(arg), get_return_cmd_arg(current, nb_args));
+}
+
+void	remove_empty_arg(t_cmd_arg **head)
+{
+	t_cmd_arg	*current;
+	t_cmd_arg	*previous;
+
+	if (*head == NULL)
+		return ;
+	previous = *head;
+	current = (*head)->next;
+	while (current)
+		check_arg(&current, &previous);
+	current = *head;
+	if (current->arg[0] == '\0')
+	{
+		(*head) = current->next;
+		cmd_arg_clear_node(current);
+	}
+}
+
+static void	check_arg(t_cmd_arg **current, t_cmd_arg **previous)
+{
+	if ((*current)->arg[0] == '\0')
+	{
+		(*previous)->next = (*current)->next;
+		cmd_arg_clear_node(*current);
+		(*current) = (*previous)->next;
+	}
+	else
+	{
+		*previous = *current;
+		*current = (*current)->next;
+	}
 }

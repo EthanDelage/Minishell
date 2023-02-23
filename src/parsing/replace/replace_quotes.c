@@ -14,6 +14,9 @@
 static size_t	count_trimmed_quotes(const char *str);
 static void		strcat_trimmed_quotes(const char *src, char *dst);
 
+/**
+ * @brief Trim the quotes as bash do.
+ */
 char	*trim_quotes(char *str)
 {
 	char	*trimmed_str;
@@ -31,6 +34,9 @@ char	*trim_quotes(char *str)
 	return (trimmed_str);
 }
 
+/**
+ * @brief Concatenate string without the quotes.
+ */
 static	void	strcat_trimmed_quotes(const char *src, char *dst)
 {
 	size_t	i;
@@ -79,7 +85,8 @@ static size_t	count_trimmed_quotes(const char *str)
 			if (str[i] == quote)
 				count++;
 		}
-		i++;
+		if (str[i])
+			i++;
 	}
 	return (count);
 }

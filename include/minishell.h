@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/16 22:31:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/16 22:31:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/02/14 22:11:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/02/14 22:11:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef PARSER_H
-# define PARSER_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-# include <stdbool.h>
-# include "token.h"
-# include "cmd_token.h"
+extern unsigned char	g_return_value;
 
-int		error_syntax(char *value);
-int		line_parser(t_token *head);
-int		cmd_parser(t_token *head);
+enum
+{
+	SUCCESS		=		0,
+	FAILURE		=		1,
+};
 
 #endif

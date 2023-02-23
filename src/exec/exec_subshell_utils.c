@@ -1,36 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dict_utils.c                                       :+:      :+:    :+:   */
+/*   exec_subshell_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/13 19:25:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/13 19:25:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/02/13 13:44:00 by edelage           #+#    #+#             */
+/*   Updated: 2023/02/13 13:44:00 by edelage          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "envp.h"
+#include "exec.h"
 
-void	dict_free(t_dict **head)
+int	exec_subshell_fork(t_hashtable *envp_dict, t_token **head, int fd_io[2])
 {
-	t_dict	*tmp;
-
-	if (head == NULL || *head == NULL)
-		return ;
-	tmp = *head;
-	while (tmp != NULL)
-		tmp = dict_free_elem(tmp);
-}
-
-t_dict	*dict_free_elem(t_dict *elem)
-{
-	t_dict	*tmp;
-
-	if (elem->name)
-		free(elem->name);
-	if (elem->value)
-		free(elem->value);
-	tmp = elem->next;
-	free(elem);
-	return (tmp);
+	exec_fork_set_fd_io(fd_io);
+	exec(&(*head)->next, envp_dict);
+	return (g_return_value);
 }

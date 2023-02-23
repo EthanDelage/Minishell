@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "router.h"
 
-int	is_builtin(t_cmd_token *cmd_token)
+bool	is_builtin(t_cmd_token *cmd_token)
 {
 	const char	*builtin[] = {"pwd", "cd", "env", "unset",
 		"export", "exit", "echo", NULL};
@@ -19,12 +19,43 @@ int	is_builtin(t_cmd_token *cmd_token)
 
 	index = 0;
 	if (ft_strchr(cmd_token->head, '/') != NULL)
-		return (0);
+		return (false);
 	while (builtin[index] != NULL)
 	{
 		if (ft_strcmp(cmd_token->head, builtin[index]) == 0)
-			return (1);
+			return (true);
 		index++;
 	}
-	return (0);
+	return (false);
+}
+
+void	print_is_dir(char *name)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(name, STDERR_FILENO);
+	ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+}
+
+char	*cmd_get_path(t_cmd_token *cmd_token, char **paths)
+{
+	char	*current_path;
+	int		index;
+
+	while (paths[index])
+	{
+		current_path = ft_strjoin(paths[index], "/");
+		if (errno)
+			return (NULL);
+		free(paths[index]);
+		paths[index] = current_path;
+		current_path = ft_strjoin(paths[index], cmd_token->head);
+		if (errno)
+			return (NULL);
+		if (access(current_path, X_OK) == 0)
+			return (current_path);
+		errno = 0;
+		free(current_path);
+		index++;
+	}
+	return (NULL);
 }

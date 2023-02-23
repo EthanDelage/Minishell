@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 #include "envp.h"
 
+/**
+ * @brief Search if an element exists in an hashtable from a name
+ * @return Returns the element if it exists or null if it does not exist
+ */
 t_dict	*hashtable_search(t_hashtable *hashtable, const char *name)
 {
 	size_t	key;
@@ -47,6 +51,9 @@ size_t	hashtable_get_key(const char *name, size_t size)
 	return (key % size);
 }
 
+/**
+ * @brief Add new element in the hashtable
+ */
 void	hashtable_push(t_hashtable *hashtable, t_dict *elem)
 {
 	t_dict	*head;
@@ -65,6 +72,9 @@ void	hashtable_push(t_hashtable *hashtable, t_dict *elem)
 	head->next = elem;
 }
 
+/**
+ * @return REMOVE if elem is removed NOT_FOUND otherwise.
+ */
 int	hashtable_remove_one(t_hashtable *hashtable, const char *name)
 {
 	size_t	key;
@@ -77,7 +87,7 @@ int	hashtable_remove_one(t_hashtable *hashtable, const char *name)
 	if (ft_strcmp(name, head->name) == 0)
 	{
 		hashtable->dict[key] = head->next;
-		dict_free_elem(&head);
+		dict_free_elem(head);
 		hashtable->nb_elem--;
 		return (REMOVE);
 	}
@@ -85,7 +95,7 @@ int	hashtable_remove_one(t_hashtable *hashtable, const char *name)
 		head = head->next;
 	if (head->next == NULL)
 		return (NOT_FOUND);
-	head->next = dict_free_elem(&head->next);
+	head->next = dict_free_elem(head->next);
 	hashtable->nb_elem--;
 	return (REMOVE);
 }

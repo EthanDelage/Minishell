@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 #include "parser.h"
 
+/**
+ * @brief Check if the syntax of a t_cmd_token is valid
+ */
 int	cmd_parser(t_token *head)
 {
 	t_cmd_token	*cmd_token;

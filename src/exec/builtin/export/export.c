@@ -16,6 +16,9 @@ static void	export_one(t_hashtable *envp_dict, const char *env);
 static int	valid_env(const char *env);
 static int	non_export_env(char *env);
 
+/**
+ * @brief Set the export attribute for variables
+ */
 int	builtin_export(t_hashtable *envp_dict, char **args)
 {
 	size_t	index;
@@ -27,7 +30,8 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 	return_value = 0;
 	while (args[index])
 	{
-		if (non_export_env(args[index]) == true)
+		if (!ft_isdigit(*args[index])
+			&& non_export_env(args[index]) == true)
 			;
 		else if (valid_env(args[index]) == false)
 		{
@@ -56,7 +60,7 @@ static void	export_one(t_hashtable *envp_dict, const char *env)
 	if (elem != NULL)
 	{
 		env_var->value = hashtable_set(elem, env_var->value);
-		dict_free_elem(&env_var);
+		dict_free_elem(env_var);
 	}
 	else
 		hashtable_push(envp_dict, env_var);
@@ -67,6 +71,8 @@ static int	valid_env(const char *env)
 	size_t	index;
 
 	index = 0;
+	if (ft_isdigit(env[index]) || env[0] == '\0')
+		return (false);
 	while (valid_char(env[index]))
 		index++;
 	if (index == 0 || env[index] != '=')
@@ -76,6 +82,8 @@ static int	valid_env(const char *env)
 
 static int	non_export_env(char *env)
 {
+	if (*env == 0)
+		return (false);
 	while (valid_char(*env))
 		env++;
 	if (*env != 0)

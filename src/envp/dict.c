@@ -14,6 +14,10 @@
 static char	*get_name(const char *envp_line);
 static char	*get_value(const char *envp_line);
 
+/**
+ * @brief Transforms the environment variables (envp) provided by the program
+ *		  into an hashtable
+ */
 t_hashtable	*envp_to_dict(char **envp)
 {
 	t_hashtable	*hashtable;
@@ -38,6 +42,9 @@ t_hashtable	*envp_to_dict(char **envp)
 	return (hashtable);
 }
 
+/**
+ * @brief Convert an environment variable to an hashtable element
+ */
 t_dict	*parse_env_var(const char *envp_line)
 {
 	t_dict	*env_var;

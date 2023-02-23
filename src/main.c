@@ -1,4 +1,4 @@
-        /* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
@@ -13,87 +13,84 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "envp.h"
-#include "parser.h"
 #include "lexer.h"
+#include "analyser.h"
 #include "redirect.h"
-#include "replace.h"
-#include "router.h"
 #include "exec.h"
 #include "mini_signal.h"
 
-void	print_cmd_body(t_token *token);
-void	print_redirect(t_token *token);
-
 unsigned char	g_return_value = 0;
+
+static void	minishell_run(t_hashtable *envp_dict, struct termios term_save);
+static void	minishell_exit(t_hashtable *envp_dict, char *line,
+				t_token *token_stack);
+static void	set_return_value(char *line);
 
 int	main(int argc, char **argv, char **envp)
 {
-	char			*line;
-	t_token			*line_token;
 	t_hashtable		*envp_dict;
-	struct termios	term;
+	struct termios	term_save;
 
 	(void) argc;
 	(void) argv;
-	if (tcgetattr(STDIN_FILENO, &term) == -1)
-		return (1);
+	if (init_sigaction() == FAILURE || termios_save(&term_save) == FAILURE)
+		minishell_exit(NULL, NULL, NULL);
 	envp_dict = envp_to_dict(envp);
 	if (errno)
-		return (errno);
-	if (shlvl_increment(envp_dict) == EXIT_FAILURE)
-	{
-		hashtable_clear(envp_dict);
-		return (errno);
-	}
+		minishell_exit(NULL, NULL, NULL);
+	if (shlvl_increment(envp_dict) == FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
 	while (1)
-	{
-		if (pwd_set(envp_dict) == EXIT_FAILURE)
-		{
-			hashtable_clear(envp_dict);
-			return (errno);
-		}
-		init_prompt_sigaction();
-		line = readline("minishell:$> ");
-		if (tcsetattr(STDIN_FILENO, 0, &term) == -1)
-		{
-			free(line);
-			return (1);
-		}
-		init_cmd_sigaction();
-		if (line == NULL)
-			builtin_exit(envp_dict, NULL, NULL);
-		errno = 0;
-		add_history(line);
-		line_token = analyser(line);
-		if (line_token == NULL)
-			return (2);
-		if (here_doc_get(line_token) != 0)
-			return (errno);
-		exec(line_token, envp_dict);
-		token_clear(&line_token);
+		minishell_run(envp_dict, term_save);
+}
+
+static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
+{
+	char			*line;
+	t_token			*line_token;
+
+	if (pwd_set(envp_dict) == EXIT_FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
+	if (termios_disable_vquit() == FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
+	line = readline("minishell: > ");
+	errno = 0;
+	if (line == NULL)
+		builtin_exit(envp_dict, NULL, NULL);
+	if (termios_restore(term_save) == FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
+	add_history(line);
+	line_token = analyser(line);
+	if (line_token == NULL)
+		return (set_return_value(line));
+	if (here_doc_get(line_token) == FAILURE
+		|| termios_restore(term_save) == FAILURE)
+		minishell_exit(envp_dict, line, line_token);
+	exec(&line_token, envp_dict);
+	if (errno)
+		minishell_exit(envp_dict, line, line_token);
+	free(line);
+	token_clear(line_token);
+}
+
+static void	minishell_exit(t_hashtable *envp_dict, char *line,
+				t_token *token_stack)
+{
+	if (envp_dict)
+		hashtable_clear(envp_dict);
+	if (line)
 		free(line);
-	}
+	if (token_stack)
+		token_clear(token_stack);
+	perror("minishell");
+	exit(errno);
 }
 
-void	print_redirect(t_token *token)
+static void	set_return_value(char *line)
 {
-	printf("REDIRECT:\n");
-	printf("%s\n", token->cmd_stack->head);
-	printf("%s\n", ((t_redirect_param *)token->cmd_stack->body)->body);
-}
-
-void	print_cmd_body(t_token *token)
-{
-	int		i;
-	char	**body;
-
-	i = 0;
-	body = (char **) token->cmd_stack->body;
-	printf("COMMAND:\nName:\n%s\n------------\n", token->cmd_stack->head);
-	while (body[i])
-	{
-		body[i] = trim_quotes(body[i]);
-		printf("%s\n", body[i]);
-		i++;
-	}
+	if (*line == '\0')
+		g_return_value = 0;
+	else
+		g_return_value = 2;
+	free(line);
 }

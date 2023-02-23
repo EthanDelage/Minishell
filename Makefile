@@ -23,7 +23,6 @@ SRCS		=		main.c \
 					envp/dict_utils.c \
 					envp/hashtable.c \
 					envp/hashtable_utils.c \
-					envp/hashtable_display.c \
 					envp/hashtable_get_array.c \
 					envp/shlvl.c \
 					envp/pwd.c \
@@ -39,7 +38,7 @@ SRCS		=		main.c \
 					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
 					parsing/cmd_parser/cmd_parser.c \
 					parsing/line_parser/line_parser.c \
-					parsing/line_parser/error_line_parser.c \
+					parsing/error_syntax.c \
 					exec/builtin/builtin_error.c \
 					exec/builtin/env/env.c \
 					exec/builtin/unset/unset.c \
@@ -53,6 +52,7 @@ SRCS		=		main.c \
 					exec/redirect/redirect_out/redirect_out.c \
 					exec/redirect/append_out/append_out.c \
 					exec/redirect/here_doc/here_doc.c \
+					exec/redirect/here_doc/here_doc_get.c \
 					exec/redirect/here_doc/here_doc_utils.c \
 					exec/redirect/redirect.c \
 					exec/redirect/redirect_utils.c \
@@ -63,6 +63,7 @@ SRCS		=		main.c \
 					parsing/replace/replace_cmd_utils.c \
 					parsing/replace/split_arg_utils.c \
 					parsing/replace/replace_env.c \
+					parsing/replace/replace_env_utils.c \
 					parsing/replace/replace_ret_value.c \
 					parsing/replace/replace_quotes.c \
 					parsing/replace/wildcards/wildcards.c \
@@ -70,10 +71,13 @@ SRCS		=		main.c \
 					parsing/analyser/analyser.c \
 					exec/exec.c \
 					exec/exec_pipe.c \
+					exec/exec_pipe_utils.c \
 					exec/exec_cmd.c \
 					exec/exec_utils.c \
 					exec/exec_subshell.c \
+					exec/exec_subshell_utils.c \
 					signal/signal.c \
+					signal/termios.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
 
@@ -83,7 +87,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra -g3
+CFLAGS		=		-Wall -Werror -Wextra -fsanitize=address
 
 DFLAGS		=		-MMD -MP
 
@@ -101,7 +105,7 @@ all:				$(NAME)
 -include			$(DEPS)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					$(CC) $(OBJS) $(LFLAGS) -o $@ -g3
+					$(CC) $(OBJS) $(LFLAGS) $(CFLAGS) -o $@
 
 
 $(LIBFT):			FORCE

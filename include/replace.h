@@ -15,8 +15,12 @@
 # include <stdio.h>
 # include <dirent.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include "envp.h"
 # include "token.h"
+# include "cmd_token.h"
+# include "builtin.h"
+# include "minishell.h"
 
 int			replace(t_hashtable *envp_dict, t_cmd_token *head);
 char		*replace_env(t_hashtable *envp_dict, char *line);
@@ -27,6 +31,7 @@ int			valid_char(char c);
 /* ----------	REPLACE_UTILS FUNCTIONS	---------- */
 
 t_cmd_arg	*split_arg(t_cmd_arg *current);
+void		remove_empty_arg(t_cmd_arg **head);
 int			cmd_arg_remove_quote(t_cmd_arg *head);
 
 /* ----------	SPLIT_ARG_UTILS FUNCTIONS	---------- */
@@ -39,11 +44,14 @@ t_cmd_arg	*get_return_cmd_arg(t_cmd_arg *current, size_t nb_new_arg);
 /* ---------- WILDCARDS FUNCTIONS	---------- */
 
 char		*wildcard_replace(char *template);
+t_cmd_arg	*replace_split_wildcard(t_cmd_arg *head, t_cmd_arg *delimiter);
 
 /* ---------- WILDCARDS_UTILS FUNCTIONS	---------- */
 
 char		*strjoin_space(char *s1, char *s2);
 char		*wildcard_skip(char *str);
-char		*error(char *template, char *result);
+char		*wildcard_error(char *template, char *result);
+
+bool		is_valid(char c);
 
 #endif

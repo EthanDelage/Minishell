@@ -18,14 +18,17 @@ int	redirect_out_open(t_redirect_param *redirect_param)
 	if (errno)
 	{
 		redirect_print_error(redirect_param->body);
+		g_return_value = 1;
 		perror(NULL);
-		return (return_errno_error());
+		errno = 0;
+		return (FAILURE);
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 void	redirect_out_close(t_redirect_param *redirect_param)
 {
 	if (redirect_param->fd[WRITE] > 0)
 		close(redirect_param->fd[WRITE]);
+	redirect_param->fd[WRITE] = -1;
 }

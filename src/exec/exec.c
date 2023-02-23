@@ -11,35 +11,49 @@
 /* ************************************************************************** */
 #include "exec.h"
 
-extern unsigned char	g_return_value;
-
-static t_token	*exec_router(t_token *head, t_hashtable *envp_dict);
+static t_token	*exec_router(t_token **head, t_hashtable *envp_dict);
 static int		is_piped(t_token *head);
 static t_token	*get_next_operator(t_token *head);
 
-void	exec(t_token *head, t_hashtable *envp_dict)
+void	exec(t_token **head, t_hashtable *envp_dict)
 {
-	head = exec_router(head, envp_dict);
-	while (head && head->type == OPERATOR)
+	t_token	*tmp;
+
+	*head = exec_router(head, envp_dict);
+	while (*head && (*head)->type == OPERATOR)
 	{
-		if (*head->value == '&' && g_return_value == 0)
-			head = exec_router(head->next, envp_dict);
-		else if (*head->value == '|' && g_return_value != 0)
-			head = exec_router(head->next, envp_dict);
+		if (pwd_set(envp_dict) == FAILURE)
+			return ;
+		if ((*(*head)->value == '&' && g_return_value == 0)
+			|| (*(*head)->value == '|' && g_return_value != 0))
+		{
+			tmp = (*head)->next;
+			token_clear_until(head, tmp);
+			*head = exec_router(&tmp, envp_dict);
+		}
 		else
-			head = get_next_operator(head->next);
+		{
+			tmp = get_next_operator((*head)->next);
+			token_clear_until(head, tmp);
+		}
 	}
 }
 
-static t_token	*exec_router(t_token *head, t_hashtable *envp_dict)
+static t_token	*exec_router(t_token **head, t_hashtable *envp_dict)
 {
-	if (is_piped(head) == true)
-		head = exec_pipe(head, envp_dict, STDIN_FILENO);
-	else if (head->type == OPEN_PARENTHESIS)
-		head = exec_subshell(head, envp_dict);
+	t_token	*tmp;
+
+	if (is_piped(*head) == true)
+		tmp = exec_pipe(head, envp_dict, STDIN_FILENO);
+	else if ((*head)->type == OPEN_PARENTHESIS)
+		tmp = exec_subshell(head, envp_dict);
 	else
-		head = exec_cmd(head, envp_dict);
-	return (head);
+		tmp = exec_cmd(*head, envp_dict);
+	if (errno && errno != EINTR)
+		g_return_value = errno;
+	errno = 0;
+	token_clear_until(head, tmp);
+	return (tmp);
 }
 
 static int	is_piped(t_token *head)

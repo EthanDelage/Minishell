@@ -11,61 +11,88 @@
 /* ************************************************************************** */
 #include "mini_signal.h"
 
-void	sig_prompt_handler(int sig, siginfo_t *info, void *uap)
-{
-    (void) info;
-    (void) uap;
+static void	handle_prompt(int sig, pid_t pid);
 
-    if (sig == SIGINT)
-    {
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+static void	sig_handler(int sig)
+{
+	pid_t	pid;
+	int		exit_status;
+
+	if (errno == EINTR)
+		errno = 0;
+	pid = waitpid(-1, &exit_status, 0);
+	if (errno == ECHILD)
+	{
+		pid = -1;
+		errno = 0;
 	}
+	if (exit_status == E_SIGINT || WEXITSTATUS(exit_status) == 130
+		|| WTERMSIG(exit_status) % 16 == 0)
+		return ;
+	handle_prompt(sig, pid);
 }
 
-void	sig_cmd_handler(int sig, siginfo_t *info, void *uap)
+static void	sig_handler_heredoc(int sig)
 {
-	(void) info;
-	(void) uap;
 	if (sig == SIGINT)
 	{
 		printf("\n");
-		rl_replace_line("", 0);
-		rl_redisplay();
+		exit(130);
 	}
-	if (sig == SIGQUIT)
+}
+
+static void	handle_prompt(int sig, pid_t pid)
+{
+	if (pid == -1)
 	{
-		printf("Quit (core dumped)\n");
-		rl_replace_line("", 0);
-		rl_redisplay();
+		if (sig == SIGINT)
+		{
+			printf("\n");
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+			g_return_value = 130;
+		}
+	}
+	else
+	{
+		if (sig == SIGINT)
+		{
+			printf("\n");
+			g_return_value = 130;
+		}
+		else if (sig == SIGQUIT)
+		{
+			printf("Quit (core dumped)\n");
+			g_return_value = 131;
+		}
 	}
 }
 
-int	init_prompt_sigaction(void)
+int	init_sigaction(void)
 {
-	struct sigaction sact;
-	struct termios term;
+	struct sigaction	sact;
 
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_cc[VQUIT] = 0;
-	tcsetattr(STDIN_FILENO, 0, &term);
-	sigemptyset(&sact.sa_mask);
-	sact.sa_flags = SA_SIGINFO;
-	sact.sa_sigaction = sig_prompt_handler;
-	sigaction(SIGINT, &sact, NULL);
-	return (0);
+	if (sigemptyset(&sact.sa_mask) == -1)
+		return (FAILURE);
+	sact.sa_handler = sig_handler;
+	if (sigaction(SIGINT, &sact, NULL) == -1)
+		return (FAILURE);
+	if (sigaction(SIGQUIT, &sact, NULL) == -1)
+		return (FAILURE);
+	return (SUCCESS);
 }
 
-int	init_cmd_sigaction(void)
+int	init_sigaction_heredoc(void)
 {
-	struct sigaction sact;
+	struct sigaction	sact;
 
-	sigemptyset(&sact.sa_mask);
-	sact.sa_flags = SA_SIGINFO;
-	sact.sa_sigaction = sig_cmd_handler;
-	sigaction(SIGINT, &sact, NULL);
-	sigaction(SIGQUIT, &sact, NULL);
-	return (0);
+	if (sigemptyset(&sact.sa_mask) == -1)
+		return (FAILURE);
+	sact.sa_handler = sig_handler_heredoc;
+	if (sigaction(SIGINT, &sact, NULL) == -1)
+		return (FAILURE);
+	if (sigaction(SIGQUIT, &sact, NULL) == -1)
+		return (FAILURE);
+	return (SUCCESS);
 }

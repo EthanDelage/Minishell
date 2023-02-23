@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   ft_strcat.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edelage <edelage@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: hferraud <hferraud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/16 22:31:00 by edelage           #+#    #+#             */
-/*   Updated: 2023/01/16 22:31:00 by edelage          ###   ########lyon.fr   */
+/*   Created: 2023/02/19 19:45:00 by hferraud          #+#    #+#             */
+/*   Updated: 2023/02/19 19:45:00 by hferraud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef PARSER_H
-# define PARSER_H
+#include "libft.h"
 
-# include <stdbool.h>
-# include "token.h"
-# include "cmd_token.h"
+void	ft_strcat(char *src, char *dst)
+{
+	size_t	i;
+	size_t	j;
 
-int		error_syntax(char *value);
-int		line_parser(t_token *head);
-int		cmd_parser(t_token *head);
-
-#endif
+	i = ft_strlen(dst);
+	j = 0;
+	while (src[j])
+	{
+		dst[i + j] = src[j];
+		j++;
+	}
+	dst[i + j] = '\0';
+}

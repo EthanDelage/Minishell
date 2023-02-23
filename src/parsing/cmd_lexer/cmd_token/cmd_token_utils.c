@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "cmd_token.h"
 
-int	cmd_token_get_type(const char *c)
+t_type	cmd_token_get_type(const char *c)
 {
 	if (*c == '>')
 	{
@@ -63,11 +63,10 @@ void	cmd_token_clear(t_cmd_token **head)
 			if ((*head)->body_type == ARRRAY)
 				free_string_array((char **)(*head)->body);
 			else
-				cmd_arg_clear((t_cmd_arg **) &(*head)->body);
+				cmd_arg_clear((t_cmd_arg *)(*head)->body);
 		}
 		else
-			cmd_token_redirect_clear_redirect_param(
-				(t_redirect_param *)(*head)->body);
+			cmd_token_clear_redirect_param((t_redirect_param *)(*head)->body);
 		free(*head);
 		(*head) = next;
 	}

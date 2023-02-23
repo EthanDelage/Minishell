@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "replace.h"
-#include "token.h"
 
 static t_cmd_arg	*create_new_node(char *value, t_cmd_arg *next);
 
@@ -62,6 +61,9 @@ static t_cmd_arg	*create_new_node(char *value, t_cmd_arg *next)
 	return (new);
 }
 
+/**
+ * @brief Returns the next t_cmd_arg to replace
+ */
 t_cmd_arg	*get_return_cmd_arg(t_cmd_arg *current, size_t nb_new_arg)
 {
 	while (current && nb_new_arg)

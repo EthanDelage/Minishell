@@ -12,12 +12,15 @@
 #include "router.h"
 
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict);
+void		print_is_dir(char *name);
 
 int	cmd_router(t_token *token, t_hashtable *envp_dict)
 {
+	if (token->cmd_stack->type != COMMAND)
+		return (0);
 	if (ft_strchr(token->cmd_stack->head, '/') != NULL)
 		return (exec_path(token->cmd_stack, envp_dict));
-	else if (is_builtin(token->cmd_stack) == 1)
+	else if (is_builtin(token->cmd_stack) == true)
 		return (exec_builtin(token, envp_dict));
 	else
 		exec_bin(token->cmd_stack, envp_dict);
@@ -26,6 +29,7 @@ int	cmd_router(t_token *token, t_hashtable *envp_dict)
 
 int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
+	int		fd;
 	char	**envp;
 	char	**args;
 
@@ -33,11 +37,17 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	envp = hashtable_get_array(envp_dict, 0);
 	if (errno)
 		return (errno);
+	fd = open(cmd_token->head, O_DIRECTORY);
+	if (fd != -1)
+		return (print_is_dir(cmd_token->head), close(fd),
+			free_string_array(envp), 126);
 	if (access(cmd_token->head, X_OK) != 0)
 	{
-		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
-		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
-		return (127);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		perror(cmd_token->head);
+		if (errno == EACCES)
+			return (free_string_array(envp), 126);
+		return (free_string_array(envp), 127);
 	}
 	return (execve(cmd_token->head, args, envp));
 }
@@ -72,10 +82,11 @@ void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 
 	args = (char **) cmd_token->body;
 	cmd_path = cmd_find_path(cmd_token, envp_dict);
-	if (cmd_path == NULL)
+	if (cmd_path == NULL || *cmd_token->head == '\0')
 	{
-		ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
-		ft_putendl_fd(cmd_token->head, STDERR_FILENO);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd_token->head, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		exit(127);
 	}
 	envp = hashtable_get_array(envp_dict, 0);
@@ -87,21 +98,18 @@ void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
 	char	**paths;
-	char	*current_path;
+	char	*path;
 	t_dict	*path_dict;
 
 	path_dict = hashtable_search(envp_dict, "PATH");
 	if (path_dict == NULL)
 		return (NULL);
 	paths = ft_split(path_dict->value, ':');
-	while (*paths)
-	{
-		*paths = ft_strjoin(*paths, "/");
-		current_path = ft_strjoin(*paths, cmd_token->head);
-		if (access(current_path, X_OK) == 0)
-			return (current_path);
-		errno = 0;
-		paths++;
-	}
+	if (errno)
+		return (NULL);
+	path = cmd_get_path(cmd_token, paths);
+	if (path)
+		return (free_string_array(paths), path);
+	free_string_array(paths);
 	return (NULL);
 }

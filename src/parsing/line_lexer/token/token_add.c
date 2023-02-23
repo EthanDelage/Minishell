@@ -30,13 +30,14 @@ void	token_add_command(t_token **token_stack, char *line, size_t *i)
 	while (line[*i] && token_get_type(line + *i) == COMMAND)
 	{
 		line_skip_quote(line, i);
-		(*i)++;
+		if (line[*i] != '\0')
+			(*i)++;
 	}
 	token_add(token_stack, COMMAND,
 		ft_substr(line, last_i, *i - last_i));
 }
 
-void	token_add_parenthesis(t_token **token_stack, int type, size_t *i)
+void	token_add_parenthesis(t_token **token_stack, t_type	type, size_t *i)
 {
 	if (type == OPEN_PARENTHESIS)
 		token_add(token_stack, type, "(");

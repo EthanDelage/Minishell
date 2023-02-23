@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "lexer.h"
 
-int	token_get_type(const char *c)
+t_type	token_get_type(const char *c)
 {
 	if (*c == '&' && *(c + 1) == '&')
 		return (OPERATOR);
@@ -43,13 +43,13 @@ void	line_skip_quote(const char *line, size_t *i)
 	}
 }
 
-void	line_trim_space(char *line, size_t *i)
+void	line_skip_space(char *line, size_t *i)
 {
 	while (ft_isspace(line[*i]))
 		(*i)++;
 }
 
-t_token	*token_new(int type, void *value)
+t_token	*token_new(t_type type, void *value)
 {
 	t_token	*token;
 

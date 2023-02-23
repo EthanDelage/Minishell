@@ -23,3 +23,9 @@ void	here_doc_close_error(t_redirect_param *redirect_param)
 	if (redirect_param->fd[WRITE] > 0)
 		close(redirect_param->fd[WRITE]);
 }
+
+void	here_doc_warning(char *delimiter)
+{
+	printf("minishell: warning: here-document delimited by "
+		"end-of-file (wanted `%s')\n", delimiter);
+}

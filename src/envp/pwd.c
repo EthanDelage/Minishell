@@ -31,22 +31,22 @@ static int	pwd_init(t_hashtable *envp_dict)
 
 	pwd_node = (t_dict *) malloc(sizeof(t_dict));
 	if (errno)
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	pwd_node->name = ft_strdup("PWD");
 	if (errno)
 	{
 		free(pwd_node);
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	}
 	pwd_node->value = getcwd(NULL, 0);
 	if (errno)
 	{
 		free(pwd_node->name);
 		free(pwd_node);
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	}
 	hashtable_push(envp_dict, pwd_node);
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
 
 static int	pwd_update(t_dict *pwd_node)
@@ -55,6 +55,6 @@ static int	pwd_update(t_dict *pwd_node)
 		free(pwd_node->value);
 	pwd_node->value = getcwd(NULL, 0);
 	if (errno)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+		return (FAILURE);
+	return (SUCCESS);
 }

@@ -40,6 +40,26 @@ int	builtin_cd(t_hashtable *envp_dict, char **args)
 	return (0);
 }
 
+static int	cd_no_args(t_hashtable *envp_dict)
+{
+	t_dict	*home;
+
+	home = hashtable_search(envp_dict, "HOME");
+	if (home == NULL)
+	{
+		ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
+		return (1);
+	}
+	chdir(home->value);
+	if (errno)
+	{
+		builtin_print_error("cd", home->value);
+		perror(NULL);
+		return (return_errno_error());
+	}
+	return (0);
+}
+
 static char	*replace_tilde(char *arg, t_hashtable *envp_dict)
 {
 	char	*path;
@@ -65,26 +85,6 @@ static size_t	count_nb_args(char **args)
 	while (args[count] != NULL)
 		count++;
 	return (count);
-}
-
-static int	cd_no_args(t_hashtable *envp_dict)
-{
-	t_dict	*home;
-
-	home = hashtable_search(envp_dict, "HOME");
-	if (home == NULL)
-	{
-		ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
-		return (1);
-	}
-	chdir(home->value);
-	if (errno)
-	{
-		builtin_print_error("cd", home->value);
-		perror(NULL);
-		return (return_errno_error());
-	}
-	return (0);
 }
 
 static int	too_many_args(void)
