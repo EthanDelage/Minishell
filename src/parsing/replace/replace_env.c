@@ -126,16 +126,23 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	char			*start;
 	char			*new_line;
 
-	if (errno)
-	{
-		free(line);
-		return (NULL);
-	}
 	start = ft_substr(line, 0, *index - 1);
+	if (errno)
+		return (free(line), NULL);
 	end = ft_substr(line, end_index, len_line - end_index);
-	new_line = ft_strjoin(start, value);
-	new_line = ft_strjoin(new_line, end);
-	*index = *index + len_value - 1;
 	free(line);
+	if (errno)
+		return (free(start), NULL);
+	new_line = ft_strjoin(start, value);
+	free(start);
+	if (errno)
+		return (free(end), NULL);
+	line = ft_strjoin(new_line, end);
+	free(new_line);
+	free(end);
+	if (errno)
+		return (NULL);
+	new_line = line;
+	*index = *index + len_value - 1;
 	return (new_line);
 }
