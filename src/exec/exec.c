@@ -32,7 +32,10 @@ void	exec(t_token **head, t_hashtable *envp_dict)
 			*head = exec_router(&tmp, envp_dict);
 		}
 		else
-			*head = get_next_operator((*head)->next);
+		{
+			tmp = get_next_operator((*head)->next);
+			token_clear_until(head, tmp);
+		}
 	}
 }
 
