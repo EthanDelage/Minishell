@@ -39,11 +39,18 @@ char	**cmd_arg_stack_to_array(t_cmd_arg *cmd_arg_stack)
 	int			i;
 
 	args = malloc((cmd_arg_size(cmd_arg_stack) + 1) * sizeof (*cmd_arg_stack));
+	if (args == NULL)
+		return (NULL);
 	i = 0;
 	iterator = cmd_arg_stack;
 	while (iterator)
 	{
 		args[i] = ft_strdup(iterator->arg);
+		if (args[i] == NULL)
+		{
+			free_string_array(args);
+			return (NULL);
+		}
 		i++;
 		iterator = iterator->next;
 	}
