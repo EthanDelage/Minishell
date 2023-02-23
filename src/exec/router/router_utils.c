@@ -57,4 +57,5 @@ char	*cmd_get_path(t_cmd_token *cmd_token, char **paths)
 		free(current_path);
 		index++;
 	}
+	return (NULL);
 }
