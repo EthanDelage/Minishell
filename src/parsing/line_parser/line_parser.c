@@ -15,6 +15,7 @@
 static int	check_parenthesis(t_token *token, int *count);
 static int	check_error(t_token *head);
 static int	check_quote(t_token *head);
+static int	check_start(t_token *head);
 
 /**
  * @brief Parse the token_stack created by the line_lexer
@@ -27,14 +28,8 @@ int	line_parser(t_token *head)
 	int	count_parenthesis;
 
 	count_parenthesis = 0;
-	if (head == NULL)
-		return (SUCCESS);
-	if (head->type != COMMAND && head->type != OPEN_PARENTHESIS)
-		return (error_syntax(head->value));
-	if (head->type == OPEN_PARENTHESIS && head->next == NULL)
-		return (error_syntax("("));
-	if (head->type == COMMAND && check_quote(head))
-		return (error_syntax("quote"));
+	if (check_start(head) == FAILURE)
+		return (FAILURE);
 	while (head->next != NULL)
 	{
 		if (check_parenthesis(head, &count_parenthesis) == FAILURE)
@@ -107,5 +102,18 @@ static int	check_quote(t_token *head)
 		else
 			index++;
 	}
+	return (SUCCESS);
+}
+
+static int	check_start(t_token *head)
+{
+	if (head == NULL)
+		return (SUCCESS);
+	if (head->type != COMMAND && head->type != OPEN_PARENTHESIS)
+		return (error_syntax(head->value));
+	if (head->type == OPEN_PARENTHESIS && head->next == NULL)
+		return (error_syntax("("));
+	if (head->type == COMMAND && check_quote(head))
+		return (error_syntax("quote"));
 	return (SUCCESS);
 }
