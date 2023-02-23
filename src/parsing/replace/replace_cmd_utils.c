@@ -51,7 +51,7 @@ t_cmd_arg	*split_arg(t_cmd_arg *current)
 		line_skip_isspace(arg, &index);
 		nb_args++;
 	}
-	return (get_return_cmd_arg(current, nb_args));
+	return (free(arg), get_return_cmd_arg(current, nb_args));
 }
 
 void	remove_empty_arg(t_cmd_arg **head)

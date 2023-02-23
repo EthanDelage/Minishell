@@ -42,15 +42,15 @@ int	exec_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 	{
 		print_is_dir(cmd_token->head);
 		close(fd);
-		return (126);
+		return (free_string_array(envp), 126);
 	}
 	if (access(cmd_token->head, X_OK) != 0)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		perror(cmd_token->head);
 		if (errno == EACCES)
-			return (126);
-		return (127);
+			return (free_string_array(envp), 126);
+		return (free_string_array(envp), 127);
 	}
 	return (execve(cmd_token->head, args, envp));
 }
@@ -101,21 +101,33 @@ void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 static char	*cmd_find_path(t_cmd_token *cmd_token, t_hashtable *envp_dict)
 {
 	char	**paths;
+	char	*tmp;
 	char	*current_path;
 	t_dict	*path_dict;
+	size_t	index;
 
 	path_dict = hashtable_search(envp_dict, "PATH");
 	if (path_dict == NULL)
 		return (NULL);
 	paths = ft_split(path_dict->value, ':');
-	while (*paths)
-	{
-		*paths = ft_strjoin(*paths, "/");
-		current_path = ft_strjoin(*paths, cmd_token->head);
+	if (errno)
+		return (NULL);
+	index = 0;
+	while (paths[index]) {
+		tmp = ft_strjoin(paths[index], "/");
+		if (errno)
+			return (free_string_array(paths), NULL);
+		free(paths[index]);
+		paths[index] = tmp;
+		current_path = ft_strjoin(paths[index], cmd_token->head);
+		if (errno)
+			return (free_string_array(paths), NULL);
 		if (access(current_path, X_OK) == 0)
-			return (current_path);
+			return (free_string_array(paths), current_path);
 		errno = 0;
-		paths++;
+		free(current_path);
+		index++;
 	}
+	free_string_array(paths);
 	return (NULL);
 }

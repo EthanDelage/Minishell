@@ -41,6 +41,7 @@ int	main(int argc, char **argv, char **envp)
 		minishell_exit(envp_dict, NULL, NULL);
 	while (1)
 		minishell_run(envp_dict, term_save);
+	//TODO: check all ft_strjoin, ft_split, ft_calloc, malloc, ft_substr
 }
 
 static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
