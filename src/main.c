@@ -24,6 +24,7 @@ unsigned char	g_return_value = 0;
 static void	minishell_run(t_hashtable *envp_dict, struct termios term_save);
 static void	minishell_exit(t_hashtable *envp_dict, char *line,
 				t_token *token_stack);
+static void	set_return_value(char *line);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -61,17 +62,9 @@ static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 	add_history(line);
 	line_token = analyser(line);
 	if (line_token == NULL)
-	{
-		if (*line == '\0')
-			g_return_value = 0;
-		else
-			g_return_value = 2;
-		free(line);
-		return ;
-	}
-	if (here_doc_get(line_token) == FAILURE)
-		minishell_exit(envp_dict, line, line_token);
-	if (termios_restore(term_save) == FAILURE)
+		return (set_return_value(line));
+	if (here_doc_get(line_token) == FAILURE
+		|| termios_restore(term_save) == FAILURE)
 		minishell_exit(envp_dict, line, line_token);
 	exec(&line_token, envp_dict);
 	if (errno)
@@ -91,4 +84,13 @@ static void	minishell_exit(t_hashtable *envp_dict, char *line,
 		token_clear(token_stack);
 	perror("minishell");
 	exit(errno);
+}
+
+static void	set_return_value(char *line)
+{
+	if (*line == '\0')
+		g_return_value = 0;
+	else
+		g_return_value = 2;
+	free(line);
 }
