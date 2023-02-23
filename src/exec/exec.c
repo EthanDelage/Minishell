@@ -20,7 +20,7 @@ void	exec(t_token **head, t_hashtable *envp_dict)
 	*head = exec_router(head, envp_dict);
 	while (*head && (*head)->type == OPERATOR)
 	{
-		if (pwd_set(envp_dict) == EXIT_FAILURE)
+		if (pwd_set(envp_dict) == FAILURE)
 			return ;
 		if ((*(*head)->value == '&' && g_return_value == 0)
 			|| (*(*head)->value == '|' && g_return_value != 0))

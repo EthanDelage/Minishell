@@ -27,6 +27,8 @@ t_token	*analyser(char *line)
 	t_token	*token_iterator;
 
 	token_stack = line_lexer(line);
+	if (token_stack == NULL)
+		return (NULL);
 	if (line_parser(token_stack) == FAILURE)
 	{
 		token_clear(token_stack);

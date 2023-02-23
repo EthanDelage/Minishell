@@ -87,7 +87,7 @@ int	hashtable_remove_one(t_hashtable *hashtable, const char *name)
 	if (ft_strcmp(name, head->name) == 0)
 	{
 		hashtable->dict[key] = head->next;
-		dict_free_elem(&head);
+		dict_free_elem(head);
 		hashtable->nb_elem--;
 		return (REMOVE);
 	}
@@ -95,7 +95,7 @@ int	hashtable_remove_one(t_hashtable *hashtable, const char *name)
 		head = head->next;
 	if (head->next == NULL)
 		return (NOT_FOUND);
-	head->next = dict_free_elem(&head->next);
+	head->next = dict_free_elem(head->next);
 	hashtable->nb_elem--;
 	return (REMOVE);
 }

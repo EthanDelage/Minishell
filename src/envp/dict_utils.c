@@ -19,17 +19,18 @@ void	dict_free(t_dict **head)
 		return ;
 	tmp = *head;
 	while (tmp != NULL)
-		tmp = dict_free_elem(&tmp);
+		tmp = dict_free_elem(tmp);
 }
 
-t_dict	*dict_free_elem(t_dict **elem)
+t_dict	*dict_free_elem(t_dict *elem)
 {
 	t_dict	*tmp;
 
-	free((*elem)->name);
-	if ((*elem)->value)
-		free((*elem)->value);
-	tmp = (*elem)->next;
-	free(*elem);
+	if (elem->name)
+		free(elem->name);
+	if (elem->value)
+		free(elem->value);
+	tmp = elem->next;
+	free(elem);
 	return (tmp);
 }

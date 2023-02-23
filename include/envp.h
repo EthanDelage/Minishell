@@ -17,6 +17,7 @@
 # include <errno.h>
 # include <stdbool.h>
 # include "libft.h"
+# include "minishell.h"
 
 # define SIZE_HASHTABLE	41
 
@@ -59,7 +60,7 @@ int				hashtable_remove_one(t_hashtable *hashtable, const char *name);
 /* ----------	DICT_UTILS FUNCTIONS	---------- */
 
 void			dict_free(t_dict **head);
-t_dict			*dict_free_elem(t_dict **elem);
+t_dict			*dict_free_elem(t_dict *elem);
 
 /* ----------	DICT FUNCTIONS	---------- */
 

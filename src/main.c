@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 	envp_dict = envp_to_dict(envp);
 	if (errno)
 		minishell_exit(NULL, NULL, NULL);
-	if (shlvl_increment(envp_dict) == EXIT_FAILURE)
+	if (shlvl_increment(envp_dict) == FAILURE)
 		minishell_exit(envp_dict, NULL, NULL);
 	while (1)
 		minishell_run(envp_dict, term_save);

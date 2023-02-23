@@ -31,22 +31,22 @@ static int	shlvl_init(t_hashtable *envp_dict)
 
 	shlvl_node = (t_dict *) malloc(sizeof(t_dict));
 	if (errno)
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	shlvl_node->name = ft_strdup("SHLVL");
 	if (errno)
 	{
 		free(shlvl_node);
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	}
 	shlvl_node->value = ft_strdup("0");
 	if (errno)
 	{
 		free(shlvl_node->name);
 		free(shlvl_node);
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	}
 	hashtable_push(envp_dict, shlvl_node);
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
 
 static int	shlvl_update(t_dict *shlvl_node)
@@ -57,6 +57,9 @@ static int	shlvl_update(t_dict *shlvl_node)
 	free(shlvl_node->value);
 	shlvl_node->value = ft_itoa(shlvl_value + 1);
 	if (errno)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	{
+		shlvl_node->value = NULL;
+		return (FAILURE);
+	}
+	return (SUCCESS);
 }

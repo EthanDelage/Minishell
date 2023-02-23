@@ -60,7 +60,7 @@ static void	export_one(t_hashtable *envp_dict, const char *env)
 	if (elem != NULL)
 	{
 		env_var->value = hashtable_set(elem, env_var->value);
-		dict_free_elem(&env_var);
+		dict_free_elem(env_var);
 	}
 	else
 		hashtable_push(envp_dict, env_var);

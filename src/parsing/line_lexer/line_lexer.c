@@ -27,8 +27,6 @@ t_token	*line_lexer(char *line)
 	t_type	type;
 	size_t	i;
 
-	if (line == NULL)
-		return (NULL);
 	token_stack = NULL;
 	i = 0;
 	while (line[i])
