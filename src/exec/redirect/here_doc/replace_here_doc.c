@@ -16,6 +16,7 @@ static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
 static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);
 static char	*add_env_var(char *line, char *value, size_t *index,
 				size_t end_index);
+static char	*fill_env_var(char *line, char *start, char *end, char *value);
 
 char	*here_doc_replace_env(t_hashtable *envp_dict, char *line)
 {
@@ -95,15 +96,7 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	const size_t	len_line = ft_strlen(line);
 	char			*end;
 	char			*start;
-	char			*new_line;
 
-	new_line = (char *) malloc(sizeof(char)
-			* (len_line + *index - end_index + len_value));
-	if (errno)
-	{
-		free(line);
-		return (NULL);
-	}
 	start = ft_substr(line, 0, *index - 1);
 	if (errno)
 		return (free(line), NULL);
@@ -111,6 +104,17 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	free(line);
 	if (errno)
 		return (free(start), NULL);
+	line = fill_env_var(line, start, end, value);
+	if (errno)
+		return (NULL);
+	*index = *index + len_value - 1;
+	return (line);
+}
+
+static char	*fill_env_var(char *line, char *start, char *end, char *value)
+{
+	char	*new_line;
+
 	new_line = ft_strjoin(start, value);
 	free(start);
 	if (errno)
@@ -118,8 +122,5 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	line = ft_strjoin(new_line, end);
 	free(end);
 	free(new_line);
-	if (errno)
-		return (NULL);
-	*index = *index + len_value - 1;
 	return (line);
 }
