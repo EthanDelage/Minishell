@@ -78,6 +78,8 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 				int fd_io[2], int fd_pipe[2])
 {
+	if (init_sigaction(sig_handler_cmd_fork) == FAILURE)
+		exit(errno);
 	if (fd_pipe[WRITE] != -1)
 	{
 		close(fd_pipe[READ]);
@@ -109,12 +111,18 @@ static void	exec_pipe_get_ret_val(int fd_in, int pid, t_token *next_cmd)
 		errno = 0;
 	if (next_cmd == NULL)
 	{
-		save_last_ret_val = WEXITSTATUS(return_value);
+		if (WIFSIGNALED(return_value) && (WTERMSIG(return_value) == SIGINT || WTERMSIG(return_value) == SIGQUIT))
+			save_last_ret_val = g_return_value;
+		else
+			save_last_ret_val = WEXITSTATUS(return_value);
 		if (errno == EINTR)
 			last_cmd_sig = true;
 	}
 	if (next_cmd == NULL && errno != EINTR)
-		g_return_value = WEXITSTATUS(return_value);
+	{
+		if (WIFEXITED(return_value))
+			g_return_value = WEXITSTATUS(return_value);
+	}
 	if (last_cmd_sig == false && save_last_ret_val != -1)
 		g_return_value = save_last_ret_val;
 }

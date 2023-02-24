@@ -39,8 +39,9 @@ void	print_is_dir(char *name)
 char	*cmd_get_path(t_cmd_token *cmd_token, char **paths)
 {
 	char	*current_path;
-	int		index;
+	size_t	index;
 
+	index = 0;
 	while (paths[index])
 	{
 		current_path = ft_strjoin(paths[index], "/");
