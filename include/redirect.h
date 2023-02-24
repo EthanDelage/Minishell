@@ -36,7 +36,9 @@ int		here_doc_open(t_redirect_param *param);
 int		here_doc_write(t_hashtable *envp_dict,
 			t_redirect_param *redirect_param);
 void	here_doc_close(t_redirect_param *redirect_param);
+void	here_doc_close_sigint(t_cmd_token *head, t_cmd_token *delimiter);
 void	here_doc_close_error(t_redirect_param *redirect_param);
+void	here_doc_close_all(t_token *head, t_token *delimiter);
 
 /* ----------	REDIRECT_UTILS FUNCTIONS	---------- */
 

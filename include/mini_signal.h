@@ -24,10 +24,14 @@
 
 # define E_SIGINT 1024
 
-int	init_sigaction(void);
-int	init_sigaction_heredoc(void);
-int	termios_save(struct termios *termios_save);
-int	termios_restore(struct termios termios_save);
-int	termios_disable_vquit(void);
+int		init_sigaction(void (*sig_handler)(int));
+void	sig_handler_here_doc_fork(int sig);
+void	sig_handler_here_doc(int sig);
+void	sig_handler_cmd(int sig);
+void	sig_handler_cmd_fork(int sig);
+void	sig_handler_prompt(int sig);
+int		termios_save(struct termios *termios_save);
+int		termios_restore(struct termios termios_save);
+int		termios_disable_vquit(void);
 
 #endif

@@ -17,15 +17,24 @@ static void	cmd_here_doc_close_error(t_token *head, t_cmd_token *node_error);
 int	here_doc_get(t_token *head)
 {
 	t_token	*current;
+	int		ret;
 
 	current = head;
 	while (current)
 	{
-		if (current->type == COMMAND
-			&& cmd_here_doc_open(current->cmd_stack) == FAILURE)
+		if (current->type == COMMAND)
 		{
-			cmd_here_doc_close_error(head, current->cmd_stack);
-			return (FAILURE);
+			ret = cmd_here_doc_open(current->cmd_stack);
+			if (ret == FAILURE)
+			{
+				cmd_here_doc_close_error(head, current->cmd_stack);
+				return (FAILURE);
+			}
+			else if (ret == -1)
+			{
+				here_doc_close_all(head, current);
+				return (-1);
+			}
 		}
 		current = current->next;
 	}
@@ -34,11 +43,26 @@ int	here_doc_get(t_token *head)
 
 static int	cmd_here_doc_open(t_cmd_token *cmd_token)
 {
+	t_cmd_token	*head;
+	int			ret;
+
+	head = cmd_token;
 	while (cmd_token)
 	{
 		if (cmd_token->type == HERE_DOC)
-			if (here_doc_open((t_redirect_param *) cmd_token->body) != 0)
-				return (FAILURE);
+		{
+			ret = here_doc_open((t_redirect_param *)cmd_token->body);
+			if (ret != 0)
+			{
+				if (ret > 0)
+					return (FAILURE);
+				else
+				{
+					here_doc_close_sigint(head, cmd_token);
+					return (-1);
+				}
+			}
+		}
 		cmd_token = cmd_token->next;
 	}
 	return (SUCCESS);

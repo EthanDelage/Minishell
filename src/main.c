@@ -34,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void) argc;
 	(void) argv;
-	if (init_sigaction() == FAILURE || termios_save(&term_save) == FAILURE)
+	if (termios_save(&term_save) == FAILURE)
 		minishell_exit(NULL, NULL, NULL);
 	envp_dict = envp_to_dict(envp);
 	if (errno)
@@ -47,9 +47,12 @@ int	main(int argc, char **argv, char **envp)
 
 static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 {
+	int				ret;
 	char			*line;
 	t_token			*line_token;
 
+	if (init_sigaction(sig_handler_prompt) == FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
 	if (pwd_set(envp_dict) == EXIT_FAILURE)
 		minishell_exit(envp_dict, NULL, NULL);
 	if (termios_disable_vquit() == FAILURE)
@@ -64,23 +67,37 @@ static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 	line_token = analyser(line);
 	if (line_token == NULL)
 		return (set_return_value(line));
-	if (run_here_doc(line_token, term_save) == FAILURE)
-		minishell_exit(envp_dict, line, line_token);
+	free(line);
+	ret = run_here_doc(line_token, term_save);
+	if (ret == FAILURE)
+		minishell_exit(envp_dict, NULL, line_token);
+	else if (ret == -1)
+	{
+		token_clear(line_token);
+		return ;
+	}
 	exec(&line_token, envp_dict);
 	if (errno)
-		minishell_exit(envp_dict, line, line_token);
-	free(line);
+		minishell_exit(envp_dict, NULL, line_token);
 	token_clear(line_token);
 }
 
 static int	run_here_doc(t_token *line_token, struct termios term_save)
 {
+	int	ret;
+
 	if (termios_disable_vquit() == FAILURE)
 		return (FAILURE);
-	if (here_doc_get(line_token) == FAILURE)
+	if (init_sigaction(sig_handler_here_doc) == FAILURE)
 	{
 		termios_restore(term_save);
 		return (FAILURE);
+	}
+	ret = here_doc_get(line_token);
+	if (ret != 0)
+	{
+		termios_restore(term_save);
+		return (ret);
 	}
 	return (termios_restore(term_save));
 }

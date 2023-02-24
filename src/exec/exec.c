@@ -19,6 +19,7 @@ void	exec(t_token **head, t_hashtable *envp_dict)
 {
 	t_token	*tmp;
 
+	init_sigaction(sig_handler_cmd);
 	*head = exec_router(head, envp_dict);
 	while (*head && (*head)->type == OPERATOR)
 	{

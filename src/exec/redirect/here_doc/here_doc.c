@@ -19,17 +19,24 @@ void		close_pipe(int fd_pipe[2]);
 
 int	here_doc_open(t_redirect_param *param)
 {
+	int	ret;
+
 	pipe(param->fd);
 	if (errno)
 	{
 		perror("minishell: `<<'");
 		return (return_errno_error());
 	}
-	if (here_doc(param) != 0)
+	ret = here_doc(param);
+	if (ret == 130)
+	{
+		close_pipe(param->fd);
+		return (-1);
+	}
+	else if (ret != 0)
 	{
 		perror("minishell: `<<'");
-		close(param->fd[WRITE]);
-		close(param->fd[READ]);
+		close_pipe(param->fd);
 		return (g_return_value);
 	}
 	close(param->fd[WRITE]);
@@ -95,7 +102,7 @@ static void	here_doc_get_input(t_redirect_param *param)
 	char	*tmp;
 
 	close(param->fd[READ]);
-	if (init_sigaction_heredoc() == -1)
+	if (init_sigaction(sig_handler_here_doc_fork) == FAILURE)
 		exit (errno);
 	while (1)
 	{
