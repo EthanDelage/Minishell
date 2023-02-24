@@ -26,14 +26,9 @@ void	sig_handler_prompt(int sig)
 void	sig_handler_cmd_fork(int sig)
 {
 	if (sig == SIGINT)
-	{
-		g_return_value = 130;
-	}
+		exit(130);
 	else if (sig == SIGQUIT)
-	{
-		printf("Quit (core dumped)\n");
-		g_return_value = 131;
-	}
+		exit(131);
 }
 
 void	sig_handler_cmd(int sig)
