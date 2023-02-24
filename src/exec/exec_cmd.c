@@ -55,17 +55,19 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 		return (errno);
 	else if (pid == 0)
 	{
+		if (init_sigaction(sig_handler_cmd_fork) == FAILURE)
+			exit(errno);
 		exec_fork_set_fd_io(fd_io);
 		exit(cmd_router(cmd_token, envp_dict));
 	}
 	else
 		waitpid(pid, &return_value, 0);
-	if (errno == EINTR)
-		return (g_return_value);
 	if (fd_io[WRITE] != STDOUT_FILENO)
 		close(fd_io[WRITE]);
 	if (fd_io[READ] != STDIN_FILENO)
 		close(fd_io[READ]);
+	if (WIFSIGNALED(return_value) && (WTERMSIG(return_value) == SIGINT || WTERMSIG(return_value) == SIGQUIT))
+		return (g_return_value);
 	return (WEXITSTATUS(return_value));
 }
 
