@@ -61,7 +61,12 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 		exit(cmd_router(cmd_token, envp_dict));
 	}
 	else
+	{
+		if (is_exec_minishell(cmd_token->cmd_stack->head))
+			if (sig_ignore() == FAILURE)
+				g_return_value = errno;
 		waitpid(pid, &return_value, 0);
+	}
 	if (fd_io[WRITE] != STDOUT_FILENO)
 		close(fd_io[WRITE]);
 	if (fd_io[READ] != STDIN_FILENO)

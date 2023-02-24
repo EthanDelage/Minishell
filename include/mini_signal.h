@@ -33,5 +33,6 @@ void	sig_handler_prompt(int sig);
 int		termios_save(struct termios *termios_save);
 int		termios_restore(struct termios termios_save);
 int		termios_disable_vquit(void);
+int		sig_ignore(void);
 
 #endif

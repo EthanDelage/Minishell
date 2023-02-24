@@ -16,6 +16,7 @@
 # include "token.h"
 # include "envp.h"
 # include "libft.h"
+# include "mini_signal.h"
 # include <fcntl.h>
 
 int		cmd_router(t_token *token, t_hashtable *envp_dict);
@@ -25,5 +26,6 @@ void	exec_bin(t_cmd_token *cmd_token, t_hashtable *envp_dict);
 bool	is_builtin(t_cmd_token *cmd_token);
 void	print_is_dir(char *name);
 char	*cmd_get_path(t_cmd_token *cmd_token, char **paths);
+int		is_exec_minishell(char *path);
 
 #endif

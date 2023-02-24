@@ -60,3 +60,12 @@ void	close_pipe(int fd_pipe[2])
 	close(fd_pipe[READ]);
 	close(fd_pipe[WRITE]);
 }
+
+int	is_exec_minishell(char *path)
+{
+	const size_t	len = ft_strlen(path);
+
+	if (len > 9 && ft_strcmp("minishell", path + len - 9) == 0)
+		return (true);
+	return (false);
+}
