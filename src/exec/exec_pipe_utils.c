@@ -69,3 +69,9 @@ int	is_exec_minishell(char *path)
 		return (true);
 	return (false);
 }
+
+void	init_ret_val(t_ret_val *ret_val)
+{
+	ret_val->ret_val = -1;
+	ret_val->last_cmd_sig = false;
+}

@@ -53,5 +53,6 @@ pid_t	exec_pipe_subshell(t_token **head, t_hashtable *envp_dict,
 t_token	*get_next_pipe(t_token *head);
 t_token	*get_next_cmd(t_token *head);
 void	close_pipe(int fd_pipe[2]);
+void	init_ret_val(t_ret_val *ret_val);
 
 #endif
