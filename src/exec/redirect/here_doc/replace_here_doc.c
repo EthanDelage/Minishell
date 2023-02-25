@@ -16,7 +16,7 @@ static char	*check_env_var_here_doc(t_hashtable *envp_dict, char *line,
 static char	*replace_env_var(t_hashtable *envp_dict, char *line, size_t *index);
 static char	*add_env_var(char *line, char *value, size_t *index,
 				size_t end_index);
-static char	*fill_env_var(char *line, char *start, char *end, char *value);
+static char	*fill_env_var(char *start, char *end, char *value);
 
 char	*here_doc_replace_env(t_hashtable *envp_dict, char *line)
 {
@@ -104,23 +104,24 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	free(line);
 	if (errno)
 		return (free(start), NULL);
-	line = fill_env_var(line, start, end, value);
+	line = fill_env_var(start, end, value);
 	if (errno)
 		return (NULL);
 	*index = *index + len_value - 1;
 	return (line);
 }
 
-static char	*fill_env_var(char *line, char *start, char *end, char *value)
+static char	*fill_env_var(char *start, char *end, char *value)
 {
 	char	*new_line;
+	char	*tmp;
 
-	new_line = ft_strjoin(start, value);
+	tmp = ft_strjoin(start, value);
 	free(start);
 	if (errno)
 		return (free(end), NULL);
-	line = ft_strjoin(new_line, end);
+	new_line = ft_strjoin(tmp, end);
 	free(end);
-	free(new_line);
-	return (line);
+	free(tmp);
+	return (new_line);
 }
