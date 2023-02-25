@@ -45,6 +45,7 @@ static int	pwd_init(t_hashtable *envp_dict)
 		free(pwd_node);
 		return (FAILURE);
 	}
+	pwd_node->next = NULL;
 	hashtable_push(envp_dict, pwd_node);
 	return (SUCCESS);
 }
