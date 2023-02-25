@@ -101,7 +101,6 @@ static char	*add_env_var(char *line, char *value, size_t *index,
 	if (errno)
 		return (free(line), NULL);
 	end = ft_substr(line, end_index, len_line - end_index);
-	free(line);
 	if (errno)
 		return (free(start), NULL);
 	line = fill_env_var(line, start, end, value);
