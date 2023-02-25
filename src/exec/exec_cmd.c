@@ -13,10 +13,11 @@
 
 static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 				t_hashtable *envp_dict);
+static void	exec_cmd_bin_fork(t_hashtable *envp_dict, t_token *cmd_token,
+				int fd_io[2]);
 static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
 				t_hashtable *envp_dict);
 static int	builtin_set_fd(int new_fd, int old_fd);
-static void	reset_stdio(int fd_save[2]);
 
 t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 {
@@ -54,12 +55,7 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 	if (pid == -1)
 		return (errno);
 	else if (pid == 0)
-	{
-		if (init_sigaction(sig_handler_cmd_fork) == FAILURE)
-			exit(errno);
-		exec_fork_set_fd_io(fd_io);
-		exit(cmd_router(cmd_token, envp_dict));
-	}
+		exec_cmd_bin_fork(envp_dict, cmd_token, fd_io);
 	else
 	{
 		if (is_exec_minishell(cmd_token->cmd_stack->head))
@@ -71,9 +67,19 @@ static int	exec_cmd_bin(t_token *cmd_token, int fd_io[2],
 		close(fd_io[WRITE]);
 	if (fd_io[READ] != STDIN_FILENO)
 		close(fd_io[READ]);
-	if (WIFSIGNALED(return_value) && (WTERMSIG(return_value) == SIGINT || WTERMSIG(return_value) == SIGQUIT))
+	if (WIFSIGNALED(return_value) && (WTERMSIG(return_value) == SIGINT
+			|| WTERMSIG(return_value) == SIGQUIT))
 		return (g_return_value);
 	return (WEXITSTATUS(return_value));
+}
+
+static void	exec_cmd_bin_fork(t_hashtable *envp_dict, t_token *cmd_token,
+				int fd_io[2])
+{
+	if (init_sigaction(sig_handler_cmd_fork) == FAILURE)
+		exit(errno);
+	exec_fork_set_fd_io(fd_io);
+	exit(cmd_router(cmd_token, envp_dict));
 }
 
 static void	exec_cmd_builtin(t_token *cmd_token, int fd_io[2],
@@ -121,14 +127,4 @@ static int	builtin_set_fd(int new_fd, int old_fd)
 		return (-1);
 	}
 	return (save_fd);
-}
-
-static void	reset_stdio(int fd_save[2])
-{
-	if (fd_save[READ] != -1 && fd_save[READ] != STDIN_FILENO)
-		if (dup2_fd(fd_save[READ], STDIN_FILENO) == EXIT_FAILURE)
-			return ;
-	if (fd_save[WRITE] != -1 && fd_save[WRITE] != STDOUT_FILENO)
-		if (dup2_fd(fd_save[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
-			return ;
 }

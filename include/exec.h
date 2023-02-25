@@ -41,6 +41,10 @@ int		exec_pipe_set_fd_io(t_cmd_token *head, int fd_io[2], int fd_out_pipe,
 			t_hashtable *envp_dict);
 int		dup2_fd(int new_fd, int old_fd);
 
+/* ---------------	EXEC_CMD_UTILS FUNCTIONS	--------------- */
+
+void	reset_stdio(int fd_save[2]);
+
 /* ---------------	EXEC_SUBSHELL_UTILS FUNCTIONS	--------------- */
 
 int		exec_subshell_fork(t_hashtable *envp_dict, t_token **head,
