@@ -15,14 +15,19 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 					int fd_in, int fd_pipe[2]);
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 					int fd_io[2], int fd_pipe[2]);
-static void		exec_pipe_get_ret_val(int fd_in, int pid, t_token *next_cmd);
+static void		exec_pipe_get_ret_val(int pid, t_token *next_cmd, t_ret_val *ret_val);
+static void	set_last_ret_value(int return_value, t_ret_val *ret_val);
+static void	init_ret_val(t_ret_val *ret_val);
 
 t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 {
-	pid_t		pid;
-	int			fd_pipe[2];
-	t_token		*next_cmd;
+	pid_t				pid;
+	int					fd_pipe[2];
+	t_token				*next_cmd;
+	static t_ret_val	ret_val;
 
+	if (fd_in == STDIN_FILENO)
+		init_ret_val(&ret_val);
 	next_cmd = get_next_pipe(*head);
 	if (next_cmd && pipe(fd_pipe) == -1)
 		return (NULL);
@@ -41,15 +46,15 @@ t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 		close(fd_pipe[READ]);
 	}
 	if (pid != -1)
-		exec_pipe_get_ret_val(fd_in, pid, next_cmd);
+		exec_pipe_get_ret_val(pid, next_cmd, &ret_val);
 	return (get_next_cmd(*head));
 }
 
 static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 					int fd_in, int fd_pipe[2])
 {
-	pid_t	pid;
-	int		fd_io[2];
+	pid_t				pid;
+	int					fd_io[2];
 
 	fd_io[READ] = fd_in;
 	if (replace(envp_dict, head->cmd_stack) == FAILURE || exec_pipe_set_fd_io(
@@ -95,34 +100,30 @@ static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 	exit(cmd_router(head, envp_dict));
 }
 
-static void	exec_pipe_get_ret_val(int fd_in, int pid, t_token *next_cmd)
+static void	exec_pipe_get_ret_val(int pid, t_token *next_cmd, t_ret_val *ret_val)
 {
 	int			return_value;
-	static int	save_last_ret_val;
-	static bool	last_cmd_sig;
 
-	if (fd_in == STDIN_FILENO)
-	{
-		save_last_ret_val = -1;
-		last_cmd_sig = false;
-	}
 	waitpid(pid, &return_value, 0);
-	if (errno == ECHILD)
-		errno = 0;
 	if (next_cmd == NULL)
-	{
-		if (WIFSIGNALED(return_value) && (WTERMSIG(return_value) == SIGINT || WTERMSIG(return_value) == SIGQUIT))
-			save_last_ret_val = g_return_value;
-		else
-			save_last_ret_val = WEXITSTATUS(return_value);
-		if (errno == EINTR)
-			last_cmd_sig = true;
-	}
-	if (next_cmd == NULL && errno != EINTR)
-	{
-		if (WIFEXITED(return_value))
-			g_return_value = WEXITSTATUS(return_value);
-	}
-	if (last_cmd_sig == false && save_last_ret_val != -1)
-		g_return_value = save_last_ret_val;
+		set_last_ret_value(return_value, ret_val);
+	if (ret_val->last_cmd_sig == false && ret_val->ret_val != -1)
+		g_return_value = ret_val->ret_val;
+}
+
+static void	set_last_ret_value(int return_value, t_ret_val *ret_val)
+{
+	if (WIFSIGNALED(return_value))
+		ret_val->last_cmd_sig = true;
+	if (WIFSIGNALED(return_value) && (WTERMSIG(return_value) == SIGINT
+			|| WTERMSIG(return_value) == SIGQUIT))
+		ret_val->ret_val = g_return_value;
+	else
+		ret_val->ret_val = WEXITSTATUS(return_value);
+}
+
+static void	init_ret_val(t_ret_val *ret_val)
+{
+	ret_val->ret_val = -1;
+	ret_val->last_cmd_sig = false;
 }

@@ -20,6 +20,12 @@
 # include "minishell.h"
 # include <wait.h>
 
+typedef struct s_pipe_ret_val
+{
+	int		ret_val;
+	bool	last_cmd_sig;
+}	t_ret_val;
+
 /* ---------------	EXEC FUNCTIONS	--------------- */
 
 void	exec(t_token **head, t_hashtable *envp_dict);
