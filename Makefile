@@ -19,6 +19,7 @@ LIBFT_DIR	=		libft/
 LIBFT		=		$(LIBFT_DIR)libft.a
 
 SRCS		=		main.c \
+					minishell_utils.c \
 					envp/dict.c \
 					envp/dict_utils.c \
 					envp/hashtable.c \

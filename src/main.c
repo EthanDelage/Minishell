@@ -21,10 +21,11 @@
 
 unsigned char	g_return_value = 0;
 
-static void	minishell_run(t_hashtable *envp_dict, struct termios term_save);
-static void	minishell_exit(t_hashtable *envp_dict, char *line,
+void		set_return_value(char *line);
+void		minishell_exit(t_hashtable *envp_dict, char *line,
 				t_token *token_stack);
-static void	set_return_value(char *line);
+static void	minishell_init(t_hashtable *envp_dict);
+static void	minishell_run(t_hashtable *envp_dict, struct termios term_save);
 static int	run_here_doc(t_token *line_token, struct termios term_save);
 
 int	main(int argc, char **argv, char **envp)
@@ -42,7 +43,20 @@ int	main(int argc, char **argv, char **envp)
 	if (shlvl_increment(envp_dict) == FAILURE)
 		minishell_exit(envp_dict, NULL, NULL);
 	while (1)
+	{
+		minishell_init(envp_dict);
 		minishell_run(envp_dict, term_save);
+	}
+}
+
+static void	minishell_init(t_hashtable *envp_dict)
+{
+	if (init_sigaction(sig_handler_prompt) == FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
+	if (pwd_set(envp_dict) == EXIT_FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
+	if (termios_disable_vquit() == FAILURE)
+		minishell_exit(envp_dict, NULL, NULL);
 }
 
 static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
@@ -51,12 +65,6 @@ static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 	char			*line;
 	t_token			*line_token;
 
-	if (init_sigaction(sig_handler_prompt) == FAILURE)
-		minishell_exit(envp_dict, NULL, NULL);
-	if (pwd_set(envp_dict) == EXIT_FAILURE)
-		minishell_exit(envp_dict, NULL, NULL);
-	if (termios_disable_vquit() == FAILURE)
-		minishell_exit(envp_dict, NULL, NULL);
 	line = readline("minishell: > ");
 	errno = 0;
 	if (termios_restore(term_save) == FAILURE)
@@ -72,10 +80,7 @@ static void	minishell_run(t_hashtable *envp_dict, struct termios term_save)
 	if (ret == FAILURE)
 		minishell_exit(envp_dict, NULL, line_token);
 	else if (ret == -1)
-	{
-		token_clear(line_token);
-		return ;
-	}
+		return (token_clear(line_token));
 	exec(&line_token, envp_dict);
 	if (errno)
 		minishell_exit(envp_dict, NULL, line_token);
@@ -100,26 +105,4 @@ static int	run_here_doc(t_token *line_token, struct termios term_save)
 		return (ret);
 	}
 	return (termios_restore(term_save));
-}
-
-static void	minishell_exit(t_hashtable *envp_dict, char *line,
-				t_token *token_stack)
-{
-	if (envp_dict)
-		hashtable_clear(envp_dict);
-	if (line)
-		free(line);
-	if (token_stack)
-		token_clear(token_stack);
-	perror("minishell");
-	exit(errno);
-}
-
-static void	set_return_value(char *line)
-{
-	if (*line == '\0')
-		g_return_value = 0;
-	else
-		g_return_value = 2;
-	free(line);
 }
