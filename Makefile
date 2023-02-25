@@ -77,6 +77,7 @@ SRCS		=		main.c \
 					exec/exec_subshell.c \
 					exec/exec_subshell_utils.c \
 					signal/signal.c \
+					signal/sig_handler.c \
 					signal/termios.c \
 
 OBJS		=		$(addprefix $(BUILD_DIR), $(SRCS:.c=.o))
