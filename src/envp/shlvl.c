@@ -45,6 +45,7 @@ static int	shlvl_init(t_hashtable *envp_dict)
 		free(shlvl_node);
 		return (FAILURE);
 	}
+	shlvl_node->next = NULL;
 	hashtable_push(envp_dict, shlvl_node);
 	return (SUCCESS);
 }
