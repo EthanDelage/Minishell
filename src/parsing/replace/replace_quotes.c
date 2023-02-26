@@ -60,7 +60,8 @@ static	void	strcat_trimmed_quotes(const char *src, char *dst)
 		}
 		else
 			dst[j++] = src[i];
-		i++;
+		if (src[i])
+			i++;
 	}
 	dst[j] = 0;
 }
