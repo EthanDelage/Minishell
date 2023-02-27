@@ -14,6 +14,7 @@
 static void	sort_array(char **envp);
 static void	swap_value(char **head);
 static void	display_export(char **envp);
+static void	display_dict_bis(t_dict *head);
 
 int	builtin_export_no_args(t_hashtable *envp_dict)
 {
@@ -24,6 +25,7 @@ int	builtin_export_no_args(t_hashtable *envp_dict)
 		return (return_errno_error());
 	sort_array(envp);
 	display_export(envp);
+	display_dict_bis(envp_dict->dict_bis);
 	hashtable_array_clear(envp);
 	return (0);
 }
@@ -32,8 +34,19 @@ static void	display_export(char **envp)
 {
 	while (*envp != NULL)
 	{
-		printf("declare -x %s\n", *envp);
+		if (ft_strncmp(*envp, "_=", 2) != 0)
+			printf("declare -x %s\n", *envp);
 		envp++;
+	}
+}
+
+static void	display_dict_bis(t_dict *head)
+{
+	dict_sort_name(head);
+	while (head)
+	{
+		printf("declare -x %s\n", head->name);
+		head = head->next;
 	}
 }
 

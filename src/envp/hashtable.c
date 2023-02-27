@@ -28,6 +28,7 @@ t_hashtable	*hashtable_init(size_t size)
 	}
 	hashtable->size = size;
 	hashtable->nb_elem = 0;
+	hashtable->dict_bis = NULL;
 	return (hashtable);
 }
 
@@ -45,6 +46,10 @@ void	hashtable_clear(t_hashtable *hashtable)
 		index++;
 	}
 	free(hashtable->dict);
+	while (hashtable->dict_bis)
+	{
+		hashtable->dict_bis = dict_free_elem(hashtable->dict_bis);
+	}
 	free(hashtable);
 }
 

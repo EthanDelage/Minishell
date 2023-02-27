@@ -33,6 +33,7 @@ typedef struct s_hashtable
 	size_t	size;
 	size_t	nb_elem;
 	t_dict	**dict;
+	t_dict	*dict_bis;
 }				t_hashtable;
 
 enum
@@ -61,10 +62,13 @@ int				hashtable_remove_one(t_hashtable *hashtable, const char *name);
 
 void			dict_free(t_dict **head);
 t_dict			*dict_free_elem(t_dict *elem);
+void			dict_remove_one(t_dict **head, char *name);
+void			dict_add_front(t_dict **head, t_dict *new_elem);
 
 /* ----------	DICT FUNCTIONS	---------- */
 
 t_hashtable		*envp_to_dict(char **envp);
+void			dict_sort_name(t_dict *head);
 t_dict			*parse_env_var(const char *envp_line);
 
 #endif

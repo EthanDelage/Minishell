@@ -13,6 +13,7 @@
 
 int			builtin_export_no_args(t_hashtable *envp_dict);
 static void	export_one(t_hashtable *envp_dict, const char *env);
+static void	export_add(t_hashtable *envp_dict, const char *env);
 static int	valid_env(const char *env);
 static int	non_export_env(char *env);
 
@@ -32,7 +33,7 @@ int	builtin_export(t_hashtable *envp_dict, char **args)
 	{
 		if (!ft_isdigit(*args[index])
 			&& non_export_env(args[index]) == true)
-			;
+			export_add(envp_dict, args[index]);
 		else if (valid_env(args[index]) == false)
 		{
 			builtin_print_error("export", args[index]);
@@ -55,7 +56,7 @@ static void	export_one(t_hashtable *envp_dict, const char *env)
 
 	env_var = parse_env_var(env);
 	if (errno)
-		return ;
+		return (perror("export"));
 	elem = hashtable_search(envp_dict, env_var->name);
 	if (elem != NULL)
 	{
@@ -63,7 +64,25 @@ static void	export_one(t_hashtable *envp_dict, const char *env)
 		dict_free_elem(env_var);
 	}
 	else
+	{
+		dict_remove_one(&envp_dict->dict_bis, env_var->name);
 		hashtable_push(envp_dict, env_var);
+	}
+}
+
+static void	export_add(t_hashtable *envp_dict, const char *env)
+{
+	t_dict	*env_var;
+
+	env_var = (t_dict *) malloc(sizeof(t_dict));
+	if (errno)
+		return (perror("export"));
+	env_var->name = ft_strdup(env);
+	if (errno)
+		return (perror("export"), free(env_var));
+	env_var->value = NULL;
+	env_var->next = NULL;
+	dict_add_front(&envp_dict->dict_bis, env_var);
 }
 
 static int	valid_env(const char *env)

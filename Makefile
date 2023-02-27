@@ -22,6 +22,7 @@ SRCS		=		main.c \
 					minishell_utils.c \
 					envp/dict.c \
 					envp/dict_utils.c \
+					envp/dict_sort.c \
 					envp/hashtable.c \
 					envp/hashtable_utils.c \
 					envp/hashtable_get_array.c \
@@ -90,7 +91,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra
+CFLAGS		=		-Wall -Werror -Wextra -fsanitize=address
 
 DFLAGS		=		-MMD -MP
 
