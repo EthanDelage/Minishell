@@ -51,6 +51,10 @@ static int	cmd_here_doc_open(t_cmd_token *cmd_token)
 	{
 		if (cmd_token->type == HERE_DOC)
 		{
+			((t_redirect_param *)cmd_token->body)->body
+				= trim_quotes(((t_redirect_param *)cmd_token->body)->body);
+			if (errno)
+				return (FAILURE);
 			ret = here_doc_open((t_redirect_param *)cmd_token->body);
 			if (ret != 0)
 			{
