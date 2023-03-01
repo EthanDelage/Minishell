@@ -40,6 +40,8 @@ int	line_parser(t_token *head)
 			return (error_syntax("quote"));
 		head = head->next;
 	}
+	if (head->type == PIPE)
+		return (error_syntax("|"));
 	if (head->type == CLOSE_PARENTHESIS && count_parenthesis > 0)
 		count_parenthesis--;
 	if (count_parenthesis > 0)
