@@ -28,19 +28,19 @@ SRCS		=		main.c \
 					envp/hashtable_get_array.c \
 					envp/shlvl.c \
 					envp/pwd.c \
-					parsing/line_lexer/line_lexer.c \
-					parsing/line_lexer/token/token_add.c \
-					parsing/line_lexer/token/token_clear.c \
-					parsing/line_lexer/token/token_utils.c \
-					parsing/cmd_lexer/cmd_lexer.c \
-					parsing/cmd_lexer/cmd_token/cmd_arg_utils.c \
-					parsing/cmd_lexer/cmd_token/cmd_arg_add.c \
-					parsing/cmd_lexer/cmd_token/cmd_token_add.c \
-					parsing/cmd_lexer/cmd_token/cmd_token_utils.c \
-					parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
-					parsing/cmd_parser/cmd_parser.c \
-					parsing/line_parser/line_parser.c \
-					parsing/error_syntax.c \
+					analyser/line_lexer/line_lexer.c \
+					analyser/line_lexer/token/token_add.c \
+					analyser/line_lexer/token/token_clear.c \
+					analyser/line_lexer/token/token_utils.c \
+					analyser/cmd_lexer/cmd_lexer.c \
+					analyser/cmd_lexer/cmd_token/cmd_arg_utils.c \
+					analyser/cmd_lexer/cmd_token/cmd_arg_add.c \
+					analyser/cmd_lexer/cmd_token/cmd_token_add.c \
+					analyser/cmd_lexer/cmd_token/cmd_token_utils.c \
+					analyser/cmd_lexer/cmd_token/cmd_token_redirect_utils.c \
+					analyser/cmd_parser/cmd_parser.c \
+					analyser/line_parser/line_parser.c \
+					analyser/error_syntax.c \
 					exec/builtin/builtin_error.c \
 					exec/builtin/env/env.c \
 					exec/builtin/unset/unset.c \
@@ -61,16 +61,16 @@ SRCS		=		main.c \
 					exec/redirect/here_doc/replace_here_doc.c \
 					exec/router/router.c \
 					exec/router/router_utils.c \
-					parsing/replace/replace.c \
-					parsing/replace/replace_cmd_utils.c \
-					parsing/replace/split_arg_utils.c \
-					parsing/replace/replace_env.c \
-					parsing/replace/replace_env_utils.c \
-					parsing/replace/replace_ret_value.c \
-					parsing/replace/replace_quotes.c \
-					parsing/replace/wildcards/wildcards.c \
-					parsing/replace/wildcards/wildcards_utils.c \
-					parsing/analyser/analyser.c \
+					analyser/replace/replace.c \
+					analyser/replace/replace_cmd_utils.c \
+					analyser/replace/split_arg_utils.c \
+					analyser/replace/replace_env.c \
+					analyser/replace/replace_env_utils.c \
+					analyser/replace/replace_ret_value.c \
+					analyser/replace/replace_quotes.c \
+					analyser/replace/wildcards/wildcards.c \
+					analyser/replace/wildcards/wildcards_utils.c \
+					analyser/analyser/analyser.c \
 					exec/exec.c \
 					exec/exec_pipe.c \
 					exec/exec_pipe_utils.c \

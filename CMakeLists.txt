@@ -103,24 +103,24 @@ add_executable(Minishell
         src/exec/exec.c
         src/exec/exec_pipe.c
         src/exec/exec_cmd.c
-        src/parsing/analyser/analyser.c
-        src/parsing/cmd_lexer/cmd_token/cmd_arg_add.c
-        src/parsing/cmd_lexer/cmd_token/cmd_arg_utils.c
-        src/parsing/cmd_lexer/cmd_token/cmd_token_add.c
-        src/parsing/cmd_lexer/cmd_token/cmd_token_redirect_utils.c
-        src/parsing/cmd_lexer/cmd_token/cmd_token_utils.c
-        src/parsing/cmd_lexer/cmd_lexer.c
-        src/parsing/cmd_parser/cmd_parser.c
-        src/parsing/line_lexer/token/token_add.c
-        src/parsing/line_lexer/token/token_clear.c
-        src/parsing/line_lexer/token/token_utils.c
-        src/parsing/line_lexer/line_lexer.c
-        src/parsing/error_syntax.c
-        src/parsing/line_parser/line_parser.c
-        src/parsing/replace/replace.c
-        src/parsing/replace/replace_cmd_utils.c
-        src/parsing/replace/replace_env.c
-        src/parsing/replace/replace_quotes.c
-        src/parsing/replace/replace_ret_value.c
-        src/parsing/replace/split_arg_utils.c
-        src/main.c src/exec/exec_subshell.c src/exec/exec_utils.c src/exec/redirect/redirect_utils.c src/exec/redirect/here_doc/here_doc_utils.c src/exec/router/router_utils.c src/parsing/replace/wildcards/wildcards.c src/parsing/replace/wildcards/wildcards_utils.c src/signal/signal.c include/mini_signal.h src/envp/dict_sort.c)
+        src/analyser/analyser/analyser.c
+        src/analyser/cmd_lexer/cmd_token/cmd_arg_add.c
+        src/analyser/cmd_lexer/cmd_token/cmd_arg_utils.c
+        src/analyser/cmd_lexer/cmd_token/cmd_token_add.c
+        src/analyser/cmd_lexer/cmd_token/cmd_token_redirect_utils.c
+        src/analyser/cmd_lexer/cmd_token/cmd_token_utils.c
+        src/analyser/cmd_lexer/cmd_lexer.c
+        src/analyser/cmd_parser/cmd_parser.c
+        src/analyser/line_lexer/token/token_add.c
+        src/analyser/line_lexer/token/token_clear.c
+        src/analyser/line_lexer/token/token_utils.c
+        src/analyser/line_lexer/line_lexer.c
+        src/analyser/error_syntax.c
+        src/analyser/line_parser/line_parser.c
+        src/analyser/replace/replace.c
+        src/analyser/replace/replace_cmd_utils.c
+        src/analyser/replace/replace_env.c
+        src/analyser/replace/replace_quotes.c
+        src/analyser/replace/replace_ret_value.c
+        src/analyser/replace/split_arg_utils.c
+        src/main.c src/exec/exec_subshell.c src/exec/exec_utils.c src/exec/redirect/redirect_utils.c src/exec/redirect/here_doc/here_doc_utils.c src/exec/router/router_utils.c src/analyser/replace/wildcards/wildcards.c src/analyser/replace/wildcards/wildcards_utils.c src/signal/signal.c include/mini_signal.h src/envp/dict_sort.c)

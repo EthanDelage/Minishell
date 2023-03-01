@@ -25,6 +25,7 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 	long long	return_value;
 
 	errno = 0;
+	printf("exit\n");
 	return_value = g_return_value;
 	if (args && *args && args[1])
 	{
@@ -44,7 +45,6 @@ int	builtin_exit(t_hashtable *envp_dict, t_token *token_stack, char **args)
 static void	exit_properly(long long return_value, t_hashtable *envp_dict,
 				t_token *token_stack, char **args)
 {
-	printf("exit\n");
 	if (return_value == 2 && errno)
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
