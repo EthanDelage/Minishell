@@ -68,7 +68,7 @@ void	remove_empty_arg(t_cmd_arg **head)
 	while (current)
 		check_arg(&current, &previous);
 	current = *head;
-	if (current->arg[0] == '\0')
+	if (current->arg && current->arg[0] == '\0')
 	{
 		(*head) = current->next;
 		cmd_arg_clear_node(current);

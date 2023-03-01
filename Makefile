@@ -91,7 +91,7 @@ DEPS		=		$(OBJS:.o=.d)
 #	COMPILATIONS
 #######################
 
-CFLAGS		=		-Wall -Werror -Wextra -fsanitize=address
+CFLAGS		=		-Wall -Werror -Wextra #-g3 #-fsanitize=address
 
 DFLAGS		=		-MMD -MP
 
