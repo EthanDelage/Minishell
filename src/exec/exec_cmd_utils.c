@@ -20,11 +20,3 @@ void	reset_stdio(int fd_save[2])
 		if (dup2_fd(fd_save[WRITE], STDOUT_FILENO) == EXIT_FAILURE)
 			return ;
 }
-
-void	close_fd_io(int fd_io[2], int fd_pipe[2], int fd_in)
-{
-	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
-		close(fd_io[READ]);
-	if (fd_io[WRITE] != fd_pipe[WRITE] && fd_io[WRITE] != STDOUT_FILENO)
-		close(fd_io[WRITE]);
-}

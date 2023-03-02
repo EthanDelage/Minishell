@@ -16,7 +16,7 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 					int fd_io[2], int fd_pipe[2]);
 static void		exec_pipe_get_ret_val(int pid, t_token *next_cmd,
-					t_ret_val *ret_val, int fd_pipe_read);
+					t_ret_val *ret_val);
 static void		exec_next_cmd(t_hashtable *envp_dict, t_token *next_cmd,
 					int fd_pipe[2]);
 
@@ -33,7 +33,10 @@ t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 	if (next_cmd && pipe(fd_pipe) == -1)
 		return (NULL);
 	else if (next_cmd == NULL)
+	{
 		fd_pipe[WRITE] = -1;
+		fd_pipe[READ] = -1;
+	}
 	if ((*head)->type == OPEN_PARENTHESIS)
 		pid = exec_pipe_subshell(head, envp_dict, fd_in, fd_pipe);
 	else
@@ -42,8 +45,8 @@ t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 		return (NULL);
 	if (next_cmd)
 		exec_next_cmd(envp_dict, next_cmd, fd_pipe);
-	if (pid != -1)
-		exec_pipe_get_ret_val(pid, next_cmd, &ret_val, fd_pipe[READ]);
+	if (pid > 0)
+		exec_pipe_get_ret_val(pid, next_cmd, &ret_val);
 	return (get_next_cmd(*head));
 }
 
@@ -54,8 +57,7 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	int		fd_io[2];
 
 	fd_io[READ] = fd_in;
-	if (replace(envp_dict, head->cmd_stack) == FAILURE || exec_pipe_set_fd_io(
-			head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict) == FAILURE)
+	if (replace(envp_dict, head->cmd_stack) == FAILURE)
 	{
 		if (fd_pipe[WRITE] != -1)
 			close_pipe(fd_pipe);
@@ -72,15 +74,20 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	}
 	else if (pid == 0)
 		exec_pipe_cmd_fork(envp_dict, head, fd_io, fd_pipe);
-	close_fd_io(fd_io, fd_pipe, fd_in);
 	return (pid);
 }
 
 static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
-				int fd_io[2], int fd_pipe[2])
-{
+				int fd_io[2], int fd_pipe[2]) {
 	if (init_sigaction(sig_handler_cmd_fork) == FAILURE)
 		exit(errno);
+	if (exec_pipe_set_fd_io(head->cmd_stack, fd_io, fd_pipe[WRITE],
+			envp_dict) == FAILURE)
+	{
+		if (fd_pipe[WRITE] != -1)
+			close_pipe(fd_pipe);
+		exit(1);
+	}
 	if (fd_pipe[WRITE] != -1)
 	{
 		close(fd_pipe[READ]);
@@ -97,7 +104,7 @@ static void	exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 }
 
 static void	exec_pipe_get_ret_val(int pid, t_token *next_cmd,
-				t_ret_val *ret_val, int fd_pipe_read)
+				t_ret_val *ret_val)
 {
 	int			return_value;
 
@@ -112,8 +119,6 @@ static void	exec_pipe_get_ret_val(int pid, t_token *next_cmd,
 		else
 			ret_val->ret_val = WEXITSTATUS(return_value);
 	}
-	else
-		close(fd_pipe_read);
 	if (ret_val->last_cmd_sig == false && ret_val->ret_val != -1)
 		g_return_value = ret_val->ret_val;
 }
