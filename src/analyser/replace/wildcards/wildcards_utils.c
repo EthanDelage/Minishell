@@ -53,6 +53,5 @@ char	*wildcard_error(char *template, char *result)
 		free(result);
 	perror("minishell");
 	g_return_value = errno;
-	errno = 0;
 	return (NULL);
 }

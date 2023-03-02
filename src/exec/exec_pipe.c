@@ -57,6 +57,8 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	if (replace(envp_dict, head->cmd_stack) == FAILURE || exec_pipe_set_fd_io(
 			head->cmd_stack, fd_io, fd_pipe[WRITE], envp_dict) == FAILURE)
 	{
+		if (fd_pipe[WRITE] != -1)
+			close_pipe(fd_pipe);
 		g_return_value = 1;
 		return (-1);
 	}
