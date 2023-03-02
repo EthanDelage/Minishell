@@ -13,6 +13,7 @@
 
 static int	cmd_here_doc_open(t_cmd_token *cmd_token);
 static void	cmd_here_doc_close_error(t_token *head, t_cmd_token *node_error);
+static void	here_doc_close_sigint(t_cmd_token *head, t_cmd_token *delimiter);
 
 int	here_doc_get(t_token *head)
 {
@@ -92,6 +93,16 @@ static void	cmd_here_doc_close_error(t_token *head, t_cmd_token *node_error)
 			if (save == node_error)
 				return ;
 		}
+		head = head->next;
+	}
+}
+
+static void	here_doc_close_sigint(t_cmd_token *head, t_cmd_token *delimiter)
+{
+	while (head != delimiter)
+	{
+		if (head->type == HERE_DOC)
+			here_doc_close_error((t_redirect_param *) head->body);
 		head = head->next;
 	}
 }

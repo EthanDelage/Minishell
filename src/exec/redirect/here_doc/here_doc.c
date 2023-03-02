@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 #include "redirect.h"
 
-char		*here_doc_replace_env(t_hashtable *envp_dict, char *line);
+int			here_doc_write_from_input(t_hashtable *envp_dict,
+				int fd_read, int fd_pipe_write);
 static int	here_doc_error(int fd_pipe[2], int fd_read);
 static int	here_doc(t_redirect_param *param);
 static void	here_doc_get_input(t_redirect_param *param);
@@ -56,20 +57,9 @@ int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 		g_return_value = errno;
 		return (FAILURE);
 	}
-	tmp = get_next_line(redirect_param->fd[READ]);
-	if (errno)
+	if (here_doc_write_from_input(envp_dict, redirect_param->fd[READ],
+			fd_pipe[WRITE]) == FAILURE)
 		return (here_doc_error(fd_pipe, redirect_param->fd[READ]));
-	while (tmp)
-	{
-		tmp = here_doc_replace_env(envp_dict, tmp);
-		if (tmp == NULL)
-			return (here_doc_error(fd_pipe, redirect_param->fd[READ]));
-		ft_putstr_fd(tmp, fd_pipe[WRITE]);
-		free(tmp);
-		tmp = get_next_line(redirect_param->fd[READ]);
-		if (errno)
-			return (here_doc_error(fd_pipe, redirect_param->fd[READ]));
-	}
 	close(redirect_param->fd[READ]);
 	close(fd_pipe[WRITE]);
 	redirect_param->fd[READ] = fd_pipe[READ];
