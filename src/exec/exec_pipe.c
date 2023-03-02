@@ -125,7 +125,6 @@ static void	exec_next_cmd(t_hashtable *envp_dict, t_token *next_cmd,
 				int fd_pipe[2])
 {
 	close(fd_pipe[WRITE]);
-	if (exec_pipe(&next_cmd, envp_dict, fd_pipe[READ]) == NULL)
-		return ;
+	exec_pipe(&next_cmd, envp_dict, fd_pipe[READ]);
 	close(fd_pipe[READ]);
 }
