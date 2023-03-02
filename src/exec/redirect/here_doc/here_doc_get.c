@@ -62,10 +62,7 @@ static int	cmd_here_doc_open(t_cmd_token *cmd_token)
 				if (ret > 0)
 					return (FAILURE);
 				else
-				{
-					here_doc_close_sigint(head, cmd_token);
-					return (-1);
-				}
+					return (here_doc_close_sigint(head, cmd_token), -1);
 			}
 		}
 		cmd_token = cmd_token->next;
