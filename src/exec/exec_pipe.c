@@ -15,7 +15,7 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 					int fd_in, int fd_pipe[2]);
 static void		exec_pipe_cmd_fork(t_hashtable *envp_dict, t_token *head,
 					int fd_io[2], int fd_pipe[2]);
-static void	exec_pipe_get_ret_val(int pid, t_token *next_cmd,
+static void		exec_pipe_get_ret_val(int pid, t_token *next_cmd,
 					t_ret_val *ret_val, int fd_pipe_read);
 static void		exec_next_cmd(t_hashtable *envp_dict, t_token *next_cmd,
 					int fd_pipe[2]);
@@ -72,10 +72,7 @@ static pid_t	exec_pipe_cmd(t_token *head, t_hashtable *envp_dict,
 	}
 	else if (pid == 0)
 		exec_pipe_cmd_fork(envp_dict, head, fd_io, fd_pipe);
-	if (fd_io[READ] != fd_in && fd_io[READ] != STDIN_FILENO)
-		close(fd_io[READ]);
-	if (fd_io[WRITE] != fd_pipe[WRITE] && fd_io[WRITE] != STDOUT_FILENO)
-		close(fd_io[WRITE]);
+	close_fd_io(fd_io, fd_pipe, fd_in);
 	return (pid);
 }
 

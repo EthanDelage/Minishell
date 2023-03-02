@@ -44,6 +44,7 @@ int		dup2_fd(int new_fd, int old_fd);
 /* ---------------	EXEC_CMD_UTILS FUNCTIONS	--------------- */
 
 void	reset_stdio(int fd_save[2]);
+void	close_fd_io(int fd_io[2], int fd_pipe[2], int fd_in);
 
 /* ---------------	EXEC_SUBSHELL_UTILS FUNCTIONS	--------------- */
 
