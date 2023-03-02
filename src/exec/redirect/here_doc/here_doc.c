@@ -47,7 +47,6 @@ int	here_doc_open(t_redirect_param *param)
 int	here_doc_write(t_hashtable *envp_dict, t_redirect_param *redirect_param)
 {
 	int		fd_pipe[2];
-	char	*tmp;
 
 	pipe(fd_pipe);
 	if (errno)
