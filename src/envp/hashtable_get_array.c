@@ -89,7 +89,7 @@ static char	*elem_to_str(t_dict *elem)
 
 	str = (char *) malloc(sizeof(char) * (len_name + len_value + 2));
 	if (errno)
-		return (NULL);
+		return (perror(NULL), NULL);
 	ft_strcpy(str, elem->name);
 	str[len_name] = '=';
 	ft_strcpy(&str[len_name + 1], elem->value);
