@@ -33,10 +33,7 @@ t_token	*exec_pipe(t_token **head, t_hashtable *envp_dict, int fd_in)
 	if (next_cmd && pipe(fd_pipe) == -1)
 		return (NULL);
 	else if (next_cmd == NULL)
-	{
-		fd_pipe[WRITE] = -1;
-		fd_pipe[READ] = -1;
-	}
+		init_pipe(fd_pipe);
 	if ((*head)->type == OPEN_PARENTHESIS)
 		pid = exec_pipe_subshell(head, envp_dict, fd_in, fd_pipe);
 	else

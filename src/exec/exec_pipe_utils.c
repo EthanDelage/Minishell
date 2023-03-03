@@ -34,25 +34,10 @@ t_token	*get_next_pipe(t_token *head)
 	return (NULL);
 }
 
-/**
- * @brief Get the operator after all pipe if it exist
- */
-t_token	*get_next_cmd(t_token *head)
+void	init_pipe(int fd_pipe[2])
 {
-	size_t	count_parenthesis;
-
-	count_parenthesis = 0;
-	while (head)
-	{
-		if (head->type == OPERATOR && count_parenthesis == 0)
-			return (head);
-		else if (head->type == OPEN_PARENTHESIS)
-			count_parenthesis++;
-		else if (head->type == CLOSE_PARENTHESIS)
-			count_parenthesis--;
-		head = head->next;
-	}
-	return (NULL);
+	fd_pipe[READ] = -1;
+	fd_pipe[WRITE] = -1;
 }
 
 void	close_pipe(int fd_pipe[2])

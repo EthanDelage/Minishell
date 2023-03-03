@@ -11,6 +11,27 @@
 /* ************************************************************************** */
 #include "exec.h"
 
+/**
+ * @brief Get the operator after all pipe if it exist
+ */
+t_token	*get_next_cmd(t_token *head)
+{
+	size_t	count_parenthesis;
+
+	count_parenthesis = 0;
+	while (head)
+	{
+		if (head->type == OPERATOR && count_parenthesis == 0)
+			return (head);
+		else if (head->type == OPEN_PARENTHESIS)
+			count_parenthesis++;
+		else if (head->type == CLOSE_PARENTHESIS)
+			count_parenthesis--;
+		head = head->next;
+	}
+	return (NULL);
+}
+
 void	reset_stdio(int fd_save[2])
 {
 	if (fd_save[READ] != -1 && fd_save[READ] != STDIN_FILENO)
