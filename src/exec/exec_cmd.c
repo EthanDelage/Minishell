@@ -28,7 +28,7 @@ t_token	*exec_cmd(t_token *head, t_hashtable *envp_dict)
 		g_return_value = 1;
 		return (NULL);
 	}
-	if (head->cmd_stack->body == NULL)
+	if (head->cmd_stack == NULL || head->cmd_stack->body == NULL)
 	{
 		g_return_value = 0;
 		return (head->next);
